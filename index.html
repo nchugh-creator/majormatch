@@ -403,6 +403,43 @@
     .toast-hidden { opacity: 0 !important; transform: translateX(-50%) translateY(12px) !important; pointer-events: none; }
     .toast-visible { opacity: 1 !important; transform: translateX(-50%) translateY(0) !important; }
 
+    /* ── MINORS ── */
+    .minors-intro { background: var(--purple-faint); border: 1px solid var(--border); border-radius: 10px; padding: 14px 18px; margin-bottom: 20px; color: var(--text-secondary); font-size: 0.88rem; line-height: 1.6; }
+    .minors-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; }
+    .minor-card { background: white; border: 1.5px solid var(--border); border-radius: 14px; padding: 18px; cursor: pointer; transition: box-shadow .2s, border-color .2s; }
+    .minor-card:hover { box-shadow: 0 4px 16px rgba(75,46,131,.12); border-color: var(--purple-light); }
+    .minor-card-top { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; margin-bottom: 6px; }
+    .minor-card-name { font-weight: 700; font-size: 1rem; color: var(--text); }
+    .minor-card-credits { font-size: 0.78rem; font-weight: 600; background: var(--purple-faint); color: var(--purple); border-radius: 20px; padding: 2px 9px; white-space: nowrap; flex-shrink: 0; }
+    .minor-card-dept { font-size: 0.78rem; color: var(--text-secondary); margin-bottom: 8px; display: flex; align-items: center; }
+    .minor-card-tagline { font-size: 0.85rem; color: var(--text-secondary); line-height: 1.5; margin-bottom: 12px; }
+    .minor-card-footer { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+    .minor-admit-badge { font-size: 0.72rem; font-weight: 600; border-radius: 20px; padding: 3px 9px; }
+    .minor-pairs { font-size: 0.75rem; color: var(--text-secondary); }
+    .minor-detail-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 2000; display: flex; align-items: flex-end; justify-content: center; padding: 0; }
+    @media (min-width: 640px) { .minor-detail-overlay { align-items: center; padding: 24px; } }
+    .minor-detail-panel { background: white; border-radius: 20px 20px 0 0; width: 100%; max-width: 680px; max-height: 90vh; overflow-y: auto; padding: 28px 24px 40px; position: relative; }
+    @media (min-width: 640px) { .minor-detail-panel { border-radius: 20px; } }
+    .minor-detail-close { position: absolute; top: 16px; right: 16px; background: #f1f0f5; border: none; border-radius: 50%; width: 32px; height: 32px; font-size: 1rem; cursor: pointer; color: var(--text); }
+    .minor-detail-title { font-family: 'Instrument Serif', serif; font-size: 1.7rem; color: var(--text); display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+    .minor-detail-label { font-family: 'DM Sans', sans-serif; font-size: 0.75rem; font-weight: 700; background: var(--purple-faint); color: var(--purple); border-radius: 20px; padding: 3px 10px; }
+    .minor-detail-dept { color: var(--text-secondary); font-size: 0.88rem; margin-top: 4px; }
+    .minor-detail-meta { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+    .minor-meta-pill { font-size: 0.78rem; font-weight: 600; background: #f1f0f5; color: var(--text-secondary); border-radius: 20px; padding: 3px 10px; }
+    .minor-detail-tagline { font-style: italic; color: var(--purple-mid); font-size: 1rem; margin: 12px 0 8px; }
+    .minor-detail-desc { color: var(--text-secondary); font-size: 0.9rem; line-height: 1.7; margin-bottom: 16px; }
+    .minor-detail-section { margin-bottom: 20px; }
+    .minor-detail-section-title { font-weight: 700; font-size: 0.88rem; color: var(--text); margin-bottom: 8px; }
+    .minor-courses-list { margin: 0; padding-left: 20px; color: var(--text-secondary); font-size: 0.88rem; line-height: 1.8; }
+    .minor-careers-row { display: flex; flex-wrap: wrap; gap: 6px; }
+    .minor-career-tag { background: #f1f0f5; color: var(--text-secondary); font-size: 0.78rem; border-radius: 20px; padding: 4px 10px; }
+    .minor-tip-box { background: #fffbeb; border: 1px solid #f59e0b30; border-radius: 10px; padding: 14px 16px; font-size: 0.88rem; color: #92400e; line-height: 1.6; margin-bottom: 20px; }
+    .minor-pairs-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 10px; }
+    .minor-pair-card { background: var(--purple-faint); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; cursor: pointer; transition: background .15s; }
+    .minor-pair-card:hover { background: #ede9f8; }
+    .minor-pair-name { font-weight: 600; font-size: 0.85rem; color: var(--purple); }
+    .minor-pair-college { font-size: 0.75rem; color: var(--text-secondary); margin-top: 2px; }
+
     /* ===== ACTIVE FILTER PILLS ===== */
     .active-filters-row {
       display: flex; align-items: center; gap: 7px; flex-wrap: wrap;
@@ -825,7 +862,8 @@
 
     <div id="exploreMain">
       <div class="explore-topbar">
-        <button class="explore-tab-btn active" id="etabMajors" onclick="setExploreTab('majors')">Majors</button>
+        <button class="explore-tab-btn active" id="etabMajors"  onclick="setExploreTab('majors')">Majors</button>
+        <button class="explore-tab-btn"        id="etabMinors" onclick="setExploreTab('minors')">Minors</button>
         <button class="explore-tab-btn"        id="etabRSOs"   onclick="setExploreTab('rsos')">Clubs &amp; RSOs</button>
         <span class="explore-count" id="exploreCount"></span>
         <button class="swipe-mode-btn" id="swipeModeBtn" onclick="openSwipeMode()" title="Swipe through filtered majors">✦ Swipe Mode</button>
@@ -834,6 +872,7 @@
       <div class="active-filters-row empty" id="activeFiltersRow"></div>
       <div class="explore-content">
         <div id="majorsPanel"></div>
+        <div id="minorsPanel" class="hidden"></div>
         <div id="rsosPanel" class="hidden"></div>
       </div>
     </div>
@@ -1572,13 +1611,13 @@ const MAJORS = [
       'MATH 124, 125, 126 — Calculus I–III, min 2.0 each',
       'PHYS 121 — Mechanics, min 2.0',
       'PHYS 122 — Electromagnetism & Oscillations, min 2.0',
-      'CSE 142 or CSE 143 — Intro Programming, min 2.0',
+      'CSE 123 (or CSE 121/122) — Intro Programming, min 2.0',
       'MATH 208 — Matrix Algebra, min 2.0',
       'Minimum 2.5 cumulative GPA in all prereqs',
     ],
     earlyClasses: [
       'MATH 124 — Calculus I (fall, Year 1)',
-      'CSE 143 — Programming II (fall, Year 1)',
+      'CSE 123 — Programming III (fall, Year 1) — replaces old CSE 143',
       'PHYS 121 — Mechanics (winter, Year 1)',
       'MATH 126 — Calculus III (spring, Year 1)',
     ],
@@ -3335,12 +3374,12 @@ const MAJORS = [
       'MATH 124, 125, 126 — Calculus I–III, min 2.0 each',
       'STAT 390 or MATH 394 — Probability & Statistics, min 2.0',
       'PHYS 121 — Mechanics, min 2.0',
-      'CSE 142 — Programming I, min 2.0',
+      'CSE 121 — Programming I (replaces CSE 142), min 2.0',
       'Minimum 2.5 cumulative GPA; application deadline April 5',
     ],
     earlyClasses: [
       'MATH 124 — Calculus I (fall, Year 1)',
-      'CSE 142 — Programming I (fall, Year 1)',
+      'CSE 121 — Programming I (fall, Year 1)',
       'PHYS 121 — Mechanics (winter, Year 1)',
       'STAT 390 — Probability & Statistics (Year 2)',
     ],
@@ -3808,7 +3847,7 @@ const MAJORS = [
     description: "UW's Data Science BS is one of the newest and most in-demand programs on campus — combining statistics, machine learning, data engineering, and domain applications. Offered in partnership between the Allen School and the eScience Institute, the program is built for the reality of modern data work: messy datasets, ethical questions, and the need to communicate findings clearly to non-technical audiences. Seattle's data-driven economy makes this degree uniquely powerful.",
     prereqs: [
       'MATH 124 — Calculus I, min 2.0',
-      'CSE 142 or DATA 119 — Intro to Programming, min 2.0',
+      'CSE 121 or DATA 119 — Intro to Programming, min 2.0',
       'STAT 180 — Introduction to Data Science, min 2.0',
       'Departmental application — apply after completing prereqs',
     ],
@@ -3866,7 +3905,7 @@ const MAJORS = [
     description: "ACMS is UW's interdisciplinary quantitative BS that sits at the intersection of applied mathematics, statistics, and computing. Students choose a concentration — Bio/Stats, Discrete Math/Algorithms, Numerical/Computation, or Operations Research — and build a curriculum that bridges theory with application. The degree is highly regarded in data science, engineering, and quantitative finance circles as an alternative to CS with a stronger mathematical foundation.",
     prereqs: [
       'MATH 124, 125, 126 — Calculus series, min 2.5 in each',
-      'CSE 121 or CSE 143 — Programming, min 2.0',
+      'CSE 121 (or CSE 123) — Programming, min 2.0',
       'Departmental application — competitive, limited spots',
     ],
     earlyClasses: ['MATH 124 — Calculus I', 'CSE 121 — Introduction to Programming', 'STAT 390 — Statistical Methods in Engineering'],
@@ -4753,6 +4792,634 @@ const DEGREE_TYPE = {
   forest_resources:'BS', near_east:'BA', scandinavian:'BA',
 };
 
+
+/* ============================================================
+   MINORS DATA  — UW Seattle undergraduate minors
+   ============================================================ */
+const MINORS_DATA = [
+
+  /* ── COMPUTING & TECH ── */
+  {
+    id: 'minor_data_science',
+    name: 'Data Science',
+    dept: 'Paul G. Allen School & College of Arts & Sciences',
+    deptGroup: 'engineering',
+    credits: 25,
+    admissionType: 'open',
+    categories: ['computing', 'stem'],
+    tagline: 'Turn data into decisions — the most in-demand technical skill in Seattle.',
+    description: "UW's interdisciplinary Data Science minor (25 credits) teaches programming, statistics, and data reasoning. It's designed for non-CS majors who want quantitative credibility — economists, biologists, sociologists, and public health students all benefit enormously. Core courses include CSE 163 (Data Programming) and STAT 311.",
+    courses: [
+      'CSE 163 — Data Programming (5 cr) — Python for data analysis',
+      'STAT 311 — Elements of Statistical Methods (4 cr)',
+      'CSE/STAT/INFO elective from approved list (5 cr)',
+      'Two additional data science electives from approved list (11 cr)',
+    ],
+    pairsWith: ['cs', 'statistics', 'economics', 'biology', 'sociology', 'psychology', 'publichealth', 'informatics', 'polisci'],
+    careers: ['Data Analyst', 'Business Intelligence Analyst', 'Research Analyst', 'Data Scientist (with major)'],
+    tip: 'CSE 163 fills up fast — register Day 1. Many students use this minor to break into tech without a full CS degree.',
+  },
+
+  {
+    id: 'minor_informatics',
+    name: 'Informatics',
+    dept: 'The Information School',
+    deptGroup: 'ischool',
+    credits: 25,
+    admissionType: 'open',
+    categories: ['computing', 'design'],
+    tagline: 'Where technology meets people, design, and society.',
+    description: "The iSchool's Informatics minor covers information systems, UX research, data, and the social implications of technology. Required: INFO 200 (5 cr) + INFO 201 (5 cr) + ethics course + two depth electives. Warning: seats in upper-division INFO courses are scarce for non-majors; declare only after completing INFO 200 and 201.",
+    courses: [
+      'INFO 200 — Intellectual Foundations of Informatics (5 cr)',
+      'INFO 201 — Foundational Skills for Data Science (5 cr)',
+      'Ethics/policy elective — e.g. INFO 360, INFO 380 (4-5 cr)',
+      'Two depth electives in data, design, or development (10-11 cr)',
+    ],
+    pairsWith: ['cs', 'hcde', 'informatics', 'sociology', 'psychology', 'communication', 'business'],
+    careers: ['UX Researcher', 'Information Architect', 'Product Analyst', 'Data Manager'],
+    tip: "Only declare once you've completed INFO 200 and 201 — the upper-division courses are difficult to access as a non-major.",
+  },
+
+  /* ── BUSINESS ── */
+  {
+    id: 'minor_business',
+    name: 'Business',
+    dept: 'Foster School of Business',
+    deptGroup: 'foster',
+    credits: 27,
+    admissionType: 'open',
+    categories: ['business'],
+    tagline: 'Add business fluency to any technical or creative degree.',
+    description: "Foster's Business minor (27 credits) is one of the most popular minors at UW. Open to any declared undergraduate, it covers accounting, finance, marketing, and management. A 2.0 GPA minimum is required in all minor courses. At least 15 credits must be at the 300–400 level.",
+    courses: [
+      'ACCTG 215 — Financial Accounting (4 cr)',
+      'B A 200 — Business Foundations (2 cr)',
+      'B ECON 300 — Managerial Economics (4 cr)',
+      'FIN 350 — Business Finance (4 cr)',
+      'MKTG 301 — Marketing Management (4 cr)',
+      'One 300–400 level Foster elective (4–5 cr)',
+    ],
+    pairsWith: ['cs', 'hcde', 'informatics', 'economics', 'communication', 'sociology', 'intstudies', 'data_science'],
+    careers: ['Business Analyst', 'Product Manager', 'Consultant', 'Marketing Analyst', 'Financial Analyst'],
+    tip: 'Pairs exceptionally well with CS, HCDE, or Informatics — the combo of technical skills + business literacy is extremely hire-ready in Seattle.',
+  },
+
+  {
+    id: 'minor_entrepreneurship',
+    name: 'Entrepreneurship',
+    dept: 'Foster School of Business',
+    deptGroup: 'foster',
+    credits: 20,
+    admissionType: 'capacity-constrained',
+    categories: ['business'],
+    tagline: 'Build, launch, and scale — competitive minor for aspiring founders.',
+    description: "Foster's Entrepreneurship minor is capacity-constrained and requires a formal application. It teaches lean startup methodology, venture financing, product-market fit, and business model design through project-based courses. Cohort-based with peer accountability — one of UW's most hands-on minors.",
+    courses: [
+      'ENTRE 385 — Foundations of Entrepreneurship (4 cr)',
+      'ENTRE 430 — New Venture Creation (4 cr)',
+      'ENTRE 440 — Entrepreneurial Finance (4 cr)',
+      'One elective from approved list (4 cr)',
+      'ENTRE 495 — Entrepreneurship Practicum (4 cr)',
+    ],
+    pairsWith: ['cs', 'hcde', 'informatics', 'business', 'ece', 'bioeng', 'data_science'],
+    careers: ['Startup Founder', 'Product Manager', 'Venture Analyst', 'Business Development', 'Innovation Lead'],
+    tip: "Apply early — cohort sizes are small. Having a startup idea or project you're already working on dramatically strengthens your application.",
+  },
+
+  /* ── SCIENCE & HEALTH ── */
+  {
+    id: 'minor_neuroscience',
+    name: 'Neuroscience',
+    dept: 'College of Arts & Sciences (Interdisciplinary)',
+    deptGroup: 'arts_sciences',
+    credits: 30,
+    admissionType: 'open',
+    categories: ['stem', 'health'],
+    tagline: 'Understand the brain — from molecules to behavior.',
+    description: "The Neuroscience minor is open to any student with the required science background. It covers molecular neuroscience, systems neuroscience, cognition, and behavior across 30 credits of coursework. Excellent for pre-med students and psychology majors who want to deepen their understanding of the nervous system.",
+    courses: [
+      'BIOL 180 — Foundations of Biology I (5 cr) — prereq',
+      'NEUSCI 201 — Introduction to Neuroscience (3 cr)',
+      'NEUSCI 300 — Cellular & Molecular Neuroscience (3 cr)',
+      'NEUSCI 400 — Systems Neuroscience (3 cr)',
+      'Approved upper-division electives to reach 30 cr',
+    ],
+    pairsWith: ['psychology', 'biology', 'biochemistry', 'chemistry', 'kinesiology', 'molecular_bio', 'microbiology'],
+    careers: ['Neuroscience Researcher (grad school)', 'Physician / Psychiatrist', 'Clinical Psychologist', 'Biotech Scientist'],
+    tip: "Start BIOL 180 immediately — it's the prereq that gates entry into upper-division neuroscience courses.",
+  },
+
+  {
+    id: 'minor_public_health',
+    name: 'Public Health',
+    dept: 'School of Public Health',
+    deptGroup: 'public_health',
+    credits: 25,
+    admissionType: 'open',
+    categories: ['health', 'social_sciences'],
+    tagline: 'Understand health systems, policy, and disease at the population level.',
+    description: "The Public Health minor introduces epidemiology, health policy, environmental health, and global health across 25 credits. Open to any student, it pairs exceptionally well with biology, sociology, political science, and international studies. One of UW's most relevant minors for students interested in medicine or policy.",
+    courses: [
+      'EPID 101 — Introduction to Epidemiology (3 cr)',
+      'H SER 100 — Introduction to Health Services (3 cr)',
+      'ENV H 200 — Introduction to Environmental Health (3 cr)',
+      'BIOST 310 — Biostatistics (3 cr)',
+      'Approved upper-division public health electives (13 cr)',
+    ],
+    pairsWith: ['biology', 'sociology', 'polisci', 'intstudies', 'global_health', 'nutritional_sci', 'env_health', 'microbiology'],
+    careers: ['Public Health Officer', 'Epidemiologist (grad path)', 'Health Policy Analyst', 'NGO Program Coordinator'],
+    tip: 'Strong complement to pre-med. MPH programs explicitly value this minor and the population health perspective it demonstrates.',
+  },
+
+  {
+    id: 'minor_global_health',
+    name: 'Global Health',
+    dept: 'Department of Global Health',
+    deptGroup: 'public_health',
+    credits: 25,
+    admissionType: 'open',
+    categories: ['health', 'social_sciences'],
+    tagline: 'Health equity, disease, and systems across borders.',
+    description: "The Global Health minor examines health disparities, infectious disease, healthcare systems, and health equity from an international perspective. Core courses include GH 201 (Introduction to Global Health) and GH 350 (Social Determinants of Health). Pairs well with international studies, political science, and pre-med paths.",
+    courses: [
+      'GH 201 — Introduction to Global Health (5 cr)',
+      'GH 350 — Social and Economic Determinants of Health (5 cr)',
+      'One epidemiology or biostatistics course (3-5 cr)',
+      'Global Health electives (10 cr)',
+    ],
+    pairsWith: ['biology', 'polisci', 'intstudies', 'sociology', 'anthropology', 'publichealth', 'nursing'],
+    careers: ['Global Health Program Officer', 'International Aid Worker', 'Health Policy Researcher', 'Physician (global focus)'],
+    tip: 'The UW Department of Global Health is one of the top globally — this minor carries real name recognition in the global health field.',
+  },
+
+  {
+    id: 'minor_biology',
+    name: 'Biology',
+    dept: 'Department of Biology',
+    deptGroup: 'arts_sciences',
+    credits: 25,
+    admissionType: 'open',
+    categories: ['stem', 'health'],
+    tagline: 'Deepen your science foundation — essential for pre-med and research tracks.',
+    description: "The Biology minor is open to non-biology majors and covers cell biology, genetics, ecology, and evolution. It provides a strong pre-med or graduate school complement for students in chemistry, psychology, kinesiology, or environmental studies. Requires the intro biology sequence (BIOL 180/200) as foundation.",
+    courses: [
+      'BIOL 180 — Foundations of Biology I (5 cr)',
+      'BIOL 200 — Foundations of Biology II (5 cr)',
+      'BIOL 220 — Foundations of Biology III (5 cr)',
+      'Two upper-division BIOL electives (10 cr)',
+    ],
+    pairsWith: ['chemistry', 'psychology', 'kinesiology', 'nutritional_sci', 'esrm', 'biochemistry'],
+    careers: ['Research Scientist', 'Physician (pre-med)', 'Biotech Analyst', 'Science Educator'],
+    tip: 'BIOL 180 has a historically low average (~2.8–3.0) — go to every lecture and do the practice exams twice.',
+  },
+
+  {
+    id: 'minor_chemistry',
+    name: 'Chemistry',
+    dept: 'Department of Chemistry',
+    deptGroup: 'arts_sciences',
+    credits: 25,
+    admissionType: 'open',
+    categories: ['stem'],
+    tagline: 'The molecular lens on matter, medicine, and materials.',
+    description: "The Chemistry minor covers general chemistry, organic chemistry, and upper-division electives in analytical or physical chemistry. It adds significant credibility for pre-med, biochemistry, and environmental science students who want deeper chemical knowledge without a full chemistry major.",
+    courses: [
+      'CHEM 142, 152, 162 — General Chemistry sequence (15 cr total)',
+      'CHEM 237 — Organic Chemistry I (4 cr)',
+      'CHEM 238 — Organic Chemistry II (4 cr)',
+      'One upper-division chemistry elective (3-5 cr)',
+    ],
+    pairsWith: ['biology', 'biochemistry', 'molecular_bio', 'microbiology', 'chemeng', 'env_health'],
+    careers: ['Research Chemist (grad path)', 'Pharmaceutical Scientist', 'Lab Manager', 'Chemical Engineer'],
+    tip: 'Completing the organic chemistry sequence is the real test — schedule CHEM 237 for spring quarter Year 2 at the latest.',
+  },
+
+  {
+    id: 'minor_statistics',
+    name: 'Statistics',
+    dept: 'Department of Statistics',
+    deptGroup: 'arts_sciences',
+    credits: 20,
+    admissionType: 'open',
+    categories: ['stem', 'computing'],
+    tagline: 'The quantitative backbone of modern research and data science.',
+    description: "The Statistics minor (20 credits) is open to any student who has completed MATH 124. It covers probability, inference, regression, and applied statistics — applicable to virtually every field from biology to economics to sociology. One of the highest-return minors at UW for time invested.",
+    courses: [
+      'STAT 311 — Elements of Statistical Methods (4 cr) OR STAT 390 (4 cr)',
+      'STAT 342 — Introduction to Probability (4 cr)',
+      'STAT 390 — Statistical Methods in Engineering (4 cr) OR STAT 421 (4 cr)',
+      'Two approved upper-division STAT electives (8 cr)',
+    ],
+    pairsWith: ['economics', 'psychology', 'sociology', 'biology', 'publichealth', 'polisci', 'informatics', 'data_science'],
+    careers: ['Statistician', 'Data Analyst', 'Quantitative Researcher', 'Biostatistician'],
+    tip: 'MATH 124 (Calculus I) is the only hard prereq. This minor is one of the highest signal-to-effort investments at UW.',
+  },
+
+  {
+    id: 'minor_math',
+    name: 'Mathematics',
+    dept: 'Department of Mathematics',
+    deptGroup: 'arts_sciences',
+    credits: 25,
+    admissionType: 'open',
+    categories: ['stem'],
+    tagline: 'Pure logical rigor — the foundation of all quantitative disciplines.',
+    description: "The Math minor requires completing the calculus sequence (MATH 124–126), linear algebra (MATH 208), and upper-division mathematics courses. It significantly strengthens applications to quantitative graduate programs in economics, computer science, statistics, and physics.",
+    courses: [
+      'MATH 124 — Calculus I (5 cr)',
+      'MATH 125 — Calculus II (5 cr)',
+      'MATH 126 — Calculus III (5 cr)',
+      'MATH 208 — Matrix Algebra (3 cr)',
+      'Two upper-division MATH electives at 300+ level (10 cr)',
+    ],
+    pairsWith: ['cs', 'physics', 'economics', 'statistics', 'acms', 'amath', 'ece', 'data_science'],
+    careers: ['Quantitative Analyst', 'Actuary', 'Research Scientist', 'Graduate Researcher'],
+    tip: 'MATH 300 (Introduction to Mathematical Reasoning) is the gateway to upper-division proof-based math — take it early if you want rigorous theory courses.',
+  },
+
+  /* ── SOCIAL SCIENCES ── */
+  {
+    id: 'minor_psychology',
+    name: 'Psychology',
+    dept: 'Department of Psychology',
+    deptGroup: 'arts_sciences',
+    credits: 25,
+    admissionType: 'open',
+    categories: ['social_sciences', 'health'],
+    tagline: 'Understand human behavior, cognition, and mental life.',
+    description: "The Psychology minor is open to any undergraduate and introduces research methods, cognitive psychology, social psychology, and abnormal psychology. One of the most versatile minors at UW — directly applicable to UX research, healthcare, education, business, and policy work.",
+    courses: [
+      'PSYCH 101 — Introduction to Psychology (5 cr)',
+      'PSYCH 209 — Research Methods (5 cr)',
+      'PSYCH 300 — Abnormal Psychology OR PSYCH 306 — Social Psychology (5 cr)',
+      'Two upper-division PSYCH electives (10 cr)',
+    ],
+    pairsWith: ['hcde', 'informatics', 'communication', 'nursing', 'sociology', 'education', 'kinesiology', 'lsj'],
+    careers: ['UX Researcher', 'School Counselor', 'HR Manager', 'Clinical Psychologist (grad path)', 'Social Worker'],
+    tip: 'PSYCH 209 (Research Methods) is the bottleneck for the minor — take it by Year 2 so you can access upper-division courses.',
+  },
+
+  {
+    id: 'minor_sociology',
+    name: 'Sociology',
+    dept: 'Department of Sociology',
+    deptGroup: 'arts_sciences',
+    credits: 25,
+    admissionType: 'open',
+    categories: ['social_sciences'],
+    tagline: 'Understand inequality, institutions, and social change.',
+    description: "The Sociology minor examines inequality, race, gender, organizations, culture, and social movements. Pairs well with public health, political science, law, and data science. Especially valuable for students interested in policy, nonprofits, or understanding social context for tech products.",
+    courses: [
+      'SOC 110 — Introduction to Sociology (5 cr)',
+      'SOC 225 — Social Research Methods (5 cr)',
+      'SOC 316 — Race, Racism & Society OR SOC 326 — Class, Power & Inequality (5 cr)',
+      'Two upper-division SOC electives (10 cr)',
+    ],
+    pairsWith: ['polisci', 'lsj', 'publichealth', 'global_health', 'intstudies', 'education', 'social_welfare', 'gwss'],
+    careers: ['Policy Analyst', 'Nonprofit Program Manager', 'Community Organizer', 'Researcher', 'Social Worker'],
+    tip: 'Sociology + Data Science is a powerful combination — many tech companies specifically recruit for social scientists who can also work with data.',
+  },
+
+  {
+    id: 'minor_economics',
+    name: 'Economics',
+    dept: 'Department of Economics',
+    deptGroup: 'arts_sciences',
+    credits: 25,
+    admissionType: 'open',
+    categories: ['business', 'social_sciences'],
+    tagline: 'Quantitative reasoning about markets, incentives, and policy.',
+    description: "The Economics minor is open to non-economics majors and covers micro and macroeconomic theory, econometrics, and applied economics. One of the highest-ROI minors for CS, engineering, and public policy students who want to understand markets and policy tradeoffs.",
+    courses: [
+      'ECON 200 — Introduction to Microeconomics (5 cr)',
+      'ECON 201 — Introduction to Macroeconomics (5 cr)',
+      'ECON 300 — Intermediate Microeconomics (5 cr)',
+      'Two ECON 300–400 level electives (10 cr)',
+    ],
+    pairsWith: ['cs', 'polisci', 'statistics', 'intstudies', 'data_science', 'business', 'publichealth'],
+    careers: ['Economic Analyst', 'Policy Consultant', 'Financial Analyst', 'Researcher', 'Market Research Analyst'],
+    tip: "ECON 300 requires MATH 112 or higher — take MATH 124 instead if you can, it's better preparation for upper-division economics.",
+  },
+
+  {
+    id: 'minor_polisci',
+    name: 'Political Science',
+    dept: 'Department of Political Science',
+    deptGroup: 'arts_sciences',
+    credits: 25,
+    admissionType: 'open',
+    categories: ['social_sciences'],
+    tagline: 'Power, institutions, and policy at the local, national, and global levels.',
+    description: "The Political Science minor is open to any student and covers American politics, international relations, comparative politics, and political theory. Essential preparation for law school, public policy, government careers, and nonprofit work. UW's proximity to Seattle and DC-connected faculty creates unique research opportunities.",
+    courses: [
+      'POL S 202 — Introduction to Political Theory (5 cr)',
+      'POL S 203 — Introduction to American Politics (5 cr)',
+      'POL S 204 — Introduction to Comparative Politics (5 cr)',
+      'Two upper-division POL S electives (10 cr)',
+    ],
+    pairsWith: ['lsj', 'intstudies', 'economics', 'sociology', 'history', 'near_east', 'gwss', 'social_welfare'],
+    careers: ['Policy Analyst', 'Lawyer (via JD)', 'Foreign Service Officer', 'Campaign Manager', 'Journalist'],
+    tip: 'Join Model UN, UW Mock Trial, or the Journal of Politics (Illuminated) — pol sci is a field where extracurriculars signal more than GPA.',
+  },
+
+  {
+    id: 'minor_philosophy',
+    name: 'Philosophy',
+    dept: 'Department of Philosophy',
+    deptGroup: 'arts_sciences',
+    credits: 25,
+    admissionType: 'open',
+    categories: ['arts_humanities'],
+    tagline: 'Rigorous thinking about ethics, knowledge, logic, and existence.',
+    description: "The Philosophy minor is one of the best-kept secrets for law school, tech ethics, and any career requiring rigorous argument construction. UW's philosophy department is especially strong in logic, philosophy of mind, and ethics of technology. Classes are small and discussion-based.",
+    courses: [
+      'PHIL 100 — Introduction to Philosophy (5 cr)',
+      'PHIL 120 — Introduction to Logic (5 cr)',
+      'One ethics course: PHIL 242 — Ethics (5 cr)',
+      'Two upper-division PHIL electives (10 cr)',
+    ],
+    pairsWith: ['cs', 'lsj', 'polisci', 'economics', 'ece', 'bioeng', 'near_east', 'classics'],
+    careers: ['Lawyer (via JD)', 'Policy Analyst', 'Tech Ethics Researcher', 'Academic', 'Management Consultant'],
+    tip: 'Philosophy majors have consistently one of the highest LSAT scores of any major. PHIL 120 (Logic) alone improves argument skills faster than almost any other course.',
+  },
+
+  {
+    id: 'minor_history',
+    name: 'History',
+    dept: 'Department of History',
+    deptGroup: 'arts_sciences',
+    credits: 25,
+    admissionType: 'open',
+    categories: ['arts_humanities', 'social_sciences'],
+    tagline: 'Context, narrative, and critical analysis across time.',
+    description: "The History minor trains students to construct arguments from evidence, synthesize complex sources, and communicate clearly — skills valued in law, journalism, policy, and business. UW history is especially strong in Pacific Rim, U.S., and global history.",
+    courses: [
+      'One 100-level HSTRY survey course (5 cr)',
+      'One HSTRY methods course at 200-level (5 cr)',
+      'Three upper-division HSTRY electives (15 cr)',
+    ],
+    pairsWith: ['polisci', 'lsj', 'intstudies', 'near_east', 'classics', 'japanese', 'comparative_lit', 'aes'],
+    careers: ['Lawyer (via JD)', 'Museum Curator', 'Journalist', 'Policy Researcher', 'Teacher', 'Government Analyst'],
+    tip: 'Thesis-writing in HSTRY 495 or a department seminar is a strong signal for law school applications — argue to write the hardest papers you can.',
+  },
+
+  {
+    id: 'minor_human_rights',
+    name: 'Human Rights',
+    dept: 'Henry M. Jackson School of International Studies',
+    deptGroup: 'arts_sciences',
+    credits: 25,
+    admissionType: 'open',
+    categories: ['social_sciences', 'arts_humanities'],
+    tagline: 'Frameworks, institutions, and advocacy for dignity and justice worldwide.',
+    description: "The Human Rights minor, housed in the Jackson School, covers international human rights law, transitional justice, humanitarian intervention, and global advocacy. It draws on political science, law, sociology, and history and pairs well with international studies, law aspirations, and global health.",
+    courses: [
+      'JSIS 201 — Understanding the World (5 cr)',
+      'HR 200 — Introduction to Human Rights (5 cr)',
+      'HR 300 — Human Rights Law (5 cr)',
+      'HR/JSIS electives (10 cr)',
+    ],
+    pairsWith: ['intstudies', 'polisci', 'sociology', 'lsj', 'global_health', 'near_east', 'aes', 'gwss'],
+    careers: ['Human Rights Lawyer (via JD)', 'NGO Program Officer', 'Foreign Service / Diplomat', 'Journalist', 'Policy Researcher'],
+    tip: 'Combining this minor with Arabic, Swahili, or French significantly expands your field options in global human rights work.',
+  },
+
+  {
+    id: 'minor_intl_studies',
+    name: 'International Studies',
+    dept: 'Henry M. Jackson School of International Studies',
+    deptGroup: 'arts_sciences',
+    credits: 25,
+    admissionType: 'open',
+    categories: ['social_sciences'],
+    tagline: 'Global politics, economics, and cross-cultural understanding.',
+    description: "The International Studies minor covers global political economy, international security, regional studies, and cross-cultural communication. One of the most versatile minors at UW for students headed to government, international business, NGO work, or graduate programs in international affairs.",
+    courses: [
+      'JSIS 201 — Understanding the World (5 cr)',
+      'One regional studies course (5 cr)',
+      'One global economy course (5 cr)',
+      'JSIS upper-division electives (10 cr)',
+    ],
+    pairsWith: ['polisci', 'economics', 'french', 'japanese', 'near_east', 'scandinavian', 'spanish', 'intstudies', 'global_health'],
+    careers: ['Foreign Service Officer', 'International Business Analyst', 'NGO Program Director', 'Intelligence Analyst', 'Journalist'],
+    tip: 'Combining with a language minor (French, Arabic, Japanese, Spanish) and study abroad makes this minor genuinely credential-building for international careers.',
+  },
+
+  {
+    id: 'minor_env_studies',
+    name: 'Environmental Studies',
+    dept: 'College of the Environment',
+    deptGroup: 'college_env',
+    credits: 25,
+    admissionType: 'open',
+    categories: ['environment', 'social_sciences'],
+    tagline: 'Interdisciplinary lens on climate, ecosystems, and environmental justice.',
+    description: "The Environmental Studies minor combines natural science, social science, and humanities approaches to environmental problems. It covers ecology, environmental policy, environmental justice, and sustainability — useful for almost any major that touches on the physical world or policy.",
+    courses: [
+      'ESRM 100 — Introduction to Environmental Science (5 cr)',
+      'ENV 221 — Environmental Thought & Values (5 cr)',
+      'ENV 320 — Environmental Policy (5 cr)',
+      'Two environmental electives (10 cr)',
+    ],
+    pairsWith: ['esrm', 'forest_resources', 'polisci', 'sociology', 'publichealth', 'env_health', 'geography', 'civeng'],
+    careers: ['Environmental Policy Analyst', 'Sustainability Manager', 'Conservation Scientist', 'NGO Researcher'],
+    tip: 'This minor opens doors at Seattle-based environmental consulting firms (AECOM, Parametrix, ICF) that recruit interdisciplinary thinkers.',
+  },
+
+  {
+    id: 'minor_sustainability',
+    name: 'Sustainability',
+    dept: 'College of the Environment / UW Interdisciplinary',
+    deptGroup: 'college_env',
+    credits: 20,
+    admissionType: 'open',
+    categories: ['environment', 'business'],
+    tagline: 'Apply systems thinking to climate, energy, and sustainable organizations.',
+    description: "The Sustainability minor is a cross-disciplinary program drawing on environmental science, business, engineering, and policy. It's especially popular among business, engineering, and architecture students who want sustainability credentials — a growing requirement in corporate recruiting.",
+    courses: [
+      'ENVIR 100 — Environment & Society (5 cr)',
+      'ENVIR 200 — Sustainability and Society (5 cr)',
+      'One energy or climate course (5 cr)',
+      'Sustainability-focused elective (5 cr)',
+    ],
+    pairsWith: ['business', 'civeng', 'architecture', 'esrm', 'forest_resources', 'realestate', 'cep'],
+    careers: ['Sustainability Analyst', 'ESG Consultant', 'Corporate Sustainability Manager', 'Energy Analyst'],
+    tip: 'ESG (Environmental, Social, Governance) roles are booming in corporate Seattle — this minor + Foster Business is a strong combination.',
+  },
+
+  {
+    id: 'minor_linguistics',
+    name: 'Linguistics',
+    dept: 'Department of Linguistics',
+    deptGroup: 'arts_sciences',
+    credits: 25,
+    admissionType: 'open',
+    categories: ['arts_humanities', 'computing'],
+    tagline: 'The science of language — from syntax to speech recognition.',
+    description: "The Linguistics minor covers phonology, syntax, semantics, language acquisition, and sociolinguistics. It's surprisingly useful for NLP (natural language processing) engineers, speech pathology students, cognitive scientists, and language teachers. Pairs uniquely well with CS or cognitive science.",
+    courses: [
+      'LING 200 — Introduction to Linguistic Thought (5 cr)',
+      'LING 233 — The Sounds of Language (5 cr)',
+      'LING 234 — The Structure of Language (5 cr)',
+      'Two upper-division LING electives (10 cr)',
+    ],
+    pairsWith: ['cs', 'sphsc', 'japanese', 'french', 'spanish', 'near_east', 'cognitive_sci', 'psychology'],
+    careers: ['NLP Engineer (with CS)', 'Speech-Language Pathologist (grad path)', 'Translator', 'Language Teacher', 'Computational Linguist'],
+    tip: 'NLP roles at Amazon, Microsoft, and Google explicitly value linguistics coursework alongside programming ability.',
+  },
+
+  {
+    id: 'minor_creative_writing',
+    name: 'Creative Writing',
+    dept: 'Department of English',
+    deptGroup: 'arts_sciences',
+    credits: 25,
+    admissionType: 'open',
+    categories: ['arts_humanities'],
+    tagline: 'Develop your voice — fiction, poetry, creative nonfiction, and screenwriting.',
+    description: "The Creative Writing minor at UW's nationally-ranked program covers fiction, poetry, and creative nonfiction through intensive workshops. It's open to any student and trains you to write with clarity, precision, and craft — skills valuable far beyond literary careers.",
+    courses: [
+      'ENGL 282 — Introduction to Creative Writing (5 cr)',
+      'ENGL 283 — Introduction to Fiction Writing OR ENGL 284 — Introduction to Poetry (5 cr)',
+      'One intermediate workshop: ENGL 383/384 (5 cr)',
+      'Upper-division creative writing electives (10 cr)',
+    ],
+    pairsWith: ['communication', 'cinema', 'drama', 'english', 'comparative_lit', 'journalism'],
+    careers: ['Content Strategist', 'UX Writer', 'Journalist', 'Author / Screenwriter', 'Marketing Copywriter'],
+    tip: "ENGL 282 is the gateway — take it fall quarter Year 1 to open up the full workshop sequence. UW Writer's Workshop MFA is world-class if you want to continue.",
+  },
+
+  {
+    id: 'minor_gwss',
+    name: 'Gender, Women & Sexuality Studies',
+    dept: 'Department of Gender, Women & Sexuality Studies',
+    deptGroup: 'arts_sciences',
+    credits: 25,
+    admissionType: 'open',
+    categories: ['social_sciences', 'arts_humanities'],
+    tagline: 'Critical frameworks for understanding gender, power, and social justice.',
+    description: "The GWSS minor provides theoretical and applied tools for understanding gender, sexuality, race, and power. It's especially valuable for students interested in healthcare, social work, law, policy, or any field where understanding equity and intersectionality matters professionally.",
+    courses: [
+      'GWSS 200 — Introduction to Gender, Women & Sexuality Studies (5 cr)',
+      'One theory course: GWSS 301 or 302 (5 cr)',
+      'One upper-division thematic course (5 cr)',
+      'Two GWSS electives (10 cr)',
+    ],
+    pairsWith: ['sociology', 'lsj', 'polisci', 'social_welfare', 'publichealth', 'nursing', 'education', 'aes'],
+    careers: ['Social Worker', 'Policy Analyst', 'Healthcare Advocate', 'Nonprofit Program Manager', 'Academic Researcher'],
+    tip: 'This minor significantly strengthens applications to social work, public health, and law programs that value diversity and equity competencies.',
+  },
+
+  {
+    id: 'minor_lsj',
+    name: 'Law, Societies & Justice',
+    dept: 'Department of Law, Societies & Justice',
+    deptGroup: 'arts_sciences',
+    credits: 25,
+    admissionType: 'open',
+    categories: ['social_sciences', 'arts_humanities'],
+    tagline: 'Pre-law preparation and critical analysis of law, power, and society.',
+    description: "The LSJ minor studies law from sociological, anthropological, historical, and philosophical perspectives — invaluable pre-law preparation for students in any major. UW's LSJ courses are known for small discussion sections, rigorous writing, and faculty who are former practicing attorneys.",
+    courses: [
+      'LSJ 200 — Law in Society (5 cr)',
+      'LSJ 325 — Criminal Justice System (5 cr)',
+      'One upper-division civil rights or constitutional law course (5 cr)',
+      'Two LSJ electives (10 cr)',
+    ],
+    pairsWith: ['polisci', 'sociology', 'economics', 'philosophy', 'history', 'aes', 'gwss', 'human_rights'],
+    careers: ['Lawyer (via JD)', 'Policy Analyst', 'Public Defender Advocate', 'Legal Aid Researcher', 'Social Justice Organizer'],
+    tip: 'Take LSAT prep in parallel from Year 2. LSJ + Philosophy is one of the strongest pre-law combinations at UW.',
+  },
+
+  {
+    id: 'minor_music',
+    name: 'Music',
+    dept: 'School of Music',
+    deptGroup: 'arts_sciences',
+    credits: 25,
+    admissionType: 'open',
+    categories: ['arts_humanities'],
+    tagline: 'Music theory, history, and performance for non-music majors.',
+    description: "The Music minor is open to any student and covers music theory, music history, and opportunities for ensemble performance (UW Symphony, choirs, jazz ensemble). It's a popular complement for students in STEM, business, and social sciences who want to continue music seriously alongside their degree.",
+    courses: [
+      'MUSC 120 — Music Theory I (3 cr)',
+      'MUSC 121 — Music Theory II (3 cr)',
+      'MUSC 162 — History of Western Music I (5 cr)',
+      'Performance ensemble or upper-division elective (5 cr)',
+      'Upper-division MUSC elective (5 cr)',
+    ],
+    pairsWith: ['drama', 'cinema', 'dance', 'iva', 'creative_writing', 'music'],
+    careers: ['Music Educator', 'Arts Administrator', 'Sound Designer', 'Music Therapist (grad path)', 'Performer'],
+    tip: 'Playing in the UW Symphony, Jazz Ensemble, or a chamber group while completing the minor is one of the most enriching undergraduate experiences available.',
+  },
+
+  {
+    id: 'minor_public_policy',
+    name: 'Public Policy',
+    dept: 'Daniel J. Evans School of Public Policy & Governance',
+    deptGroup: 'arts_sciences',
+    credits: 25,
+    admissionType: 'open',
+    categories: ['social_sciences', 'business'],
+    tagline: 'Analyze, design, and evaluate policies that affect real lives.',
+    description: "The Public Policy minor introduces students to policy analysis, program evaluation, budgeting, and the mechanics of government decision-making. One of the strongest value-adds for students in economics, political science, public health, environmental studies, and sociology headed toward government or nonprofit sectors.",
+    courses: [
+      'JSIS 201 OR POL S 203 — Introduction to politics/world (5 cr)',
+      'PB AF 300 — Introduction to Public Policy (5 cr)',
+      'PB AF 401 — Policy Analysis Methods (5 cr)',
+      'Public policy electives (10 cr)',
+    ],
+    pairsWith: ['polisci', 'economics', 'sociology', 'publichealth', 'env_studies', 'intstudies', 'lsj', 'social_welfare'],
+    careers: ['Policy Analyst', 'Government Affairs Manager', 'Nonprofit Director', 'Budget Analyst', 'Legislative Aide'],
+    tip: 'Evans School MPP is highly regarded — this minor is the clearest pipeline into that graduate program for undergrads interested in policy careers.',
+  },
+
+  {
+    id: 'minor_neural_comp',
+    name: 'Neural Computation & Engineering',
+    dept: 'Center for Neurotechnology (Interdisciplinary)',
+    deptGroup: 'engineering',
+    credits: 30,
+    admissionType: 'open',
+    categories: ['stem', 'computing', 'health'],
+    tagline: 'Where neuroscience meets machine learning and neural engineering.',
+    description: "The Neural Computation and Engineering minor is one of UW's most unique cross-disciplinary programs. It bridges computational neuroscience, neural engineering, machine learning, and neurobiology. Perfect for CS or ECE students interested in brain-computer interfaces, or neuroscience students who want to add quantitative skills.",
+    courses: [
+      'NEUSCI 201 — Introduction to Neuroscience (3 cr)',
+      'CSE 163 or STAT 311 — Data/Statistics foundation (4-5 cr)',
+      'NEUSCI 302 — Computational Neuroscience (4 cr)',
+      'Upper-division NCE electives to reach 30 cr',
+    ],
+    pairsWith: ['cs', 'ece', 'bioeng', 'neuroscience', 'molecular_bio', 'amath', 'kinesiology'],
+    careers: ['Neural Engineer', 'Brain-Computer Interface Researcher', 'Machine Learning Researcher', 'Neurotechnology Scientist'],
+    tip: "BrainCo, NeuraLink, and Kernel actively recruit from this minor. If you're CS + neuroscience, this is the differentiation that opens unique doors.",
+  },
+
+  {
+    id: 'minor_disability_studies',
+    name: 'Disability Studies',
+    dept: 'Disability Studies Program (Interdisciplinary)',
+    deptGroup: 'arts_sciences',
+    credits: 25,
+    admissionType: 'open',
+    categories: ['social_sciences', 'health'],
+    tagline: 'Critical frameworks for understanding disability, access, and inclusion.',
+    description: "The Disability Studies minor examines disability from cultural, historical, legal, and scientific perspectives. Highly relevant for students in nursing, social work, education, law, public health, and UX design who will work with diverse populations. Seattle's tech scene increasingly values accessibility expertise.",
+    courses: [
+      'DIS ST 260 — Disability and Society (5 cr)',
+      'DIS ST 340 — Disability Law and Policy (5 cr)',
+      'One science/health course with disability focus (5 cr)',
+      'Disability Studies electives (10 cr)',
+    ],
+    pairsWith: ['nursing', 'social_welfare', 'education', 'publichealth', 'hcde', 'kinesiology', 'sphsc'],
+    careers: ['Disability Rights Advocate', 'Accessibility Specialist (tech)', 'Social Worker', 'Occupational Therapist (grad)', 'Policy Analyst'],
+    tip: 'Accessibility engineer roles at Amazon, Microsoft, and Apple specifically value disability studies coursework alongside technical ability.',
+  },
+
+];
+
+
 /* ============================================================
    STATE
    ============================================================ */
@@ -4920,10 +5587,13 @@ function syncSidebarToState() {
    ============================================================ */
 function setExploreTab(tab) {
   state.exploreTab = tab;
-  document.getElementById('etabMajors').classList.toggle('active', tab==='majors');
-  document.getElementById('etabRSOs').classList.toggle('active',   tab==='rsos');
+  document.getElementById('etabMajors').classList.toggle('active',  tab==='majors');
+  document.getElementById('etabMinors').classList.toggle('active',  tab==='minors');
+  document.getElementById('etabRSOs').classList.toggle('active',    tab==='rsos');
   document.getElementById('majorsPanel').classList.toggle('hidden', tab!=='majors');
+  document.getElementById('minorsPanel').classList.toggle('hidden', tab!=='minors');
   document.getElementById('rsosPanel').classList.toggle('hidden',   tab!=='rsos');
+  if (tab === 'minors') renderMinors();
   updateExploreCount();
 }
 
@@ -5051,7 +5721,10 @@ function renderRSOs() {
 }
 function updateExploreCount() {
   const el = document.getElementById('exploreCount');
-  if (state.exploreTab==='majors') {
+  if (state.exploreTab==='minors') {
+    count = filteredMinors().length;
+    label = count === 1 ? 'minor' : 'minors';
+  } else if (state.exploreTab==='majors') {
     const n = MAJORS.filter(matchesMajor).length;
     el.textContent = `${n} major${n!==1?'s':''}`;
   } else {
@@ -5826,6 +6499,123 @@ function startSwipeFromPicker() {
   // Restore header greeting
   document.getElementById('pickerGreeting').innerHTML =
     `Hi there 👋<br>What are you into?`;
+}
+
+
+/* ============================================================
+   MINORS
+   ============================================================ */
+function filteredMinors() {
+  const q = state.query.toLowerCase().trim();
+  return MINORS_DATA.filter(mn => {
+    if (state.college !== 'all' && mn.deptGroup !== state.college) return false;
+    if (state.cat     !== 'all' && !mn.categories.includes(state.cat)) return false;
+    if (q) {
+      const hay = [mn.name, mn.dept, mn.tagline, mn.description,
+                   mn.careers.join(' '), mn.categories.join(' ')].join(' ').toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  });
+}
+
+function renderMinors() {
+  const panel = document.getElementById('minorsPanel');
+  if (!panel) return;
+  const list = filteredMinors();
+  if (!list.length) {
+    panel.innerHTML = '<div class="empty-state"><p>No minors match your filters.</p></div>';
+    return;
+  }
+  panel.innerHTML = `
+    <div class="minors-intro">
+      <p>UW Seattle offers 80+ undergraduate minors. Most are open-enrollment — no application required. Credits typically range from 20–30. Declared students with 45+ credits can add a minor anytime.</p>
+    </div>
+    <div class="minors-grid">${list.map(renderMinorCard).join('')}</div>`;
+}
+
+function renderMinorCard(mn) {
+  const admitColors = { open:'#1A5C36', minimum:'#7C4F00', 'capacity-constrained':'#991B1B' };
+  const admitLabels = { open:'Open', minimum:'Min. Req.', 'capacity-constrained':'Competitive' };
+  const catDot = mn.categories[0] ? `<span style="display:inline-block;width:8px;height:8px;border-radius:50%;background:${catColor(mn.categories[0])};margin-right:5px;"></span>` : '';
+  return `
+  <div class="minor-card" onclick="openMinorDetail('${mn.id}')">
+    <div class="minor-card-top">
+      <div class="minor-card-name">${esc(mn.name)}</div>
+      <div class="minor-card-credits">${mn.credits} cr</div>
+    </div>
+    <div class="minor-card-dept">${catDot}${esc(mn.dept)}</div>
+    <div class="minor-card-tagline">${esc(mn.tagline)}</div>
+    <div class="minor-card-footer">
+      <span class="minor-admit-badge" style="background:${admitColors[mn.admissionType]}20;color:${admitColors[mn.admissionType]};border:1px solid ${admitColors[mn.admissionType]}40;">${admitLabels[mn.admissionType]||mn.admissionType}</span>
+      <span class="minor-pairs">Pairs with ${mn.pairsWith.length} majors</span>
+    </div>
+  </div>`;
+}
+
+let activeMinorId = null;
+function openMinorDetail(id) {
+  const mn = MINORS_DATA.find(m => m.id === id);
+  if (!mn) return;
+  activeMinorId = id;
+
+  const admitColors = { open:'#1A5C36', minimum:'#7C4F00', 'capacity-constrained':'#991B1B' };
+  const admitLabels = { open:'Open Enrollment', minimum:'Min. Requirements', 'capacity-constrained':'Competitive — Application Required' };
+
+  // Find majors this pairs with
+  const pairMajors = mn.pairsWith
+    .map(id => MAJORS.find(m => m.id === id))
+    .filter(Boolean)
+    .slice(0, 8);
+
+  const html = `
+  <div class="minor-detail-overlay" id="minorDetailOverlay" onclick="if(event.target===this)closeMinorDetail()">
+    <div class="minor-detail-panel">
+      <button class="minor-detail-close" onclick="closeMinorDetail()">✕</button>
+      <div class="minor-detail-header">
+        <div class="minor-detail-title">${esc(mn.name)} <span class="minor-detail-label">Minor</span></div>
+        <div class="minor-detail-dept">${esc(mn.dept)}</div>
+        <div class="minor-detail-meta">
+          <span class="minor-meta-pill">${mn.credits} credits</span>
+          <span class="minor-meta-pill" style="background:${admitColors[mn.admissionType]}18;color:${admitColors[mn.admissionType]};">${admitLabels[mn.admissionType]||mn.admissionType}</span>
+        </div>
+      </div>
+
+      <p class="minor-detail-tagline">"${esc(mn.tagline)}"</p>
+      <p class="minor-detail-desc">${esc(mn.description)}</p>
+
+      <div class="minor-detail-section">
+        <div class="minor-detail-section-title">📚 Core Courses</div>
+        <ul class="minor-courses-list">${mn.courses.map(c=>`<li>${esc(c)}</li>`).join('')}</ul>
+      </div>
+
+      <div class="minor-detail-section">
+        <div class="minor-detail-section-title">💼 Careers It Supports</div>
+        <div class="minor-careers-row">${mn.careers.map(c=>`<span class="minor-career-tag">${esc(c)}</span>`).join('')}</div>
+      </div>
+
+      ${mn.tip ? `<div class="minor-tip-box">💡 <strong>Insider tip:</strong> ${esc(mn.tip)}</div>` : ''}
+
+      ${pairMajors.length ? `
+      <div class="minor-detail-section">
+        <div class="minor-detail-section-title">🔗 Pairs Well With These Majors</div>
+        <div class="minor-pairs-grid">${pairMajors.map(m=>`
+          <div class="minor-pair-card" onclick="closeMinorDetail();openDetail('${m.id}')">
+            <div class="minor-pair-name">${esc(m.name)}</div>
+            <div class="minor-pair-college">${esc(m.college.split(',')[0])}</div>
+          </div>`).join('')}
+        </div>
+      </div>` : ''}
+    </div>
+  </div>`;
+
+  document.body.insertAdjacentHTML('beforeend', html);
+  document.body.style.overflow = 'hidden';
+}
+function closeMinorDetail() {
+  const el = document.getElementById('minorDetailOverlay');
+  if (el) el.remove();
+  document.body.style.overflow = '';
 }
 
 /* ============================================================
