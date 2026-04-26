@@ -1585,8 +1585,16 @@ const MAJORS = [
     collegeGroup: 'ischool',
     admissionType: 'capacity-constrained',
     categories: ['computing', 'social_sciences', 'design'],
-    tagline: 'Where technology meets people and society.',
-    description: "Informatics is UW's flagship 'tech + people' major at the intersection of computing, design, and social impact. You'll learn to build information systems, conduct user research, analyze data, and critically examine how technology shapes the world.",
+    tagline: 'Where technology meets people and society — pick your path.',
+    description: "Informatics is UW's flagship 'tech + people' major at the intersection of computing, design, and social impact. What makes it unique: you choose a focus area that shapes your entire degree. Whether you're drawn to data science, UX/HCI, cybersecurity, health tech, or software development, Informatics lets you specialize while keeping the interdisciplinary core that sets iSchool grads apart.",
+    focusAreas: [
+      { name: 'Data Science', transcript: 'Degree option adds "Data Science" to your transcript', courses: 'INFO 370, INFO 371, INFO 430, INFO 474', careers: 'Data Analyst, ML Engineer, Business Intelligence' },
+      { name: 'Biomedical & Health Informatics', transcript: 'Degree option adds "Biomedical and Health Informatics" to your transcript', courses: 'BIME 300, BIME 435, INFO 468, INFO 478', careers: 'Health IT Analyst, Clinical Informaticist, Health Data Scientist' },
+      { name: 'Human-Computer Interaction (HCI)', transcript: 'Focus area (no separate transcript note)', courses: 'INFO 360, INFO 365, INFO 463, INFO 464', careers: 'UX Researcher, UX Designer, Product Designer' },
+      { name: 'Information Assurance & Cybersecurity', transcript: 'Focus area (no separate transcript note)', courses: 'INFO 310, INFO 414, INFO 415', careers: 'Security Analyst, IT Auditor, Risk Analyst' },
+      { name: 'Software Development', transcript: 'Focus area (no separate transcript note)', courses: 'INFO 340, INFO 441, INFO 442, INFO 448', careers: 'Full-Stack Developer, Software Engineer, Mobile Developer' },
+      { name: 'Information Management', transcript: 'Focus area (no separate transcript note)', courses: 'INFO 380, INFO 430, INFO 490', careers: 'IT Consultant, Systems Analyst, Technical Program Manager' },
+    ],
     prereqs: [
       'One programming course: CSE 121, 122, 123, 142, 143, 154, 160, 163, or INFO 180 — min 2.0',
       'One statistics course: STAT 220, 221, 311, or 390 — min 2.0',
@@ -1605,7 +1613,7 @@ const MAJORS = [
       'iSchool Peer Advising Program — current students answer questions',
       'INFO peer tutoring network',
     ],
-    minors: ['Data Science', 'Human-Computer Interaction', 'Entrepreneurship'],
+    minors: ['Data Science', 'Human-Computer Interaction', 'Cybersecurity', 'Entrepreneurship'],
     genEdCounts: [
       'STAT 311 satisfies QSR (Quantitative & Symbolic Reasoning)',
       'INFO 200 satisfies Social Sciences breadth (I&S)',
@@ -1614,15 +1622,18 @@ const MAJORS = [
     ranking: '#3 undergraduate information / library science program (US News 2024)',
     sampleCourses: [
       'INFO 340 — Client-Side Development',
+      'INFO 360 — Design Methods',
       'INFO 370 — Core Methods in Data Science',
       'INFO 380 — Information Systems Analysis',
+      'INFO 414 — Information Assurance & Cybersecurity',
       'INFO 442 — Cooperative Software Development',
       'INFO 448 — Mobile Development: Android',
       'INFO 474 — Interactive Information Visualization',
+      'BIME 300 — Biomedical & Health Informatics (health track)',
     ],
-    careers: ['UX Researcher', 'Product Manager', 'Data Analyst', 'Information Architect', 'Technical Program Manager', 'IT Consultant', 'Entrepreneur'],
-    salaryRange: '$80,000 – $105,000 median starting',
-    recruiters: ['Amazon', 'Microsoft', 'Boeing', 'T-Mobile', 'Tableau (Salesforce)', 'Nordstrom', 'BECU', 'Expedia'],
+    careers: ['UX Researcher', 'Product Manager', 'Data Analyst', 'Software Developer', 'Cybersecurity Analyst', 'Health Informaticist', 'Technical Program Manager', 'IT Consultant'],
+    salaryRange: '$80,000 – $110,000 median starting',
+    recruiters: ['Amazon', 'Microsoft', 'Boeing', 'T-Mobile', 'Tableau (Salesforce)', 'Nordstrom', 'BECU', 'Expedia', 'UW Medicine'],
     realityCheck: "The 2-application limit is real — the iSchool enforces it. Many students apply too early before they have a strong essay, waste one of their two attempts, and regret it. INFO 200 is both a prereq and an audition: professors notice students who engage deeply. The program's real differentiator is interdisciplinarity and community — show the committee you understand what informatics actually is (it is not a softer CS degree). Average GPA in admitted cohorts trends around 3.4–3.6.",
     peerQuote: "I applied too early without a strong essay and got rejected. The second time I talked about specific projects I'd built and connected them to real information problems in the world. That's what got me in.",
     rsoIds: ['winfo', 'binfo', 'iuga', 'dubstech', 'icg'],
@@ -6479,6 +6490,17 @@ function openDetail(id) {
         <div class="detail-section-title">Gen Ed Credits</div>
         <ul class="detail-list">${li(m.genEdCounts)}</ul>
       </div>` : ''}
+    </div>` : ''}
+    ${(m.focusAreas && m.focusAreas.length) ? `
+    <div class="detail-section-title">🗂 Focus Areas & Degree Options</div>
+    <div style="display:grid;gap:10px;margin-bottom:16px">
+      ${m.focusAreas.map(f => `
+      <div style="background:var(--surface-alt);border-radius:10px;padding:12px 14px;border-left:3px solid var(--purple)">
+        <div style="font-weight:600;font-size:14px;color:var(--ink)">${esc(f.name)}</div>
+        <div style="font-size:12px;color:var(--purple-mid);margin:2px 0">${esc(f.transcript)}</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px">Key courses: ${esc(f.courses)}</div>
+        <div style="font-size:12px;color:var(--muted)">Careers: ${esc(f.careers)}</div>
+      </div>`).join('')}
     </div>` : ''}
     ${listSec('Sample Upper-Division Courses', m.sampleCourses)}
     ${tagSec('Career Paths', m.careers)}
