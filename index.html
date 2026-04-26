@@ -3961,7 +3961,7 @@ const MAJORS = [
     realityCheck: "Seattle's real estate market is one of the most active in the country — Amazon's HQ2 expansion, Sound Transit corridor development, and chronic housing shortage are driving massive activity. UW's program has a direct pipeline into the Seattle development community that few programs nationwide can match. The combination with Construction Management or Finance creates particularly strong career outcomes.",
     peerQuote: "I interned at a Seattle development firm before my junior year through the department's industry network. Real estate is all about relationships, and the UW alumni network in Seattle real estate is extensive. Start attending industry events from Year 1.",
     rsoIds: ['uwca'],
-  },,
+  },
 
   /* -------- ART -------- */
   {
@@ -7325,7 +7325,7 @@ function countPickerMatches(ps) {
     if (s.admit      !== 'all' && m.admissionType   !== s.admit)             return false;
     if (s.degreeType !== 'all' && getDegreeTypeBucket(m) !== s.degreeType)   return false;
     if (s.salaryTier !== 'all' && getSalaryTier(m)       !== s.salaryTier)   return false;
-    if (s.cats.length > 0 && !s.cats.some(c => m.categories.includes(c)))   return false;
+    if (s.cats.length > 0 && !s.cats.some(c => (m.categories||[]).includes(c))) return false;
     return true;
   }).length;
 }
