@@ -178,6 +178,8 @@
     .sidebar-option .dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
     .sidebar-count { margin-left: auto; font-size: 10.5px; background: var(--border); color: var(--ink-muted); border-radius: 10px; padding: 1px 6px; }
     .sidebar-option.active .sidebar-count { background: rgba(75,46,131,.15); color: var(--purple-mid); }
+    .sidebar-option:disabled { opacity: 0.32; cursor: not-allowed; pointer-events: none; }
+    .sidebar-option:disabled:hover { background: none; color: var(--ink-muted); }
 
     /* EXPLORE MAIN */
     #exploreMain { flex: 1; min-width: 0; }
@@ -366,6 +368,9 @@
       box-shadow: 0 2px 10px rgba(75,46,131,.25);
     }
     .picker-chip .chip-icon { margin-right: 5px; }
+    .picker-chip:disabled {
+      opacity: 0.3; cursor: not-allowed; border-style: dashed; pointer-events: none;
+    }
     .picker-start-btn {
       width: 100%; padding: 16px; background: var(--purple); color: #fff;
       border-radius: 12px; font-size: 16px; font-weight: 700; cursor: pointer;
@@ -6289,6 +6294,33 @@ function syncSidebarToState() {
   document.getElementById('sidebarSearch').value = state.query;
 }
 
+// Preview how many majors would show if a sidebar filter were applied
+function previewSidebarCount(filterType, val) {
+  const snap = { college: state.college, cat: state.cat, admit: state.admit,
+                  degreeType: state.degreeType, salaryTier: state.salaryTier };
+  snap[filterType] = val;
+  return MAJORS.filter(m => {
+    if (snap.college    !== 'all' && m.collegeGroup          !== snap.college)       return false;
+    if (snap.cat        !== 'all' && !(m.categories||[]).includes(snap.cat))         return false;
+    if (snap.admit      !== 'all' && m.admissionType         !== snap.admit)         return false;
+    if (snap.degreeType !== 'all' && getDegreeTypeBucket(m)  !== snap.degreeType)    return false;
+    if (snap.salaryTier !== 'all' && getSalaryTier(m)        !== snap.salaryTier)    return false;
+    return true;
+  }).length;
+}
+
+// Disable sidebar options that would leave 0 results given current filters
+function refreshSidebarOptionStates() {
+  document.querySelectorAll('.sidebar-option').forEach(btn => {
+    const type = btn.dataset.filter;
+    const val  = btn.dataset.value;
+    if (!type || !val || val === 'all') { btn.disabled = false; return; }
+    if (btn.classList.contains('active')) { btn.disabled = false; return; } // always allow deselect
+    const count = previewSidebarCount(type, val);
+    btn.disabled = (count === 0);
+  });
+}
+
 /* ============================================================
    EXPLORE TAB
    ============================================================ */
@@ -6410,6 +6442,7 @@ function renderExplore() {
   if (state.exploreTab === 'catalog') renderCatalog();
   updateExploreCount();
   renderActiveFilters();
+  refreshSidebarOptionStates();
 }
 function renderMajors() {
   const panel = document.getElementById('majorsPanel');
@@ -7347,6 +7380,41 @@ function updatePickerCount(tooFew) {
     hint.style.color = 'var(--purple-mid)';
     btn.disabled = false;
   }
+  refreshPickerChipStates();
+}
+
+// Disable picker chips that would leave 0 results given current pickerState
+function refreshPickerChipStates() {
+  function simCount(key, val) {
+    const snap = { ...pickerState, cats: [...pickerState.cats] };
+    if (key === 'cat') {
+      if (!snap.cats.includes(val)) snap.cats.push(val);
+    } else {
+      snap[key] = val;
+    }
+    return countPickerMatches(snap);
+  }
+
+  document.querySelectorAll('#pickerCatChips .picker-chip').forEach(btn => {
+    if (btn.classList.contains('selected')) { btn.disabled = false; return; }
+    btn.disabled = simCount('cat', btn.dataset.cat) === 0;
+  });
+  document.querySelectorAll('#pickerCollegeChips .picker-chip').forEach(btn => {
+    if (btn.classList.contains('selected')) { btn.disabled = false; return; }
+    btn.disabled = simCount('college', btn.dataset.college) === 0;
+  });
+  document.querySelectorAll('#pickerAdmitChips .picker-chip').forEach(btn => {
+    if (btn.classList.contains('selected')) { btn.disabled = false; return; }
+    btn.disabled = simCount('admit', btn.dataset.admit) === 0;
+  });
+  document.querySelectorAll('#pickerDegreeChips .picker-chip').forEach(btn => {
+    if (btn.classList.contains('selected')) { btn.disabled = false; return; }
+    btn.disabled = simCount('degreeType', btn.dataset.degreetype) === 0;
+  });
+  document.querySelectorAll('#pickerSalaryChips .picker-chip').forEach(btn => {
+    if (btn.classList.contains('selected')) { btn.disabled = false; return; }
+    btn.disabled = simCount('salaryTier', btn.dataset.salarytier) === 0;
+  });
 }
 
 function startSwipeFromPicker() {
