@@ -7033,22 +7033,47 @@ const swipe = {
   cardEl: null,
 };
 
-function openSwipeMode() {
-  swipe.deck = MAJORS.filter(matchesMajor);
-  if (!swipe.deck.length) return;
-  swipe.idx = 0;
+// Shared teardown: hide overlay, restore scroll, remove listeners
+function _teardownSwipe() {
+  document.getElementById('swipeOverlay').classList.add('hidden');
+  document.body.style.overflow = '';
+  document.getElementById('swipeModeBtn').classList.remove('active');
+  document.removeEventListener('keydown', swipeKeyHandler);
+}
+
+// Shared launch: reset overlay DOM to a clean state, then show
+function _launchSwipe() {
+  const stack = document.getElementById('swipeStack');
+  // Remove any leftover card or done-screen from a previous session
+  const oldCard = stack.querySelector('.swipe-card');
+  if (oldCard) oldCard.remove();
+  const oldDone = document.querySelector('.swipe-done');
+  if (oldDone) oldDone.remove();
+  swipe.cardEl = null;
+  // Restore elements that the done-state hides
+  stack.style.display = '';
+  document.querySelector('.swipe-actions').style.display = '';
+  document.querySelector('.swipe-hint').style.display = '';
+  document.getElementById('swipeProgress').style.display = '';
+  document.querySelector('.swipe-header').innerHTML =
+    '<h2>Swipe through Majors</h2><p>→ Swipe right to save &nbsp;·&nbsp; ← Swipe left to skip</p>';
+
   document.getElementById('swipeOverlay').classList.remove('hidden');
   document.body.style.overflow = 'hidden';
   document.getElementById('swipeModeBtn').classList.add('active');
   renderSwipeCard();
   updateSwipeProgress();
 }
+
+function openSwipeMode() {
+  swipe.deck = MAJORS.filter(matchesMajor);
+  if (!swipe.deck.length) return;
+  swipe.idx = 0;
+  _launchSwipe();
+}
+
 function closeSwipeMode() {
-  document.getElementById('swipeOverlay').classList.add('hidden');
-  document.body.style.overflow = '';
-  document.getElementById('swipeModeBtn').classList.remove('active');
-  document.removeEventListener('keydown', swipeKeyHandler);
-  // If we came from the picker, make sure explore view is shown
+  _teardownSwipe();
   if (state.view === 'explore') {
     renderExplore();
     VIEWS.forEach(v => document.getElementById(v).classList.toggle('hidden', v !== 'exploreView'));
@@ -7058,11 +7083,7 @@ function closeSwipeMode() {
 }
 
 function backToFilterPicker() {
-  // Close swipe overlay and return to the filter picker with selections preserved
-  document.getElementById('swipeOverlay').classList.add('hidden');
-  document.body.style.overflow = '';
-  document.getElementById('swipeModeBtn').classList.remove('active');
-  document.removeEventListener('keydown', swipeKeyHandler);
+  _teardownSwipe();
   showView('filterPicker');
 }
 
@@ -7081,7 +7102,8 @@ function renderSwipeCard() {
   if (old) old.remove();
 
   if (swipe.idx >= swipe.deck.length) {
-    // All done
+    // All done — clear card reference so action buttons become no-ops
+    swipe.cardEl = null;
     stack.style.display = 'none';
     document.querySelector('.swipe-actions').style.display = 'none';
     document.querySelector('.swipe-hint').style.display = 'none';
@@ -7097,10 +7119,11 @@ function renderSwipeCard() {
   }
 
   const m = swipe.deck[swipe.idx];
+  const cats = m.categories || [];
   const [lbl, cls] = admitBadge(m.admissionType);
-  const accent = catColor(m.categories[0]);
+  const accent = catColor(cats[0]);
   const deg = DEGREE_TYPE[m.id] || '';
-  const chips = m.categories.slice(0,2).map(c =>
+  const chips = cats.slice(0,2).map(c =>
     `<span class="cat-chip" style="background:${catColor(c)}18;color:${catColor(c)}">${esc(catLabel(c))}</span>`
   ).join('');
   const bm = isBookmarked(m.id);
@@ -7119,9 +7142,9 @@ function renderSwipeCard() {
         <span class="badge ${cls}">${lbl}</span>
         ${deg ? `<span class="degree-badge">${deg}</span>` : ''}
       </div>
-      <p class="swipe-card-desc">${esc(m.description)}</p>
-      <p class="swipe-card-careers">💼 ${esc(m.careers.slice(0,3).join(' · '))}</p>
-      <p class="swipe-card-salary">${esc(m.salaryRange)}</p>
+      <p class="swipe-card-desc">${esc(m.description || m.tagline || '')}</p>
+      <p class="swipe-card-careers">💼 ${esc((m.careers||[]).slice(0,3).join(' · '))}</p>
+      ${m.salaryRange ? `<p class="swipe-card-salary">${esc(m.salaryRange)}</p>` : ''}
       <div class="swipe-card-footer">
         <div class="swipe-card-cats">${chips}</div>
         <span class="swipe-card-more">${bm ? '★ Saved' : 'Tap ★ to save'}</span>
@@ -7219,6 +7242,7 @@ function commitSwipe(dx) {
 }
 
 function swipeCard(dir) {
+  if (swipe.idx >= swipe.deck.length) return; // already at done state
   const card = swipe.cardEl;
   if (!card) return;
   const m = swipe.deck[swipe.idx];
@@ -7276,18 +7300,6 @@ function initPickerChips() {
   pickerState.admit      = 'all';
   pickerState.degreeType = 'all';
   pickerState.salaryTier = 'all';
-
-  // Helper: simulate a state change and return count, without committing
-  function previewCount(key, val) {
-    const snap = { ...pickerState, cats: [...pickerState.cats] };
-    if (key === 'cat') {
-      if (snap.cats.includes(val)) snap.cats = snap.cats.filter(c => c !== val);
-      else snap.cats.push(val);
-    } else {
-      snap[key] = (snap[key] === val) ? 'all' : val;
-    }
-    return countPickerMatches(snap);
-  }
 
   // Category chips — multi select
   document.querySelectorAll('#pickerCatChips .picker-chip').forEach(btn => {
@@ -7441,32 +7453,25 @@ function startSwipeFromPicker() {
     if (state.admit      !== 'all' && m.admissionType   !== state.admit)               return false;
     if (state.degreeType !== 'all' && getDegreeTypeBucket(m) !== state.degreeType)     return false;
     if (state.salaryTier !== 'all' && getSalaryTier(m)       !== state.salaryTier)     return false;
-    if (pickerState.cats.length > 0 && !pickerState.cats.some(c => m.categories.includes(c))) return false;
+    if (pickerState.cats.length > 0 && !pickerState.cats.some(c => (m.categories||[]).includes(c))) return false;
     return true;
   });
 
   // Sync sidebar to match
   syncSidebarToState();
 
-  // Load into swipe mode with custom deck
-  swipe.deck = deck;
-  swipe.idx  = 0;
-
-  // Navigate to explore first (so back from detail goes to explore)
+  // Navigate to explore first (so back from swipe → explore, not picker)
   state.view = 'explore';
   VIEWS.forEach(v => document.getElementById(v).classList.add('hidden'));
   document.querySelector('footer').style.display = 'none';
 
-  // Open swipe overlay
-  document.getElementById('swipeOverlay').classList.remove('hidden');
-  document.body.style.overflow = 'hidden';
-  document.getElementById('swipeModeBtn').classList.add('active');
-  renderSwipeCard();
-  updateSwipeProgress();
+  // Load deck and launch
+  swipe.deck = deck;
+  swipe.idx  = 0;
+  _launchSwipe();
 
-  // Restore header greeting
-  document.getElementById('pickerGreeting').innerHTML =
-    `Hi there 👋<br>What are you into?`;
+  // Reset picker greeting for next time
+  document.getElementById('pickerGreeting').innerHTML = `Hi there 👋<br>What are you into?`;
 }
 
 
