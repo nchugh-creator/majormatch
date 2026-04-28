@@ -313,39 +313,6 @@
     .rso-chip { font-size: 12px; padding: 5px 12px; border-radius: 20px; background: var(--purple-faint); color: var(--purple); cursor: pointer; font-weight: 500; transition: background .12s; }
     .rso-chip:hover { background: #DDD3F0; }
 
-    /* DETAIL TABS */
-    .detail-tabs-nav {
-      display: flex; gap: 4px; padding: 0 28px;
-      max-width: 840px; margin: 0 auto;
-      border-bottom: 1px solid var(--border);
-      background: var(--bg);
-      position: sticky; top: var(--nav-h); z-index: 10;
-    }
-    .detail-tab {
-      padding: 13px 18px; font-size: 13.5px; font-weight: 500;
-      color: var(--ink-muted); background: none; border: none; cursor: pointer;
-      border-bottom: 2.5px solid transparent; margin-bottom: -1px;
-      transition: color .15s, border-color .15s;
-    }
-    .detail-tab:hover { color: var(--ink); }
-    .detail-tab.active { color: var(--purple); border-bottom-color: var(--purple); font-weight: 600; }
-    .detail-tab-panel { max-width: 840px; margin: 0 auto; padding: 28px 28px 80px; display: flex; flex-direction: column; gap: 22px; animation: dtab-in .18s ease; }
-    @keyframes dtab-in { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-    /* collapsible description */
-    .detail-desc-wrap { position: relative; }
-    .detail-desc-short { display: -webkit-box; -webkit-line-clamp: 4; -webkit-box-orient: vertical; overflow: hidden; }
-    .detail-desc-short.expanded { display: block; overflow: visible; }
-    .detail-desc-toggle { margin-top: 6px; font-size: 13px; color: var(--purple-mid); font-weight: 600; background: none; border: none; cursor: pointer; padding: 0; }
-    /* career pills */
-    .career-pills { display: flex; flex-wrap: wrap; gap: 7px; }
-    .career-pill { font-size: 13px; padding: 6px 13px; border-radius: 20px; background: var(--purple-faint); color: var(--purple); font-weight: 500; }
-    /* stat pills row */
-    .detail-stat-pills { display: flex; flex-wrap: wrap; gap: 10px; }
-    .detail-stat-pill { display: flex; align-items: center; gap: 7px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 10px 14px; }
-    .detail-stat-pill .dsp-icon { font-size: 18px; }
-    .detail-stat-pill .dsp-lbl { font-size: 10px; text-transform: uppercase; letter-spacing: .5px; color: var(--ink-light); }
-    .detail-stat-pill .dsp-val { font-size: 13.5px; font-weight: 600; color: var(--ink); }
-
     /* SIMILAR MAJORS */
     .similar-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 10px; }
     .similar-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 13px 14px; cursor: pointer; transition: box-shadow .15s, border-color .15s; }
@@ -959,18 +926,7 @@
         <p class="detail-tagline" id="detailTagline"></p>
       </div>
     </div>
-    <!-- tab nav -->
-    <nav class="detail-tabs-nav" id="detailTabsNav">
-      <button class="detail-tab active" data-tab="overview"  onclick="switchDetailTab('overview')">Overview</button>
-      <button class="detail-tab"        data-tab="academics" onclick="switchDetailTab('academics')">Academics</button>
-      <button class="detail-tab"        data-tab="career"    onclick="switchDetailTab('career')">Career</button>
-      <button class="detail-tab"        data-tab="info"      onclick="switchDetailTab('info')">Official Info</button>
-    </nav>
-    <!-- tab panels (filled by openDetail) -->
-    <div id="dtab-overview"  class="detail-tab-panel"></div>
-    <div id="dtab-academics" class="detail-tab-panel hidden"></div>
-    <div id="dtab-career"    class="detail-tab-panel hidden"></div>
-    <div id="dtab-info"      class="detail-tab-panel hidden"></div>
+    <div class="detail-body" id="detailBody"></div>
   </div>
 
   <!-- MY MAJORS VIEW -->
@@ -6764,53 +6720,44 @@ function openDetail(id) {
   const listSec = (title, arr) => (arr && arr.length) ? section(title, `<ul class="detail-list">${li(arr)}</ul>`) : '';
   const tagSec  = (title, arr) => (arr && arr.length) ? section(title, `<div class="tag-cloud">${tags(arr)}</div>`) : '';
 
-  // ── Tab: Overview ──────────────────────────────────────────────
-  const descFull = esc(m.description || m.tagline || '');
-  const statPills = [
-    hasSalary  ? `<div class="detail-stat-pill"><span class="dsp-icon">💰</span><div><div class="dsp-lbl">Starting Salary</div><div class="dsp-val">${esc(m.salaryRange)}</div></div></div>` : '',
-    hasRanking ? `<div class="detail-stat-pill"><span class="dsp-icon">🏆</span><div><div class="dsp-lbl">Ranking</div><div class="dsp-val">${esc(m.ranking)}</div></div></div>` : '',
-  ].filter(Boolean).join('');
-
-  document.getElementById('dtab-overview').innerHTML = `
-    ${statPills ? `<div class="detail-stat-pills">${statPills}</div>` : ''}
-    <div class="detail-desc-wrap">
-      <p class="detail-desc detail-desc-short" id="detailDescEl">${descFull}</p>
-      <button class="detail-desc-toggle" id="detailDescToggle" onclick="toggleDetailDesc()">Read more +</button>
-    </div>
-    ${(m.careers && m.careers.length) ? `
-    <div>
-      <div class="detail-section-title">💼 Career Paths</div>
-      <div class="career-pills">${m.careers.map(c=>`<span class="career-pill">${esc(c)}</span>`).join('')}</div>
-    </div>` : ''}
-    ${rsoChips ? `<div>
-      <div class="detail-section-title">🎓 Related Clubs & RSOs</div>
-      <div class="rso-chips-row">${rsoChips}</div>
-    </div>` : ''}
-    ${similarHtml}
-  `;
-
-  // ── Tab: Academics ─────────────────────────────────────────────
-  document.getElementById('dtab-academics').innerHTML = `
-    ${listSec('Prerequisites', m.prereqs)}
-    ${(m.earlyClasses && m.earlyClasses.length) ? `
-    <div class="hilite-box early">
-      <div class="detail-section-title">⚡ Take First Year</div>
-      <ul class="detail-list">${li(m.earlyClasses)}</ul>
-    </div>` : ''}
-    ${(m.focusAreas && m.focusAreas.length) ? `
-    <div>
-      <div class="detail-section-title">🗂 Focus Areas & Degree Options</div>
-      <div style="display:grid;gap:10px">
-        ${m.focusAreas.map(f => `
-        <div style="background:var(--bg-card-alt);border-radius:10px;padding:12px 14px;border-left:3px solid var(--purple)">
-          <div style="font-weight:600;font-size:14px;color:var(--ink)">${esc(f.name)}</div>
-          <div style="font-size:12px;color:var(--purple-mid);margin:2px 0">${esc(f.transcript)}</div>
-          <div style="font-size:12px;color:var(--ink-muted);margin-top:4px">Courses: ${esc(f.courses)}</div>
-          <div style="font-size:12px;color:var(--ink-muted)">Careers: ${esc(f.careers)}</div>
-        </div>`).join('')}
+  document.getElementById('detailBody').innerHTML = `
+    ${statsRow}
+    ${section('About This Major', `<p class="detail-desc">${esc(m.description||'')}</p>`)}
+    ${(() => {
+      const mp = getMyplanInfo(m);
+      if (!mp) return '';
+      const differs = (mp.description||'').trim() && _mpNorm(mp.description).slice(0,120) !== _mpNorm(m.description).slice(0,120);
+      const degList = (mp.degrees||[]).join(' · ');
+      return `
+    <div class="myplan-box" style="background:var(--bg-card-alt);border:1px solid var(--border);border-left:4px solid var(--purple-mid);border-radius:10px;padding:18px 22px;margin-top:14px">
+      <div class="detail-section-title" style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
+        <span style="font-size:16px">📘</span>
+        <span>Official UW Catalog</span>
+        <a href="https://myplan.uw.edu/program/#/freshman/${encodeURIComponent(mp.code)}" target="_blank" rel="noopener"
+           style="margin-left:auto;font-size:12px;color:var(--purple-mid);font-weight:600;text-decoration:none">View on MyPlan ↗</a>
       </div>
+      ${differs ? `<p class="detail-desc" style="margin-bottom:12px">${esc(mp.description)}</p>` : ''}
+      <div style="display:flex;flex-wrap:wrap;gap:8px 18px;font-size:13px;color:var(--ink-muted)">
+        ${mp.parentName ? `<span><strong style="color:var(--ink)">Department:</strong> ${esc(mp.parentName)}</span>` : ''}
+        ${degList ? `<span><strong style="color:var(--ink)">Degrees:</strong> ${esc(degList)}</span>` : ''}
+        ${mp.admissionType ? `<span><strong style="color:var(--ink)">Admission:</strong> ${esc(mpAdmitLabel(mp.admissionType))}</span>` : ''}
+        ${mp.cipCode ? `<span><strong style="color:var(--ink)">CIP code:</strong> ${esc(mp.cipCode)}</span>` : ''}
+      </div>
+    </div>`;
+    })()}
+    ${listSec('Prerequisites', m.prereqs)}
+    ${((m.earlyClasses && m.earlyClasses.length) || (m.deadline && m.deadline.trim())) ? `
+    <div class="two-col">
+      ${(m.earlyClasses && m.earlyClasses.length) ? `<div class="hilite-box early">
+        <div class="detail-section-title">⚡ Take First Year</div>
+        <ul class="detail-list">${li(m.earlyClasses)}</ul>
+      </div>` : ''}
+      ${(m.deadline && m.deadline.trim()) ? `<div class="hilite-box deadline">
+        <div class="detail-section-title">📅 Application Deadline</div>
+        <p style="font-size:14px;color:var(--ink)">${esc(m.deadline)}</p>
+      </div>` : ''}
     </div>` : ''}
-    ${listSec('Sample Upper-Division Courses', m.sampleCourses)}
+    ${listSec('Support Resources', m.support)}
     ${((m.minors && m.minors.length) || (m.genEdCounts && m.genEdCounts.length)) ? `
     <div class="two-col">
       ${(m.minors && m.minors.length) ? `<div>
@@ -6822,10 +6769,19 @@ function openDetail(id) {
         <ul class="detail-list">${li(m.genEdCounts)}</ul>
       </div>` : ''}
     </div>` : ''}
-  `;
-
-  // ── Tab: Career ────────────────────────────────────────────────
-  document.getElementById('dtab-career').innerHTML = `
+    ${(m.focusAreas && m.focusAreas.length) ? `
+    <div class="detail-section-title">🗂 Focus Areas & Degree Options</div>
+    <div style="display:grid;gap:10px;margin-bottom:16px">
+      ${m.focusAreas.map(f => `
+      <div style="background:var(--surface-alt);border-radius:10px;padding:12px 14px;border-left:3px solid var(--purple)">
+        <div style="font-weight:600;font-size:14px;color:var(--ink)">${esc(f.name)}</div>
+        <div style="font-size:12px;color:var(--purple-mid);margin:2px 0">${esc(f.transcript)}</div>
+        <div style="font-size:12px;color:var(--muted);margin-top:4px">Key courses: ${esc(f.courses)}</div>
+        <div style="font-size:12px;color:var(--muted)">Careers: ${esc(f.careers)}</div>
+      </div>`).join('')}
+    </div>` : ''}
+    ${listSec('Sample Upper-Division Courses', m.sampleCourses)}
+    ${tagSec('Career Paths', m.careers)}
     ${tagSec('Companies That Recruit at UW', m.recruiters)}
     ${(m.realityCheck && m.realityCheck.trim()) ? `
     <div class="reality-box">
@@ -6837,59 +6793,15 @@ function openDetail(id) {
       <p>"${esc(m.peerQuote)}"</p>
       <cite>— UW ${esc(m.name)} student</cite>
     </div>` : ''}
+    ${rsoChips?`<div>
+      <div class="detail-section-title">Related Clubs &amp; RSOs</div>
+      <div class="rso-chips-row">${rsoChips}</div>
+    </div>`:''}
+    ${similarHtml}
   `;
-
-  // ── Tab: Official Info ─────────────────────────────────────────
-  document.getElementById('dtab-info').innerHTML = `
-    ${(m.deadline && m.deadline.trim()) ? `
-    <div class="hilite-box deadline">
-      <div class="detail-section-title">📅 Application Deadline</div>
-      <p style="font-size:14px;color:var(--ink)">${esc(m.deadline)}</p>
-    </div>` : ''}
-    ${(() => {
-      const mp = getMyplanInfo(m);
-      if (!mp) return '';
-      const differs = (mp.description||'').trim() && _mpNorm(mp.description).slice(0,120) !== _mpNorm(m.description||'').slice(0,120);
-      const degList = (mp.degrees||[]).join(' · ');
-      return `
-    <div style="background:var(--bg-card-alt);border:1px solid var(--border);border-left:4px solid var(--purple-mid);border-radius:10px;padding:18px 22px">
-      <div class="detail-section-title" style="display:flex;align-items:center;gap:8px;margin-bottom:10px">
-        <span>📘</span><span>Official UW Catalog</span>
-        <a href="https://myplan.uw.edu/program/#/freshman/${encodeURIComponent(mp.code)}" target="_blank" rel="noopener"
-           style="margin-left:auto;font-size:12px;color:var(--purple-mid);font-weight:600;text-decoration:none">View on MyPlan ↗</a>
-      </div>
-      ${differs ? `<p class="detail-desc" style="margin-bottom:12px">${esc(mp.description)}</p>` : ''}
-      <div style="display:flex;flex-wrap:wrap;gap:8px 18px;font-size:13px;color:var(--ink-muted)">
-        ${mp.parentName ? `<span><strong style="color:var(--ink)">Department:</strong> ${esc(mp.parentName)}</span>` : ''}
-        ${degList       ? `<span><strong style="color:var(--ink)">Degrees:</strong> ${esc(degList)}</span>` : ''}
-        ${mp.admissionType ? `<span><strong style="color:var(--ink)">Admission:</strong> ${esc(mpAdmitLabel(mp.admissionType))}</span>` : ''}
-      </div>
-    </div>`;
-    })()}
-    ${listSec('Support Resources', m.support)}
-  `;
-
-  // Always land on Overview tab when opening a major
-  switchDetailTab('overview');
 
   showView('detail');
   window.scrollTo(0,0);
-}
-
-function switchDetailTab(tab) {
-  ['overview','academics','career','info'].forEach(t => {
-    document.getElementById('dtab-' + t).classList.toggle('hidden', t !== tab);
-  });
-  document.querySelectorAll('.detail-tab').forEach(btn => {
-    btn.classList.toggle('active', btn.dataset.tab === tab);
-  });
-}
-
-function toggleDetailDesc() {
-  const el  = document.getElementById('detailDescEl');
-  const btn = document.getElementById('detailDescToggle');
-  const expanded = el.classList.toggle('expanded');
-  btn.textContent = expanded ? 'Show less −' : 'Read more +';
 }
 
 function updateDetailBookmarkBtn() {
