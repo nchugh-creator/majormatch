@@ -7624,7 +7624,15 @@ function initApp() {
   document.getElementById('statRSOs').textContent   = RSOS.length;
   renderHome();
   renderExplore();
-  showView('home');
+  // First visit → show filter picker; return visits → go straight home
+  const returning = localStorage.getItem('mm_visited');
+  if (returning) {
+    showView('home');
+  } else {
+    localStorage.setItem('mm_visited', '1');
+    initPickerChips();
+    showView('filterPicker');
+  }
 }
 
 // Launch immediately — no login required
