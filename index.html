@@ -42,7 +42,8 @@
     .hidden { display: none !important; }
 
     /* ===== LOGIN ===== */
-    #loginOverlay {
+    #loginOverlay { display: none !important; }
+    ._login_unused {
       position: fixed; inset: 0; background: var(--purple); z-index: 9999;
       display: flex; align-items: center; justify-content: center;
     }
@@ -710,7 +711,7 @@
 </div>
 
 <!-- ===== APP SHELL ===== -->
-<div id="appShell" class="hidden">
+<div id="appShell">
 
   <!-- TOP NAV -->
   <nav id="topNav">
@@ -721,7 +722,7 @@
       <button class="nav-tab"        data-view="explore"  onclick="showView('explore')">Explore</button>
     </div>
     <div class="nav-spacer"></div>
-    <div class="nav-user">
+    <div class="nav-user" style="display:none">
       <div class="nav-avatar" id="navAvatar">?</div>
       <span id="navNetid"></span>
       <button class="nav-logout" onclick="doLogout()">Sign out</button>
@@ -7618,34 +7619,16 @@ function closeMinorDetail() {
 /* ============================================================
    INIT
    ============================================================ */
-function initApp(freshLogin) {
+function initApp() {
   document.getElementById('statMajors').textContent = MAJORS.length;
   document.getElementById('statRSOs').textContent   = RSOS.length;
   renderHome();
   renderExplore();
-  if (freshLogin) {
-    // personalize greeting with netid
-    const netid = localStorage.getItem('mm_user') || '';
-    document.getElementById('pickerGreeting').innerHTML =
-      `Hi, <em style="color:var(--gold);font-style:normal">${esc(netid)}</em> 👋<br>What are you into?`;
-    initPickerChips();
-    showView('filterPicker');
-  } else {
-    showView('home');
-  }
+  showView('home');
 }
 
-// Auto-login if NetID already stored (page reload = skip picker, go home)
-(function() {
-  const saved = localStorage.getItem('mm_user');
-  if (saved) {
-    document.getElementById('loginOverlay').classList.add('hidden');
-    document.getElementById('appShell').classList.remove('hidden');
-    document.getElementById('navNetid').textContent = saved;
-    document.getElementById('navAvatar').textContent = saved[0].toUpperCase();
-    initApp(false); // returning user → home
-  }
-})();
+// Launch immediately — no login required
+initApp();
 </script>
 </body>
 </html>
