@@ -42,8 +42,7 @@
     .hidden { display: none !important; }
 
     /* ===== LOGIN ===== */
-    #loginOverlay { display: none !important; }
-    ._login_unused {
+    #loginOverlay {
       position: fixed; inset: 0; background: var(--purple); z-index: 9999;
       display: flex; align-items: center; justify-content: center;
     }
@@ -711,7 +710,7 @@
 </div>
 
 <!-- ===== APP SHELL ===== -->
-<div id="appShell">
+<div id="appShell" class="hidden">
 
   <!-- TOP NAV -->
   <nav id="topNav">
@@ -722,7 +721,7 @@
       <button class="nav-tab"        data-view="explore"  onclick="showView('explore')">Explore</button>
     </div>
     <div class="nav-spacer"></div>
-    <div class="nav-user" style="display:none">
+    <div class="nav-user">
       <div class="nav-avatar" id="navAvatar">?</div>
       <span id="navNetid"></span>
       <button class="nav-logout" onclick="doLogout()">Sign out</button>
@@ -7621,24 +7620,33 @@ function closeMinorDetail() {
 /* ============================================================
    INIT
    ============================================================ */
-function initApp() {
+function initApp(freshLogin) {
   document.getElementById('statMajors').textContent = MAJORS.length;
   document.getElementById('statRSOs').textContent   = RSOS.length;
   renderHome();
   renderExplore();
-  // First visit → show filter picker; return visits → go straight home
-  const returning = localStorage.getItem('mm_visited');
-  if (returning) {
-    showView('home');
-  } else {
-    localStorage.setItem('mm_visited', '1');
+  if (freshLogin) {
+    const netid = localStorage.getItem('mm_user') || '';
+    document.getElementById('pickerGreeting').innerHTML =
+      `Hi, <em style="color:var(--gold);font-style:normal">${esc(netid)}</em> 👋<br>What are you into?`;
     initPickerChips();
     showView('filterPicker');
+  } else {
+    showView('home');
   }
 }
 
-// Launch immediately — no login required
-initApp();
+// Auto-login if NetID already stored
+(function() {
+  const saved = localStorage.getItem('mm_user');
+  if (saved) {
+    document.getElementById('loginOverlay').classList.add('hidden');
+    document.getElementById('appShell').classList.remove('hidden');
+    document.getElementById('navNetid').textContent = saved;
+    document.getElementById('navAvatar').textContent = saved[0].toUpperCase();
+    initApp(false);
+  }
+})();
 </script>
 </body>
 </html>
