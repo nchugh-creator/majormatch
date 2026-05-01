@@ -782,6 +782,18 @@
         <button class="picker-chip" data-salarytier="entry"> 🌱 Starter (&lt;$60k)</button>
       </div>
 
+      <div class="picker-section-label">Career Path — optional</div>
+      <div class="picker-chips" id="pickerCareerChips">
+        <button class="picker-chip" data-careerbucket="tech">    💻 Tech &amp; Software</button>
+        <button class="picker-chip" data-careerbucket="data">    📊 Data &amp; AI</button>
+        <button class="picker-chip" data-careerbucket="design">  🎨 Design &amp; UX</button>
+        <button class="picker-chip" data-careerbucket="business">📈 Business</button>
+        <button class="picker-chip" data-careerbucket="health">  🏥 Healthcare</button>
+        <button class="picker-chip" data-careerbucket="policy">  ⚖️ Policy &amp; Law</button>
+        <button class="picker-chip" data-careerbucket="research">🔬 Research &amp; Science</button>
+        <button class="picker-chip" data-careerbucket="creative">✏️ Arts &amp; Media</button>
+      </div>
+
       <div class="picker-count-hint" id="pickerCountHint"></div>
 
       <button class="picker-start-btn" id="pickerStartBtn" onclick="startSwipeFromPicker()">
@@ -889,6 +901,17 @@
         <button class="sidebar-option" data-filter="salaryTier" data-value="high"                onclick="setSidebarFilter('salaryTier','high',this)"><span class="dot" style="background:#059669"></span>High ($90k+ starting)</button>
         <button class="sidebar-option" data-filter="salaryTier" data-value="mid"                 onclick="setSidebarFilter('salaryTier','mid',this)"><span class="dot" style="background:#D97706"></span>Mid ($60k–$90k)</button>
         <button class="sidebar-option" data-filter="salaryTier" data-value="entry"               onclick="setSidebarFilter('salaryTier','entry',this)"><span class="dot" style="background:#6B7280"></span>Starter (&lt;$60k)</button>
+
+        <div class="sidebar-label">Career Path</div>
+        <button class="sidebar-option active" data-filter="careerBucket" data-value="all"        onclick="setSidebarFilter('careerBucket','all',this)">All Careers</button>
+        <button class="sidebar-option" data-filter="careerBucket" data-value="tech"              onclick="setSidebarFilter('careerBucket','tech',this)"><span class="dot" style="background:#3B82F6"></span>💻 Tech &amp; Software</button>
+        <button class="sidebar-option" data-filter="careerBucket" data-value="data"              onclick="setSidebarFilter('careerBucket','data',this)"><span class="dot" style="background:#8B5CF6"></span>📊 Data &amp; AI</button>
+        <button class="sidebar-option" data-filter="careerBucket" data-value="design"            onclick="setSidebarFilter('careerBucket','design',this)"><span class="dot" style="background:#EC4899"></span>🎨 Design &amp; UX</button>
+        <button class="sidebar-option" data-filter="careerBucket" data-value="business"          onclick="setSidebarFilter('careerBucket','business',this)"><span class="dot" style="background:#F59E0B"></span>📈 Business</button>
+        <button class="sidebar-option" data-filter="careerBucket" data-value="health"            onclick="setSidebarFilter('careerBucket','health',this)"><span class="dot" style="background:#10B981"></span>🏥 Healthcare</button>
+        <button class="sidebar-option" data-filter="careerBucket" data-value="policy"            onclick="setSidebarFilter('careerBucket','policy',this)"><span class="dot" style="background:#6366F1"></span>⚖️ Policy &amp; Law</button>
+        <button class="sidebar-option" data-filter="careerBucket" data-value="research"          onclick="setSidebarFilter('careerBucket','research',this)"><span class="dot" style="background:#14B8A6"></span>🔬 Research &amp; Science</button>
+        <button class="sidebar-option" data-filter="careerBucket" data-value="creative"          onclick="setSidebarFilter('careerBucket','creative',this)"><span class="dot" style="background:#F97316"></span>✏️ Arts &amp; Media</button>
       </div>
     </div>
 
@@ -6145,17 +6168,34 @@ const MINORS_DATA = [
 /* ============================================================
    STATE
    ============================================================ */
+const CAREER_BUCKETS = [
+  { id: 'tech',     label: 'Tech & Software',    icon: '💻', keywords: ['software', 'developer', 'engineer', 'swe', 'devops', 'frontend', 'backend', 'ios', 'android', 'web dev', 'full-stack'] },
+  { id: 'data',     label: 'Data & AI',           icon: '📊', keywords: ['data', 'analyst', 'analytics', 'machine learning', 'statistician', 'business intelligence', 'data scientist', 'quantitative'] },
+  { id: 'design',   label: 'Design & UX',         icon: '🎨', keywords: ['design', 'ux ', 'ui ', 'user experience', 'interaction design', 'product design', 'creative director'] },
+  { id: 'business', label: 'Business',             icon: '📈', keywords: ['business', 'consultant', 'manager', 'finance', 'banking', 'investment', 'marketing', 'operations', 'product manager', 'real estate'] },
+  { id: 'health',   label: 'Healthcare',           icon: '🏥', keywords: ['health', 'medical', 'clinical', 'nurse', 'physician', 'biomedical', 'patient', 'pharmacist', 'therapist'] },
+  { id: 'policy',   label: 'Policy & Law',         icon: '⚖️', keywords: ['policy', 'law', 'legal', 'government', 'public policy', 'compliance', 'regulatory', 'attorney', 'advocacy', 'urban plan'] },
+  { id: 'research', label: 'Research & Science',   icon: '🔬', keywords: ['research', 'researcher', 'scientist', 'academic', 'ecology', 'biologist', 'chemist', 'geoscientist'] },
+  { id: 'creative', label: 'Arts & Media',         icon: '✏️', keywords: ['artist', 'writer', 'journalist', 'film', 'musician', 'theater', 'curator', 'media', 'content creator', 'photographer'] },
+];
+
+function getCareerBuckets(m) {
+  const text = ((m.careers||[]).join(' ') + ' ' + (m.tagline||'') + ' ' + (m.description||'')).toLowerCase();
+  return CAREER_BUCKETS.filter(b => b.keywords.some(kw => text.includes(kw))).map(b => b.id);
+}
+
 const state = {
-  view:       'home',
-  prevView:   'explore',
-  exploreTab: 'majors',
-  cat:        'all',
-  college:    'all',
-  admit:      'all',
-  degreeType: 'all',
-  salaryTier: 'all',
-  query:      '',
-  majorId:    null,
+  view:         'home',
+  prevView:     'explore',
+  exploreTab:   'majors',
+  cat:          'all',
+  college:      'all',
+  admit:        'all',
+  degreeType:   'all',
+  salaryTier:   'all',
+  careerBucket: 'all',
+  query:        '',
+  majorId:      null,
 };
 
 /* ============================================================
@@ -6296,7 +6336,7 @@ function setSidebarFilter(type, val, btn) {
 }
 function setSidebarSearch(val) { state.query = val; renderExplore(); renderActiveFilters(); }
 function syncSidebarToState() {
-  ['college','cat','admit','degreeType','salaryTier'].forEach(type => {
+  ['college','cat','admit','degreeType','salaryTier','careerBucket'].forEach(type => {
     document.querySelectorAll(`.sidebar-option[data-filter="${type}"]`).forEach(b=>{
       b.classList.toggle('active', b.dataset.value === state[type]);
     });
@@ -6307,14 +6347,15 @@ function syncSidebarToState() {
 // Preview how many majors would show if a sidebar filter were applied
 function previewSidebarCount(filterType, val) {
   const snap = { college: state.college, cat: state.cat, admit: state.admit,
-                  degreeType: state.degreeType, salaryTier: state.salaryTier };
+                  degreeType: state.degreeType, salaryTier: state.salaryTier, careerBucket: state.careerBucket };
   snap[filterType] = val;
   return MAJORS.filter(m => {
-    if (snap.college    !== 'all' && m.collegeGroup          !== snap.college)       return false;
-    if (snap.cat        !== 'all' && !(m.categories||[]).includes(snap.cat))         return false;
-    if (snap.admit      !== 'all' && m.admissionType         !== snap.admit)         return false;
-    if (snap.degreeType !== 'all' && getDegreeTypeBucket(m)  !== snap.degreeType)    return false;
-    if (snap.salaryTier !== 'all' && getSalaryTier(m)        !== snap.salaryTier)    return false;
+    if (snap.college      !== 'all' && m.collegeGroup         !== snap.college)      return false;
+    if (snap.cat          !== 'all' && !(m.categories||[]).includes(snap.cat))       return false;
+    if (snap.admit        !== 'all' && m.admissionType        !== snap.admit)        return false;
+    if (snap.degreeType   !== 'all' && getDegreeTypeBucket(m) !== snap.degreeType)   return false;
+    if (snap.salaryTier   !== 'all' && getSalaryTier(m)       !== snap.salaryTier)   return false;
+    if (snap.careerBucket !== 'all' && !getCareerBuckets(m).includes(snap.careerBucket)) return false;
     return true;
   }).length;
 }
@@ -6354,11 +6395,12 @@ function setExploreTab(tab) {
    ============================================================ */
 function matchesMajor(m) {
   const cats = m.categories || [];
-  if (state.college    !== 'all' && m.collegeGroup !== state.college)         return false;
-  if (state.cat        !== 'all' && !cats.includes(state.cat))                return false;
-  if (state.admit      !== 'all' && m.admissionType !== state.admit)          return false;
-  if (state.degreeType !== 'all' && getDegreeTypeBucket(m) !== state.degreeType) return false;
-  if (state.salaryTier !== 'all' && getSalaryTier(m) !== state.salaryTier)    return false;
+  if (state.college      !== 'all' && m.collegeGroup !== state.college)            return false;
+  if (state.cat          !== 'all' && !cats.includes(state.cat))                   return false;
+  if (state.admit        !== 'all' && m.admissionType !== state.admit)             return false;
+  if (state.degreeType   !== 'all' && getDegreeTypeBucket(m) !== state.degreeType) return false;
+  if (state.salaryTier   !== 'all' && getSalaryTier(m) !== state.salaryTier)       return false;
+  if (state.careerBucket !== 'all' && !getCareerBuckets(m).includes(state.careerBucket)) return false;
   if (state.query.trim()) {
     const q = state.query.toLowerCase();
     const mp = getMyplanInfo(m);
@@ -6915,12 +6957,13 @@ function renderActiveFilters() {
   const row = document.getElementById('activeFiltersRow');
   if (!row) return;
   const pills = [];
-  if (state.college    !== 'all') pills.push({ type:'college',    label: FILTER_LABELS.college[state.college]       || state.college });
-  if (state.cat        !== 'all') pills.push({ type:'cat',        label: FILTER_LABELS.cat[state.cat]               || state.cat });
-  if (state.admit      !== 'all') pills.push({ type:'admit',      label: FILTER_LABELS.admit[state.admit]           || state.admit });
-  if (state.degreeType !== 'all') pills.push({ type:'degreeType', label: FILTER_LABELS.degreeType[state.degreeType] || state.degreeType });
-  if (state.salaryTier !== 'all') pills.push({ type:'salaryTier', label: FILTER_LABELS.salaryTier[state.salaryTier] || state.salaryTier });
-  if (state.query.trim())         pills.push({ type:'query',      label: '🔍 ' + state.query });
+  if (state.college      !== 'all') pills.push({ type:'college',      label: FILTER_LABELS.college[state.college]       || state.college });
+  if (state.cat          !== 'all') pills.push({ type:'cat',          label: FILTER_LABELS.cat[state.cat]               || state.cat });
+  if (state.admit        !== 'all') pills.push({ type:'admit',        label: FILTER_LABELS.admit[state.admit]           || state.admit });
+  if (state.degreeType   !== 'all') pills.push({ type:'degreeType',   label: FILTER_LABELS.degreeType[state.degreeType] || state.degreeType });
+  if (state.salaryTier   !== 'all') pills.push({ type:'salaryTier',   label: FILTER_LABELS.salaryTier[state.salaryTier] || state.salaryTier });
+  if (state.careerBucket !== 'all') pills.push({ type:'careerBucket', label: '💼 ' + (CAREER_BUCKETS.find(b=>b.id===state.careerBucket)?.label || state.careerBucket) });
+  if (state.query.trim())           pills.push({ type:'query',        label: '🔍 ' + state.query });
 
   if (!pills.length) { row.className = 'active-filters-row empty'; return; }
   row.className = 'active-filters-row';
@@ -6935,14 +6978,15 @@ function clearFilter(type) {
   if (type === 'cat')        { state.cat        = 'all'; document.querySelectorAll('.sidebar-option[data-filter="cat"]').forEach(b => b.classList.toggle('active', b.dataset.value === 'all')); }
   if (type === 'admit')      { state.admit      = 'all'; document.querySelectorAll('.sidebar-option[data-filter="admit"]').forEach(b => b.classList.toggle('active', b.dataset.value === 'all')); }
   if (type === 'degreeType') { state.degreeType = 'all'; document.querySelectorAll('.sidebar-option[data-filter="degreeType"]').forEach(b => b.classList.toggle('active', b.dataset.value === 'all')); }
-  if (type === 'salaryTier') { state.salaryTier = 'all'; document.querySelectorAll('.sidebar-option[data-filter="salaryTier"]').forEach(b => b.classList.toggle('active', b.dataset.value === 'all')); }
+  if (type === 'salaryTier')   { state.salaryTier   = 'all'; document.querySelectorAll('.sidebar-option[data-filter="salaryTier"]').forEach(b => b.classList.toggle('active', b.dataset.value === 'all')); }
+  if (type === 'careerBucket') { state.careerBucket = 'all'; document.querySelectorAll('.sidebar-option[data-filter="careerBucket"]').forEach(b => b.classList.toggle('active', b.dataset.value === 'all')); }
   if (type === 'query')   { state.query   = ''; document.getElementById('sidebarSearch').value = ''; }
   renderExplore();
   renderActiveFilters();
 }
 function clearAllFilters() {
   state.college = 'all'; state.cat = 'all'; state.admit = 'all';
-  state.degreeType = 'all'; state.salaryTier = 'all'; state.query = '';
+  state.degreeType = 'all'; state.salaryTier = 'all'; state.careerBucket = 'all'; state.query = '';
   document.getElementById('sidebarSearch').value = '';
   syncSidebarToState();
   renderExplore();
@@ -7289,19 +7333,21 @@ function swipeKeyHandler(e) {
    FILTER PICKER
    ============================================================ */
 const pickerState = {
-  cats:       [],    // selected category values (multi-select)
-  college:    'all',
-  admit:      'all',
-  degreeType: 'all',
-  salaryTier: 'all',
+  cats:         [],    // selected category values (multi-select)
+  college:      'all',
+  admit:        'all',
+  degreeType:   'all',
+  salaryTier:   'all',
+  careerBucket: 'all',
 };
 
 function initPickerChips() {
-  pickerState.cats       = [];
-  pickerState.college    = 'all';
-  pickerState.admit      = 'all';
-  pickerState.degreeType = 'all';
-  pickerState.salaryTier = 'all';
+  pickerState.cats         = [];
+  pickerState.college      = 'all';
+  pickerState.admit        = 'all';
+  pickerState.degreeType   = 'all';
+  pickerState.salaryTier   = 'all';
+  pickerState.careerBucket = 'all';
 
   // Category chips — multi select
   document.querySelectorAll('#pickerCatChips .picker-chip').forEach(btn => {
@@ -7374,6 +7420,18 @@ function initPickerChips() {
     };
   });
 
+  // Career bucket chips — single select
+  document.querySelectorAll('#pickerCareerChips .picker-chip').forEach(btn => {
+    btn.classList.remove('selected');
+    btn.onclick = () => {
+      const val = btn.dataset.careerbucket;
+      const isRemoving = pickerState.careerBucket === val;
+      if (isRemoving) { pickerState.careerBucket = 'all'; btn.classList.remove('selected'); }
+      else { pickerState.careerBucket = val; document.querySelectorAll('#pickerCareerChips .picker-chip').forEach(b => b.classList.remove('selected')); btn.classList.add('selected'); }
+      updatePickerCount();
+    };
+  });
+
   updatePickerCount();
 }
 
@@ -7384,7 +7442,8 @@ function countPickerMatches(ps) {
     if (s.college    !== 'all' && m.collegeGroup    !== s.college)           return false;
     if (s.admit      !== 'all' && m.admissionType   !== s.admit)             return false;
     if (s.degreeType !== 'all' && getDegreeTypeBucket(m) !== s.degreeType)   return false;
-    if (s.salaryTier !== 'all' && getSalaryTier(m)       !== s.salaryTier)   return false;
+    if (s.salaryTier   !== 'all' && getSalaryTier(m)         !== s.salaryTier)   return false;
+    if (s.careerBucket !== 'all' && !getCareerBuckets(m).includes(s.careerBucket)) return false;
     if (s.cats.length > 0 && !s.cats.some(c => (m.categories||[]).includes(c))) return false;
     return true;
   }).length;
@@ -7438,23 +7497,29 @@ function refreshPickerChipStates() {
     if (btn.classList.contains('selected')) { btn.disabled = false; return; }
     btn.disabled = simCount('salaryTier', btn.dataset.salarytier) === 0;
   });
+  document.querySelectorAll('#pickerCareerChips .picker-chip').forEach(btn => {
+    if (btn.classList.contains('selected')) { btn.disabled = false; return; }
+    btn.disabled = simCount('careerBucket', btn.dataset.careerbucket) === 0;
+  });
 }
 
 function startSwipeFromPicker() {
   // Apply picker selections to global state
-  state.college    = pickerState.college;
-  state.admit      = pickerState.admit;
-  state.degreeType = pickerState.degreeType;
-  state.salaryTier = pickerState.salaryTier;
-  state.query      = '';
+  state.college      = pickerState.college;
+  state.admit        = pickerState.admit;
+  state.degreeType   = pickerState.degreeType;
+  state.salaryTier   = pickerState.salaryTier;
+  state.careerBucket = pickerState.careerBucket;
+  state.query        = '';
 
   // Build deck using all picker filters
   state.cat = pickerState.cats.length === 1 ? pickerState.cats[0] : 'all';
   const deck = MAJORS.filter(m => {
-    if (state.college    !== 'all' && m.collegeGroup    !== state.college)             return false;
-    if (state.admit      !== 'all' && m.admissionType   !== state.admit)               return false;
-    if (state.degreeType !== 'all' && getDegreeTypeBucket(m) !== state.degreeType)     return false;
-    if (state.salaryTier !== 'all' && getSalaryTier(m)       !== state.salaryTier)     return false;
+    if (state.college      !== 'all' && m.collegeGroup    !== state.college)                   return false;
+    if (state.admit        !== 'all' && m.admissionType   !== state.admit)                     return false;
+    if (state.degreeType   !== 'all' && getDegreeTypeBucket(m) !== state.degreeType)           return false;
+    if (state.salaryTier   !== 'all' && getSalaryTier(m)       !== state.salaryTier)           return false;
+    if (state.careerBucket !== 'all' && !getCareerBuckets(m).includes(state.careerBucket))     return false;
     if (pickerState.cats.length > 0 && !pickerState.cats.some(c => (m.categories||[]).includes(c))) return false;
     return true;
   });
