@@ -761,27 +761,6 @@
         <button class="picker-chip" data-college="education">Education</button>
       </div>
 
-      <div class="picker-section-label">Admission Type — optional</div>
-      <div class="picker-chips" id="pickerAdmitChips">
-        <button class="picker-chip" data-admit="open">                 ✅ Open to all</button>
-        <button class="picker-chip" data-admit="minimum">              📋 Min. Requirements</button>
-        <button class="picker-chip" data-admit="capacity-constrained"> 🔴 Capacity-Constrained</button>
-      </div>
-
-      <div class="picker-section-label">Degree Type — optional</div>
-      <div class="picker-chips" id="pickerDegreeChips">
-        <button class="picker-chip" data-degreetype="ba">  🎓 BA — Liberal Arts</button>
-        <button class="picker-chip" data-degreetype="bs">  🔬 BS — Science / Tech</button>
-        <button class="picker-chip" data-degreetype="professional">🏅 Professional (BFA/BM/BSN)</button>
-      </div>
-
-      <div class="picker-section-label">Expected Starting Salary — optional</div>
-      <div class="picker-chips" id="pickerSalaryChips">
-        <button class="picker-chip" data-salarytier="high">  💰 High ($90k+ starting)</button>
-        <button class="picker-chip" data-salarytier="mid">   📊 Mid ($60k–$90k)</button>
-        <button class="picker-chip" data-salarytier="entry"> 🌱 Starter (&lt;$60k)</button>
-      </div>
-
       <div class="picker-section-label">Career Path — optional</div>
       <div class="picker-chips" id="pickerCareerChips">
         <button class="picker-chip" data-careerbucket="tech">    💻 Tech &amp; Software</button>
@@ -7335,18 +7314,12 @@ function swipeKeyHandler(e) {
 const pickerState = {
   cats:         [],    // selected category values (multi-select)
   college:      'all',
-  admit:        'all',
-  degreeType:   'all',
-  salaryTier:   'all',
   careerBucket: 'all',
 };
 
 function initPickerChips() {
   pickerState.cats         = [];
   pickerState.college      = 'all';
-  pickerState.admit        = 'all';
-  pickerState.degreeType   = 'all';
-  pickerState.salaryTier   = 'all';
   pickerState.careerBucket = 'all';
 
   // Category chips — multi select
@@ -7384,41 +7357,6 @@ function initPickerChips() {
     };
   });
 
-  // Admit chips — single select
-  document.querySelectorAll('#pickerAdmitChips .picker-chip').forEach(btn => {
-    btn.classList.remove('selected');
-    btn.onclick = () => {
-      const val = btn.dataset.admit;
-      const isRemoving = pickerState.admit === val;
-      if (isRemoving) { pickerState.admit = 'all'; btn.classList.remove('selected'); }
-      else { pickerState.admit = val; document.querySelectorAll('#pickerAdmitChips .picker-chip').forEach(b => b.classList.remove('selected')); btn.classList.add('selected'); }
-      updatePickerCount();
-    };
-  });
-
-  // Degree type chips — single select
-  document.querySelectorAll('#pickerDegreeChips .picker-chip').forEach(btn => {
-    btn.classList.remove('selected');
-    btn.onclick = () => {
-      const val = btn.dataset.degreetype;
-      const isRemoving = pickerState.degreeType === val;
-      if (isRemoving) { pickerState.degreeType = 'all'; btn.classList.remove('selected'); }
-      else { pickerState.degreeType = val; document.querySelectorAll('#pickerDegreeChips .picker-chip').forEach(b => b.classList.remove('selected')); btn.classList.add('selected'); }
-      updatePickerCount();
-    };
-  });
-
-  // Salary tier chips — single select
-  document.querySelectorAll('#pickerSalaryChips .picker-chip').forEach(btn => {
-    btn.classList.remove('selected');
-    btn.onclick = () => {
-      const val = btn.dataset.salarytier;
-      const isRemoving = pickerState.salaryTier === val;
-      if (isRemoving) { pickerState.salaryTier = 'all'; btn.classList.remove('selected'); }
-      else { pickerState.salaryTier = val; document.querySelectorAll('#pickerSalaryChips .picker-chip').forEach(b => b.classList.remove('selected')); btn.classList.add('selected'); }
-      updatePickerCount();
-    };
-  });
 
   // Career bucket chips — single select
   document.querySelectorAll('#pickerCareerChips .picker-chip').forEach(btn => {
@@ -7439,11 +7377,8 @@ function countPickerMatches(ps) {
   // Count majors matching a given pickerState snapshot (or current pickerState if none passed)
   const s = ps || pickerState;
   return MAJORS.filter(m => {
-    if (s.college    !== 'all' && m.collegeGroup    !== s.college)           return false;
-    if (s.admit      !== 'all' && m.admissionType   !== s.admit)             return false;
-    if (s.degreeType !== 'all' && getDegreeTypeBucket(m) !== s.degreeType)   return false;
-    if (s.salaryTier   !== 'all' && getSalaryTier(m)         !== s.salaryTier)   return false;
-    if (s.careerBucket !== 'all' && !getCareerBuckets(m).includes(s.careerBucket)) return false;
+    if (s.college      !== 'all' && m.collegeGroup !== s.college)                      return false;
+    if (s.careerBucket !== 'all' && !getCareerBuckets(m).includes(s.careerBucket))    return false;
     if (s.cats.length > 0 && !s.cats.some(c => (m.categories||[]).includes(c))) return false;
     return true;
   }).length;
@@ -7485,18 +7420,6 @@ function refreshPickerChipStates() {
     if (btn.classList.contains('selected')) { btn.disabled = false; return; }
     btn.disabled = simCount('college', btn.dataset.college) === 0;
   });
-  document.querySelectorAll('#pickerAdmitChips .picker-chip').forEach(btn => {
-    if (btn.classList.contains('selected')) { btn.disabled = false; return; }
-    btn.disabled = simCount('admit', btn.dataset.admit) === 0;
-  });
-  document.querySelectorAll('#pickerDegreeChips .picker-chip').forEach(btn => {
-    if (btn.classList.contains('selected')) { btn.disabled = false; return; }
-    btn.disabled = simCount('degreeType', btn.dataset.degreetype) === 0;
-  });
-  document.querySelectorAll('#pickerSalaryChips .picker-chip').forEach(btn => {
-    if (btn.classList.contains('selected')) { btn.disabled = false; return; }
-    btn.disabled = simCount('salaryTier', btn.dataset.salarytier) === 0;
-  });
   document.querySelectorAll('#pickerCareerChips .picker-chip').forEach(btn => {
     if (btn.classList.contains('selected')) { btn.disabled = false; return; }
     btn.disabled = simCount('careerBucket', btn.dataset.careerbucket) === 0;
@@ -7506,20 +7429,14 @@ function refreshPickerChipStates() {
 function startSwipeFromPicker() {
   // Apply picker selections to global state
   state.college      = pickerState.college;
-  state.admit        = pickerState.admit;
-  state.degreeType   = pickerState.degreeType;
-  state.salaryTier   = pickerState.salaryTier;
   state.careerBucket = pickerState.careerBucket;
   state.query        = '';
 
   // Build deck using all picker filters
   state.cat = pickerState.cats.length === 1 ? pickerState.cats[0] : 'all';
   const deck = MAJORS.filter(m => {
-    if (state.college      !== 'all' && m.collegeGroup    !== state.college)                   return false;
-    if (state.admit        !== 'all' && m.admissionType   !== state.admit)                     return false;
-    if (state.degreeType   !== 'all' && getDegreeTypeBucket(m) !== state.degreeType)           return false;
-    if (state.salaryTier   !== 'all' && getSalaryTier(m)       !== state.salaryTier)           return false;
-    if (state.careerBucket !== 'all' && !getCareerBuckets(m).includes(state.careerBucket))     return false;
+    if (state.college      !== 'all' && m.collegeGroup !== state.college)                   return false;
+    if (state.careerBucket !== 'all' && !getCareerBuckets(m).includes(state.careerBucket)) return false;
     if (pickerState.cats.length > 0 && !pickerState.cats.some(c => (m.categories||[]).includes(c))) return false;
     return true;
   });
