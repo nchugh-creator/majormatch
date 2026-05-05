@@ -736,6 +736,7 @@
       <button class="nav-tab active" data-view="home"     onclick="showView('home')">Home</button>
       <button class="nav-tab"        data-view="myMajors" onclick="showView('myMajors')">My Majors</button>
       <button class="nav-tab"        data-view="explore"  onclick="showView('explore')">Explore</button>
+      <button class="nav-tab"        data-view="rsos"     onclick="showView('explore');setExploreTab('rsos')">Clubs &amp; RSOs</button>
     </div>
     <div class="nav-spacer"></div>
     <div class="nav-user">
@@ -8068,15 +8069,16 @@ const VIEWS = ['filterPickerView','homeView','exploreView','detailView','myMajor
 function showView(name) {
   state.prevView = state.view;
   state.view = name;
-  VIEWS.forEach(v => document.getElementById(v).classList.toggle('hidden', v !== name+'View'));
+  const viewName = (name==='rsos') ? 'explore' : name;
+  VIEWS.forEach(v => document.getElementById(v).classList.toggle('hidden', v !== viewName+'View'));
   // footer visibility
-  document.querySelector('footer').style.display = (name==='explore'||name==='detail'||name==='filterPicker') ? 'none' : '';
-  // nav tab highlight
+  document.querySelector('footer').style.display = (viewName==='explore'||viewName==='detail'||viewName==='filterPicker') ? 'none' : '';
+  // nav tab highlight — 'rsos' highlights the rsos tab, 'explore' highlights explore
   document.querySelectorAll('.nav-tab').forEach(t=>t.classList.toggle('active', t.dataset.view===name));
   // render
-  if (name==='home')     renderHome();
-  if (name==='explore')  renderExplore();
-  if (name==='myMajors') renderMyMajors();
+  if (viewName==='home')     renderHome();
+  if (viewName==='explore')  renderExplore();
+  if (viewName==='myMajors') renderMyMajors();
 }
 
 /* ============================================================
