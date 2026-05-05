@@ -6,7 +6,7 @@
   <title>MajorMatch — UW Seattle Major & Campus Explorer</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
   <style>
     /* ===== DESIGN TOKENS ===== */
     :root {
@@ -51,8 +51,8 @@
       width: 380px; max-width: calc(100vw - 32px);
       box-shadow: 0 24px 80px rgba(0,0,0,.30);
     }
-    .login-logo { display: flex; justify-content: center; margin-bottom: 8px; }
-    .login-logo svg { width: 200px; height: auto; }
+    .login-logo { font-family: 'Instrument Serif', Georgia, serif; font-size: 28px; color: var(--purple); margin-bottom: 4px; }
+    .login-logo span { color: var(--gold); }
     .login-sub { font-size: 13px; color: var(--ink-muted); margin-bottom: 28px; }
     .login-label { font-size: 11.5px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase; color: var(--ink-muted); margin-bottom: 6px; }
     .login-input {
@@ -76,8 +76,8 @@
       background: var(--purple); display: flex; align-items: center;
       padding: 0 24px; z-index: 500; box-shadow: 0 2px 12px rgba(0,0,0,.18);
     }
-    .nav-logo { display: flex; align-items: center; margin-right: 28px; flex-shrink: 0; }
-    .nav-logo svg { height: 40px; width: auto; }
+    .nav-logo { font-family: 'Instrument Serif', Georgia, serif; font-size: 22px; color: #fff; margin-right: 32px; flex-shrink: 0; }
+    .nav-logo span { color: var(--gold-light); }
     .nav-tabs { display: flex; align-items: stretch; height: var(--nav-h); }
     .nav-tab {
       padding: 0 18px; font-size: 14px; font-weight: 500; color: rgba(255,255,255,.6);
@@ -698,13 +698,7 @@
 <!-- ===== LOGIN OVERLAY ===== -->
 <div id="loginOverlay">
   <div class="login-box">
-    <div class="login-logo">
-      <svg viewBox="0 0 260 195" xmlns="http://www.w3.org/2000/svg">
-        <path d="M 205,58 A 92,92 0 1,1 80,172" fill="none" stroke="#4B2E83" stroke-width="5" stroke-linecap="round"/>
-        <text x="52" y="155" font-family="'Dancing Script', cursive" font-size="108" font-weight="700" fill="#4B2E83">m.</text>
-        <text x="130" y="185" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="14" font-weight="500" fill="#4B2E83" letter-spacing="3">major match</text>
-      </svg>
-    </div>
+    <div class="login-logo">Major<span>Match</span></div>
     <p class="login-sub">UW Seattle Major &amp; Campus Life Explorer</p>
     <div class="login-label">UW NetID</div>
     <input type="text" id="loginNetid" class="login-input" placeholder="e.g. husky23" autocomplete="off" autocapitalize="none">
@@ -720,13 +714,7 @@
 
   <!-- TOP NAV -->
   <nav id="topNav">
-    <div class="nav-logo">
-      <svg viewBox="0 0 260 195" xmlns="http://www.w3.org/2000/svg">
-        <path d="M 205,58 A 92,92 0 1,1 80,172" fill="none" stroke="#EDD89A" stroke-width="5" stroke-linecap="round"/>
-        <text x="52" y="155" font-family="'Dancing Script', cursive" font-size="108" font-weight="700" fill="#fff">m.</text>
-        <text x="130" y="185" text-anchor="middle" font-family="'DM Sans', sans-serif" font-size="14" font-weight="500" fill="#EDD89A" letter-spacing="3">major match</text>
-      </svg>
-    </div>
+    <div class="nav-logo">Major<span>Match</span></div>
     <div class="nav-tabs">
       <button class="nav-tab active" data-view="home"     onclick="showView('home')">Home</button>
       <button class="nav-tab"        data-view="myMajors" onclick="showView('myMajors')">My Majors</button>
