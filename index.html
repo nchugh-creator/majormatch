@@ -175,6 +175,72 @@
     }
     .home-explore-btn:hover { background: var(--purple-mid); }
 
+    /* ── Floating stat bubbles ── */
+    .hero-floats {
+      position: absolute; inset: 0; pointer-events: none; overflow: hidden;
+    }
+    .home-hero { position: relative; }
+    .float-card {
+      position: absolute; background: rgba(255,255,255,.13); backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,.22); border-radius: 12px;
+      padding: 10px 16px; color: #fff; white-space: nowrap;
+      display: flex; align-items: center; gap: 10px;
+      animation: floatDrift 6s ease-in-out infinite;
+    }
+    .float-card:nth-child(2) { animation-delay: -2s; animation-duration: 7s; }
+    .float-card:nth-child(3) { animation-delay: -4s; animation-duration: 5.5s; }
+    .float-card:nth-child(4) { animation-delay: -1s; animation-duration: 8s; }
+    @keyframes floatDrift {
+      0%,100% { transform: translateY(0px); }
+      50%      { transform: translateY(-10px); }
+    }
+    .float-icon { font-size: 22px; }
+    .float-label { font-size: 11px; color: rgba(255,255,255,.65); text-transform: uppercase; letter-spacing: .8px; }
+    .float-value { font-size: 18px; font-weight: 500; letter-spacing: -.4px; }
+
+    /* ── How it works ── */
+    .hiw-section {
+      background: var(--bg-card); border-top: 1px solid var(--border);
+      padding: 60px 28px;
+    }
+    .hiw-inner { max-width: 1000px; margin: 0 auto; }
+    .hiw-label { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase; color: var(--ink-light); margin-bottom: 12px; }
+    .hiw-title { font-size: 30px; font-weight: 300; letter-spacing: -0.6px; color: var(--ink); margin-bottom: 44px; }
+    .hiw-steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 32px; }
+    .hiw-step { display: flex; gap: 20px; align-items: flex-start; }
+    .hiw-num { font-size: 42px; font-weight: 700; color: var(--border-mid); line-height: 1; flex-shrink: 0; width: 52px; }
+    .hiw-step-body {}
+    .hiw-step-title { font-size: 18px; font-weight: 500; color: var(--ink); margin-bottom: 6px; }
+    .hiw-step-desc { font-size: 14px; color: var(--ink-muted); line-height: 1.6; font-weight: 300; }
+    .hiw-step-action { display: inline-block; margin-top: 12px; font-size: 13px; font-weight: 600; color: var(--purple); cursor: pointer; }
+    .hiw-step-action:hover { text-decoration: underline; }
+
+    /* ── Salary range slider ── */
+    .salary-slider-wrap { padding: 4px 2px 2px; }
+    .salary-histogram {
+      display: flex; align-items: flex-end; gap: 2px; height: 40px; margin-bottom: 10px;
+    }
+    .histo-bar { flex: 1; background: var(--purple-faint); border-radius: 2px 2px 0 0; transition: background .2s; min-height: 3px; }
+    .histo-bar.in-range { background: var(--purple-mid); }
+    .salary-range-row { display: flex; gap: 6px; align-items: center; }
+    .salary-range-input {
+      -webkit-appearance: none; appearance: none; width: 100%;
+      height: 4px; border-radius: 2px; background: var(--border-mid); outline: none; cursor: pointer;
+    }
+    .salary-range-input::-webkit-slider-thumb {
+      -webkit-appearance: none; appearance: none;
+      width: 16px; height: 16px; border-radius: 50%;
+      background: var(--purple); cursor: pointer; border: 2px solid #fff;
+      box-shadow: 0 1px 4px rgba(0,0,0,.2);
+    }
+    .salary-range-track {
+      position: relative; height: 4px; border-radius: 2px;
+      background: var(--border-mid); margin-bottom: 6px;
+    }
+    .salary-range-fill { position: absolute; height: 100%; background: var(--purple-mid); border-radius: 2px; }
+    .salary-labels { display: flex; justify-content: space-between; font-size: 11px; color: var(--ink-light); margin-top: 4px; }
+    .salary-current { text-align: center; font-size: 12px; color: var(--purple); font-weight: 600; margin-bottom: 6px; }
+
     /* ===== EXPLORE VIEW ===== */
     #exploreView { display: flex; min-height: calc(100vh - var(--nav-h)); }
 
@@ -824,6 +890,25 @@
   <!-- HOME VIEW -->
   <div id="homeView" class="hidden">
     <div class="home-hero">
+      <!-- Floating stat cards -->
+      <div class="hero-floats" aria-hidden="true">
+        <div class="float-card" style="top:18%;left:4%">
+          <span class="float-icon">💰</span>
+          <div><div class="float-label">Avg Starting Salary</div><div class="float-value">$85k/yr</div></div>
+        </div>
+        <div class="float-card" style="top:58%;left:2%">
+          <span class="float-icon">📈</span>
+          <div><div class="float-label">Job Growth</div><div class="float-value">↑ 15%</div></div>
+        </div>
+        <div class="float-card" style="top:22%;right:3%">
+          <span class="float-icon">⭐</span>
+          <div><div class="float-label">Satisfaction</div><div class="float-value">High</div></div>
+        </div>
+        <div class="float-card" style="top:62%;right:4%">
+          <span class="float-icon">🎓</span>
+          <div><div class="float-label">Majors Tracked</div><div class="float-value">50+</div></div>
+        </div>
+      </div>
       <h1 class="home-hero-title">Find your <em>perfect major</em><br>at UW Seattle.</h1>
       <p class="home-hero-sub">Explore 50+ majors, compare admission types, bookmark favorites, and discover clubs that match your interests.</p>
     </div>
@@ -837,6 +922,40 @@
       <h2 class="home-section-title">Browse by School</h2>
       <div class="home-quick-grid" id="homeCollegeGrid"></div>
       <button class="home-explore-btn" onclick="showView('explore')">Explore All Majors →</button>
+    </div>
+
+    <!-- How it works -->
+    <div class="hiw-section">
+      <div class="hiw-inner">
+        <div class="hiw-label">How it works</div>
+        <h2 class="hiw-title">Three steps to finding your major</h2>
+        <div class="hiw-steps">
+          <div class="hiw-step">
+            <div class="hiw-num">01</div>
+            <div class="hiw-step-body">
+              <div class="hiw-step-title">Swipe to explore</div>
+              <div class="hiw-step-desc">Tell us your vibe — swipe through majors like you're scrolling your feed. Like it? Save it. Not feeling it? Skip.</div>
+              <span class="hiw-step-action" onclick="showView('filterPicker')">Start swiping →</span>
+            </div>
+          </div>
+          <div class="hiw-step">
+            <div class="hiw-num">02</div>
+            <div class="hiw-step-body">
+              <div class="hiw-step-title">Filter &amp; compare</div>
+              <div class="hiw-step-desc">Browse all 50+ majors by college, salary, admission difficulty, and career path side by side.</div>
+              <span class="hiw-step-action" onclick="showView('explore')">Browse majors →</span>
+            </div>
+          </div>
+          <div class="hiw-step">
+            <div class="hiw-num">03</div>
+            <div class="hiw-step-body">
+              <div class="hiw-step-title">Deep dive &amp; decide</div>
+              <div class="hiw-step-desc">Read real admission stats, sample courses, peer quotes, and career outcomes — everything on one page.</div>
+              <span class="hiw-step-action" onclick="showView('myMajors')">My saved majors →</span>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -911,10 +1030,24 @@
         <button class="sidebar-option" data-filter="degreeType" data-value="professional"        onclick="setSidebarFilter('degreeType','professional',this)"><span class="dot" style="background:#D97706"></span>Professional (BFA/BM/BSN)</button>
 
         <div class="sidebar-label">Starting Salary</div>
-        <button class="sidebar-option active" data-filter="salaryTier" data-value="all"          onclick="setSidebarFilter('salaryTier','all',this)">All Ranges</button>
-        <button class="sidebar-option" data-filter="salaryTier" data-value="high"                onclick="setSidebarFilter('salaryTier','high',this)"><span class="dot" style="background:#059669"></span>High ($90k+ starting)</button>
-        <button class="sidebar-option" data-filter="salaryTier" data-value="mid"                 onclick="setSidebarFilter('salaryTier','mid',this)"><span class="dot" style="background:#D97706"></span>Mid ($60k–$90k)</button>
-        <button class="sidebar-option" data-filter="salaryTier" data-value="entry"               onclick="setSidebarFilter('salaryTier','entry',this)"><span class="dot" style="background:#6B7280"></span>Starter (&lt;$60k)</button>
+        <div class="salary-slider-wrap">
+          <div class="salary-histogram" id="salaryHistogram"></div>
+          <div class="salary-current" id="salaryRangeLabel">All salaries</div>
+          <div style="display:flex;gap:6px;align-items:center">
+            <span style="font-size:11px;color:var(--ink-light)">$30k</span>
+            <div style="flex:1;position:relative">
+              <input type="range" class="salary-range-input" id="salaryMin" min="30" max="150" value="30" step="5" oninput="salarySliderUpdate()">
+            </div>
+            <span style="font-size:11px;color:var(--ink-light)">$150k</span>
+          </div>
+          <div style="display:flex;gap:6px;align-items:center;margin-top:6px">
+            <span style="font-size:11px;color:var(--ink-light)">$30k</span>
+            <div style="flex:1;position:relative">
+              <input type="range" class="salary-range-input" id="salaryMax" min="30" max="150" value="150" step="5" oninput="salarySliderUpdate()">
+            </div>
+            <span style="font-size:11px;color:var(--ink-light)">$150k+</span>
+          </div>
+        </div>
 
         <div class="sidebar-label">Career Path</div>
         <button class="sidebar-option active" data-filter="careerBucket" data-value="all"        onclick="setSidebarFilter('careerBucket','all',this)">All Careers</button>
@@ -8001,6 +8134,8 @@ const state = {
   careerBucket: 'all',
   query:        '',
   majorId:      null,
+  salaryMin:    30,
+  salaryMax:    150,
 };
 
 /* ============================================================
@@ -8026,6 +8161,47 @@ function getSalaryTier(m) {
   if (k >= 90) return 'high';
   if (k >= 60) return 'mid';
   return 'entry';
+}
+function getSalaryK(m) {
+  const raw = (m.salaryRange || '').replace(/,/g,'');
+  const match = raw.match(/\$(\d+)k/i);
+  return match ? parseInt(match[1], 10) : 50;
+}
+
+/* ── Salary slider ── */
+function salarySliderUpdate() {
+  let mn = parseInt(document.getElementById('salaryMin').value, 10);
+  let mx = parseInt(document.getElementById('salaryMax').value, 10);
+  if (mn > mx) { [mn, mx] = [mx, mn]; }
+  state.salaryMin = mn; state.salaryMax = mx;
+  const lbl = document.getElementById('salaryRangeLabel');
+  if (lbl) lbl.textContent = (mn === 30 && mx === 150) ? 'All salaries' : `$${mn}k – ${mx === 150 ? '$150k+' : '$' + mx + 'k'}`;
+  renderSalaryHistogram();
+  renderExplore();
+  renderActiveFilters();
+}
+function renderSalaryHistogram() {
+  const el = document.getElementById('salaryHistogram');
+  if (!el) return;
+  const mn = state.salaryMin || 30;
+  const mx = state.salaryMax || 150;
+  // Build buckets: every 10k from 30 to 150
+  const buckets = [];
+  for (let i = 30; i < 150; i += 10) buckets.push({ lo: i, hi: i+10, count: 0 });
+  MAJORS.forEach(m => {
+    const k = getSalaryK(m);
+    buckets.forEach(b => { if (k >= b.lo && k < b.hi) b.count++; });
+  });
+  const maxC = Math.max(...buckets.map(b => b.count), 1);
+  el.innerHTML = buckets.map(b => {
+    const h = Math.max(4, Math.round((b.count / maxC) * 38));
+    const inRange = b.lo >= mn && b.hi <= mx + 1;
+    return `<div class="histo-bar ${inRange?'in-range':''}" style="height:${h}px" title="${b.lo}k–${b.hi}k: ${b.count} majors"></div>`;
+  }).join('');
+}
+function initSalarySlider() {
+  state.salaryMin = 30; state.salaryMax = 150;
+  renderSalaryHistogram();
 }
 function getDegreeTypeBucket(m) {
   const dt = (DEGREE_TYPE[m.id] || '').toUpperCase();
@@ -8094,7 +8270,7 @@ function showView(name) {
   document.querySelectorAll('.nav-tab').forEach(t=>t.classList.toggle('active', t.dataset.view===name));
   // render
   if (viewName==='home')     renderHome();
-  if (viewName==='explore')  renderExplore();
+  if (viewName==='explore')  { renderExplore(); renderSalaryHistogram(); }
   if (viewName==='myMajors') renderMyMajors();
 }
 
@@ -8306,6 +8482,10 @@ function matchesMajor(m) {
   if (state.admit        !== 'all' && m.admissionType !== state.admit)             return false;
   if (state.degreeType   !== 'all' && getDegreeTypeBucket(m) !== state.degreeType) return false;
   if (state.salaryTier   !== 'all' && getSalaryTier(m) !== state.salaryTier)       return false;
+  if (state.salaryMin !== 30 || state.salaryMax !== 150) {
+    const k = getSalaryK(m);
+    if (k < state.salaryMin || k > state.salaryMax) return false;
+  }
   if (state.careerBucket !== 'all' && !getCareerBuckets(m).includes(state.careerBucket)) return false;
   if (state.query.trim()) {
     const q = state.query.toLowerCase();
@@ -9531,6 +9711,7 @@ function closeMinorDetail() {
 function initApp(freshLogin) {
   document.getElementById('statMajors').textContent = MAJORS.length;
   document.getElementById('statRSOs').textContent   = RSOS.length;
+  initSalarySlider();
   renderHome();
   renderExplore();
   if (freshLogin) {
