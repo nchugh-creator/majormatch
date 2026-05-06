@@ -8,6 +8,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
   <style>
+  
     /* ===== DESIGN TOKENS (warm cream + CareerExplorer layout) ===== */
     :root {
       --bg:               #F5F2EB;
@@ -115,11 +116,102 @@
     /* ===== HOME VIEW ===== */
     .home-hero {
       background: linear-gradient(135deg, #3A1A6E 0%, var(--purple) 50%, #6A3FA0 100%);
-      padding: 72px 24px 64px; text-align: center; color: #fff;
+      padding: 56px 24px 52px; text-align: center; color: #fff;
     }
-    .home-hero-title { font-size: clamp(32px, 5vw, 52px); font-weight: 300; letter-spacing: -1px; line-height: 1.1; margin-bottom: 16px; color: #fff; }
-    .home-hero-title em { color: var(--gold-light); font-style: normal; font-weight: 400; }
-    .home-hero-sub { font-size: 16px; color: rgba(255,255,255,0.75); max-width: 500px; margin: 0 auto 36px; line-height: 1.6; font-weight: 300; }
+    .hero-eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,.55); margin-bottom: 14px; }
+    .home-hero-title { font-size: clamp(26px, 4vw, 46px); font-weight: 300; letter-spacing: -1px; line-height: 1.15; margin-bottom: 14px; color: #fff; }
+    .home-hero-title em { color: var(--gold-light); font-style: normal; font-weight: 500; }
+    .home-hero-sub { font-size: 15px; color: rgba(255,255,255,0.72); max-width: 480px; margin: 0 auto 28px; line-height: 1.6; font-weight: 300; }
+    /* Step pill trail */
+    .hero-step-pills { display: flex; align-items: center; justify-content: center; gap: 10px; flex-wrap: wrap; }
+    .hero-step-pill { padding: 6px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; letter-spacing: .3px; background: rgba(255,255,255,.12); color: rgba(255,255,255,.55); transition: background .3s, color .3s; }
+    .hero-step-pill.active { background: rgba(255,255,255,.28); color: #fff; }
+    .hero-step-pill.done { background: rgba(212,175,55,.25); color: var(--gold-light); }
+    .hero-step-arrow { color: rgba(255,255,255,.3); font-size: 13px; }
+
+    /* Guided flow */
+    .flow-wrap { max-width: 760px; margin: 0 auto; padding: 52px 28px 60px; }
+    .flow-step { animation: fadeSlideIn .35s ease; }
+    @keyframes fadeSlideIn { from { opacity:0; transform: translateY(18px); } to { opacity:1; transform: none; } }
+    .flow-step-header { margin-bottom: 32px; }
+    .flow-step-num { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--purple-mid); margin-bottom: 10px; }
+    .flow-step-q { font-size: clamp(22px, 3vw, 32px); font-weight: 300; letter-spacing: -.5px; color: var(--ink); margin-bottom: 8px; }
+    .flow-step-q em { font-style: normal; color: var(--purple); font-weight: 500; }
+    .flow-step-hint { font-size: 14px; color: var(--ink-muted); font-weight: 300; }
+
+    /* Interest grid */
+    .interest-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; margin-bottom: 36px; }
+    .interest-card {
+      background: var(--bg-card); border: 2px solid var(--border); border-radius: 12px;
+      padding: 22px 14px 18px; text-align: center; cursor: pointer;
+      transition: border-color .18s, background .18s, transform .18s, box-shadow .18s;
+    }
+    .interest-card:hover { border-color: var(--purple-light); transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,.07); }
+    .interest-card.selected { border-color: var(--purple); background: var(--purple-faint); box-shadow: 0 0 0 1px var(--purple); }
+    .interest-emoji { font-size: 32px; margin-bottom: 10px; }
+    .interest-label { font-size: 13px; font-weight: 500; color: var(--ink); line-height: 1.3; }
+
+    /* Binary choice */
+    .flow-q-block {}
+    .flow-q-label { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; color: var(--ink-light); margin-bottom: 12px; }
+    .flow-binary-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .flow-binary-card {
+      background: var(--bg-card); border: 2px solid var(--border); border-radius: 12px;
+      padding: 20px 18px; cursor: pointer; transition: border-color .18s, background .18s, transform .15s;
+      text-align: center;
+    }
+    .flow-binary-card:hover { border-color: var(--purple-light); transform: translateY(-2px); }
+    .flow-binary-card.selected { border-color: var(--purple); background: var(--purple-faint); }
+    .flow-binary-emoji { font-size: 28px; margin-bottom: 8px; }
+    .flow-binary-title { font-size: 14px; font-weight: 600; color: var(--ink); margin-bottom: 4px; }
+    .flow-binary-sub { font-size: 12px; color: var(--ink-muted); line-height: 1.4; }
+
+    /* Flow buttons */
+    .flow-footer { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; }
+    .flow-btn {
+      padding: 13px 28px; background: var(--purple); color: #fff; border-radius: 8px;
+      font-size: 15px; font-weight: 600; cursor: pointer; border: none; transition: background .15s, opacity .15s;
+    }
+    .flow-btn:disabled { opacity: .38; cursor: not-allowed; }
+    .flow-btn:not(:disabled):hover { background: var(--purple-mid); }
+    .flow-btn-secondary {
+      padding: 12px 20px; background: transparent; color: var(--ink-muted); border: 1.5px solid var(--border-mid);
+      border-radius: 8px; font-size: 14px; font-weight: 500; cursor: pointer; transition: border-color .15s;
+    }
+    .flow-btn-secondary:hover { border-color: var(--purple-light); color: var(--purple); }
+    .flow-skip { font-size: 13px; color: var(--ink-light); cursor: pointer; }
+    .flow-skip:hover { color: var(--purple); text-decoration: underline; }
+
+    /* Result cards */
+    .flow-result-cards { display: flex; flex-direction: column; gap: 12px; margin-bottom: 32px; }
+    .flow-result-card {
+      display: flex; align-items: center; gap: 16px; padding: 18px 20px;
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+      cursor: pointer; transition: box-shadow .22s, transform .22s;
+    }
+    .flow-result-card:hover { box-shadow: 0 6px 20px rgba(0,0,0,.09); transform: translateX(4px); }
+    .flow-result-card.rank1 { border-color: var(--gold); background: linear-gradient(135deg, #FEFDF9 0%, var(--bg-card) 100%); }
+    .flow-result-icon { font-size: 28px; width: 48px; height: 48px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .flow-result-info { flex: 1; min-width: 0; }
+    .flow-result-name { font-size: 16px; font-weight: 500; color: var(--ink); }
+    .flow-result-reason { font-size: 12px; color: var(--purple-mid); margin-top: 3px; font-weight: 500; }
+    .flow-result-meta { font-size: 12px; color: var(--ink-muted); margin-top: 3px; }
+    .flow-result-actions { display: flex; flex-direction: column; gap: 6px; align-items: flex-end; flex-shrink: 0; }
+    .flow-result-learn { font-size: 13px; font-weight: 600; color: var(--purple); cursor: pointer; white-space: nowrap; }
+    .flow-result-learn:hover { text-decoration: underline; }
+    .flow-result-save { font-size: 12px; color: var(--ink-light); cursor: pointer; }
+    .flow-result-save:hover { color: var(--gold); }
+    .flow-result-footer { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+    .flow-rank-badge { font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; background: var(--gold-light); color: #7A5C00; }
+
+    /* Reassurance strip */
+    .reassurance-strip {
+      display: flex; justify-content: center; gap: 32px; flex-wrap: wrap;
+      padding: 20px 24px; background: var(--bg-surface); border-top: 1px solid var(--border);
+      font-size: 13px; color: var(--ink-muted);
+    }
+    .reassurance-item { display: flex; align-items: center; gap: 7px; }
+    .ri-icon { font-size: 15px; }
     .home-search-wrap { max-width: 560px; margin: 0 auto; position: relative; }
     .home-search-icon { position: absolute; left: 16px; top: 50%; transform: translateY(-50%); font-size: 16px; pointer-events: none; color: var(--ink-light); }
     .home-search-input {
@@ -979,12 +1071,10 @@
   <nav id="topNav">
     <div class="nav-logo">Major<span>Match</span></div>
     <div class="nav-tabs">
-      <button class="nav-tab active" data-view="home"     onclick="showView('home')">Home</button>
-      <button class="nav-tab"        data-view="myMajors" onclick="showView('myMajors')">My Majors</button>
-      <button class="nav-tab"        data-view="explore"  onclick="showView('explore')">Explore</button>
-      <button class="nav-tab"        data-view="rsos"     onclick="showView('explore');setExploreTab('rsos')">Clubs &amp; RSOs</button>
-      <button class="nav-tab"        data-view="quiz"       onclick="showView('quiz')" style="color:var(--gold)">✦ Quiz</button>
-      <button class="nav-tab"        data-view="community"  onclick="showView('community')">Community</button>
+      <button class="nav-tab active" data-view="home"      onclick="showView('home')">Home</button>
+      <button class="nav-tab"        data-view="explore"   onclick="showView('explore')">Explore</button>
+      <button class="nav-tab"        data-view="myMajors"  onclick="showView('myMajors')">My Majors</button>
+      <button class="nav-tab"        data-view="community" onclick="showView('community')">Community</button>
     </div>
     <div class="nav-spacer"></div>
     <div class="nav-user">
@@ -1050,74 +1140,125 @@
 
   <!-- HOME VIEW -->
   <div id="homeView" class="hidden">
+
+    <!-- Hero — compact, one message -->
     <div class="home-hero">
-      <!-- Floating stat cards -->
       <div class="hero-floats" aria-hidden="true">
-        <div class="float-card" style="top:18%;left:4%">
-          <span class="float-icon">💰</span>
-          <div><div class="float-label">Avg Starting Salary</div><div class="float-value">$85k/yr</div></div>
-        </div>
-        <div class="float-card" style="top:58%;left:2%">
-          <span class="float-icon">📈</span>
-          <div><div class="float-label">Job Growth</div><div class="float-value">↑ 15%</div></div>
-        </div>
-        <div class="float-card" style="top:22%;right:3%">
-          <span class="float-icon">⭐</span>
-          <div><div class="float-label">Satisfaction</div><div class="float-value">High</div></div>
-        </div>
-        <div class="float-card" style="top:62%;right:4%">
-          <span class="float-icon">🎓</span>
-          <div><div class="float-label">Majors Tracked</div><div class="float-value">50+</div></div>
-        </div>
+        <div class="float-card" style="top:20%;left:3%"><span class="float-icon">💰</span><div><div class="float-label">Avg Starting Salary</div><div class="float-value">$85k/yr</div></div></div>
+        <div class="float-card" style="top:60%;left:2%"><span class="float-icon">📈</span><div><div class="float-label">Job Growth</div><div class="float-value">↑ 15%</div></div></div>
+        <div class="float-card" style="top:22%;right:3%"><span class="float-icon">⭐</span><div><div class="float-label">Satisfaction</div><div class="float-value">High</div></div></div>
+        <div class="float-card" style="top:60%;right:3%"><span class="float-icon">🎓</span><div><div class="float-label">Majors Tracked</div><div class="float-value">50+</div></div></div>
       </div>
-      <h1 class="home-hero-title">Find your <em>perfect major</em><br>at UW Seattle.</h1>
-      <p class="home-hero-sub">Explore 50+ majors, compare admission types, bookmark favorites, and discover clubs that match your interests.</p>
-    </div>
-    <div class="home-stats">
-      <div class="home-stat"><div class="home-stat-num" id="statMajors">50</div><div class="home-stat-label">Majors</div></div>
-      <div class="home-stat"><div class="home-stat-num" id="statRSOs">17</div><div class="home-stat-label">Clubs & RSOs</div></div>
-      <div class="home-stat"><div class="home-stat-num">8</div><div class="home-stat-label">Colleges</div></div>
-      <div class="home-stat"><div class="home-stat-num">3</div><div class="home-stat-label">Admit Types</div></div>
-    </div>
-    <div class="home-body">
-      <h2 class="home-section-title">Browse by School</h2>
-      <div class="home-quick-grid" id="homeCollegeGrid"></div>
-      <button class="home-explore-btn" onclick="showView('explore')">Explore All Majors →</button>
+      <div class="hero-eyebrow">UW Seattle — Major Explorer</div>
+      <h1 class="home-hero-title">Not sure what to major in?<br><em>You're in the right place.</em></h1>
+      <p class="home-hero-sub">Answer 3 quick questions and we'll show you the majors that actually fit you — no spreadsheets required.</p>
+      <div class="hero-step-pills">
+        <div class="hero-step-pill active" id="hpill1">① Interests</div>
+        <div class="hero-step-arrow">→</div>
+        <div class="hero-step-pill" id="hpill2">② Work style</div>
+        <div class="hero-step-arrow">→</div>
+        <div class="hero-step-pill" id="hpill3">③ Your matches</div>
+      </div>
     </div>
 
-    <!-- How it works -->
-    <div class="hiw-section">
-      <div class="hiw-inner">
-        <div class="hiw-label">How it works</div>
-        <h2 class="hiw-title">Three steps to finding your major</h2>
-        <div class="hiw-steps">
-          <div class="hiw-step">
-            <div class="hiw-num">01</div>
-            <div class="hiw-step-body">
-              <div class="hiw-step-title">Take the quiz</div>
-              <div class="hiw-step-desc">Answer quick "Like it / Love it" questions about real activities. We'll rank every UW major by how well it fits you.</div>
-              <span class="hiw-step-action" onclick="showView('quiz')">Start quiz →</span>
+    <!-- Guided flow -->
+    <div class="flow-wrap">
+
+      <!-- STEP 1: Interests -->
+      <div class="flow-step" id="flowStep1">
+        <div class="flow-step-header">
+          <div class="flow-step-num">Step 1 of 3</div>
+          <h2 class="flow-step-q">What sounds like <em>you</em>?</h2>
+          <p class="flow-step-hint">Tap everything that pulls you in — even a little. No wrong answers.</p>
+        </div>
+        <div class="interest-grid" id="interestGrid">
+          <div class="interest-card" data-cat="computing"       onclick="toggleInterest(this)"><div class="interest-emoji">💻</div><div class="interest-label">Computing &amp; Tech</div></div>
+          <div class="interest-card" data-cat="business"        onclick="toggleInterest(this)"><div class="interest-emoji">📊</div><div class="interest-label">Business &amp; Finance</div></div>
+          <div class="interest-card" data-cat="design"          onclick="toggleInterest(this)"><div class="interest-emoji">🎨</div><div class="interest-label">Design &amp; UX</div></div>
+          <div class="interest-card" data-cat="stem"            onclick="toggleInterest(this)"><div class="interest-emoji">🔬</div><div class="interest-label">Science &amp; Research</div></div>
+          <div class="interest-card" data-cat="health"          onclick="toggleInterest(this)"><div class="interest-emoji">🩺</div><div class="interest-label">Health &amp; Medicine</div></div>
+          <div class="interest-card" data-cat="social_sciences" onclick="toggleInterest(this)"><div class="interest-emoji">⚖️</div><div class="interest-label">Law &amp; Society</div></div>
+          <div class="interest-card" data-cat="arts_humanities" onclick="toggleInterest(this)"><div class="interest-emoji">📚</div><div class="interest-label">Writing &amp; Humanities</div></div>
+          <div class="interest-card" data-cat="environment"     onclick="toggleInterest(this)"><div class="interest-emoji">🌿</div><div class="interest-label">Environment</div></div>
+          <div class="interest-card" data-cat="engineering"     onclick="toggleInterest(this)"><div class="interest-emoji">⚙️</div><div class="interest-label">Engineering</div></div>
+        </div>
+        <div class="flow-footer">
+          <button class="flow-btn" id="step1Btn" onclick="flowGoStep2()" disabled>See next step →</button>
+          <span class="flow-skip" onclick="flowSkip()">I'm not sure yet — just browse →</span>
+        </div>
+      </div>
+
+      <!-- STEP 2: Work style -->
+      <div class="flow-step hidden" id="flowStep2">
+        <div class="flow-step-header">
+          <div class="flow-step-num">Step 2 of 3</div>
+          <h2 class="flow-step-q">Two quick questions</h2>
+          <p class="flow-step-hint">No right or wrong — just what feels most like you right now.</p>
+        </div>
+
+        <div class="flow-q-block">
+          <div class="flow-q-label">How do you like to work?</div>
+          <div class="flow-binary-row">
+            <div class="flow-binary-card" data-ws="solo" onclick="selectBinary('workStyle',this)">
+              <div class="flow-binary-emoji">🧘</div>
+              <div class="flow-binary-title">Independently</div>
+              <div class="flow-binary-sub">Deep focus, solo projects, my own pace</div>
             </div>
-          </div>
-          <div class="hiw-step">
-            <div class="hiw-num">02</div>
-            <div class="hiw-step-body">
-              <div class="hiw-step-title">Filter &amp; compare</div>
-              <div class="hiw-step-desc">Browse all 50+ majors by college, salary, admission difficulty, and career path side by side.</div>
-              <span class="hiw-step-action" onclick="showView('explore')">Browse majors →</span>
-            </div>
-          </div>
-          <div class="hiw-step">
-            <div class="hiw-num">03</div>
-            <div class="hiw-step-body">
-              <div class="hiw-step-title">Deep dive &amp; decide</div>
-              <div class="hiw-step-desc">Read real admission stats, sample courses, peer quotes, and career outcomes — everything on one page.</div>
-              <span class="hiw-step-action" onclick="showView('myMajors')">My saved majors →</span>
+            <div class="flow-binary-card" data-ws="team" onclick="selectBinary('workStyle',this)">
+              <div class="flow-binary-emoji">🤝</div>
+              <div class="flow-binary-title">With people</div>
+              <div class="flow-binary-sub">Collaboration, teams, talking through ideas</div>
             </div>
           </div>
         </div>
+
+        <div class="flow-q-block" style="margin-top:28px">
+          <div class="flow-q-label">What matters more to you right now?</div>
+          <div class="flow-binary-row">
+            <div class="flow-binary-card" data-priority="salary" onclick="selectBinary('priority',this)">
+              <div class="flow-binary-emoji">💸</div>
+              <div class="flow-binary-title">High earning potential</div>
+              <div class="flow-binary-sub">I want strong starting salary &amp; job security</div>
+            </div>
+            <div class="flow-binary-card" data-priority="impact" onclick="selectBinary('priority',this)">
+              <div class="flow-binary-emoji">🌍</div>
+              <div class="flow-binary-title">Making an impact</div>
+              <div class="flow-binary-sub">I want my work to matter beyond a paycheck</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="flow-footer" style="margin-top:36px">
+          <button class="flow-btn-secondary" onclick="flowGoStep1()">← Back</button>
+          <button class="flow-btn" id="step2Btn" onclick="flowGoStep3()" disabled>Show my matches →</button>
+          <span class="flow-skip" onclick="flowSkip()">Skip — just browse</span>
+        </div>
       </div>
+
+      <!-- STEP 3: Results -->
+      <div class="flow-step hidden" id="flowStep3">
+        <div class="flow-step-header">
+          <div class="flow-step-num" style="color:#059669">✓ Done! Here are your matches</div>
+          <h2 class="flow-step-q" id="flowResultHeadline">Your top majors at UW</h2>
+          <p class="flow-step-hint" id="flowResultSub">Based on your interests and work style.</p>
+        </div>
+        <div id="flowResultCards" class="flow-result-cards"></div>
+        <div class="flow-result-footer">
+          <button class="home-explore-btn" onclick="showView('explore')" style="margin-right:12px">Browse all 50+ majors →</button>
+          <span class="flow-skip" onclick="flowReset()">Start over</span>
+        </div>
+      </div>
+
+    </div><!-- /flow-wrap -->
+
+    <!-- Reassurance strip -->
+    <div class="reassurance-strip">
+      <div class="reassurance-item"><span class="ri-icon">🔒</span>No login needed to explore</div>
+      <div class="reassurance-item"><span class="ri-icon">↩️</span>Change your mind anytime</div>
+      <div class="reassurance-item"><span class="ri-icon">💛</span>Save favorites as you go</div>
+      <div class="reassurance-item"><span class="ri-icon">👥</span>Real advice from professors &amp; seniors</div>
     </div>
+
   </div>
 
   <!-- COMMUNITY VIEW -->
@@ -8479,19 +8620,6 @@ const COLLEGE_ICONS = {
   engineering:   '💻', arts_sciences: '🔬', foster: '📈', ischool: '📚',
   built_env:     '🏛', college_env:   '🌿', nursing: '🏥', public_health: '💊',
 };
-function renderHome() {
-  animateCount(document.getElementById('statMajors'), MAJORS.length);
-  animateCount(document.getElementById('statRSOs'), RSOS.length);
-  const grid = document.getElementById('homeCollegeGrid');
-  grid.innerHTML = COLLEGES.map(col=>{
-    const n = MAJORS.filter(m=>m.collegeGroup===col.id).length;
-    return `<div class="home-quick-card" onclick="jumpToCollege('${col.id}')">
-      <div class="home-quick-icon">${COLLEGE_ICONS[col.id]||'🎓'}</div>
-      <div class="home-quick-name">${esc(col.name)}</div>
-      <div class="home-quick-count">${n} major${n!==1?'s':''}</div>
-    </div>`;
-  }).join('');
-}
 function jumpToCollege(collegeId) {
   state.college = collegeId;
   state.cat     = 'all';
@@ -9904,6 +10032,151 @@ function closeMinorDetail() {
 }
 
 /* ============================================================
+   GUIDED HOME FLOW
+   ============================================================ */
+let flowState = { interests: new Set(), workStyle: null, priority: null };
+
+function renderHome() {
+  updateHeroPills(flowState.interests.size > 0 ? (flowState.workStyle ? 3 : 2) : 1);
+  // restore any saved picks
+  document.querySelectorAll('.interest-card').forEach(c => {
+    c.classList.toggle('selected', flowState.interests.has(c.dataset.cat));
+  });
+  checkStep1Btn();
+}
+
+function toggleInterest(el) {
+  const cat = el.dataset.cat;
+  el.classList.toggle('selected');
+  if (el.classList.contains('selected')) flowState.interests.add(cat);
+  else flowState.interests.delete(cat);
+  checkStep1Btn();
+}
+
+function checkStep1Btn() {
+  const btn = document.getElementById('step1Btn');
+  if (btn) btn.disabled = flowState.interests.size === 0;
+}
+
+function selectBinary(key, el) {
+  const group = el.closest('.flow-binary-row').querySelectorAll('.flow-binary-card');
+  group.forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  flowState[key] = el.dataset[key === 'workStyle' ? 'ws' : 'priority'];
+  checkStep2Btn();
+}
+
+function checkStep2Btn() {
+  const btn = document.getElementById('step2Btn');
+  if (btn) btn.disabled = !(flowState.workStyle && flowState.priority);
+}
+
+function flowGoStep2() {
+  document.getElementById('flowStep1').classList.add('hidden');
+  document.getElementById('flowStep2').classList.remove('hidden');
+  updateHeroPills(2);
+  // restore previous selections
+  if (flowState.workStyle) {
+    document.querySelectorAll('[data-ws]').forEach(c => c.classList.toggle('selected', c.dataset.ws === flowState.workStyle));
+  }
+  if (flowState.priority) {
+    document.querySelectorAll('[data-priority]').forEach(c => c.classList.toggle('selected', c.dataset.priority === flowState.priority));
+  }
+  checkStep2Btn();
+}
+
+function flowGoStep1() {
+  document.getElementById('flowStep2').classList.add('hidden');
+  document.getElementById('flowStep1').classList.remove('hidden');
+  updateHeroPills(1);
+}
+
+function flowGoStep3() {
+  document.getElementById('flowStep2').classList.add('hidden');
+  document.getElementById('flowStep3').classList.remove('hidden');
+  updateHeroPills(3);
+  renderFlowResults();
+}
+
+function updateHeroPills(step) {
+  [1,2,3].forEach(i => {
+    const p = document.getElementById('hpill'+i);
+    if (!p) return;
+    p.className = 'hero-step-pill' + (i < step ? ' done' : i === step ? ' active' : '');
+  });
+}
+
+function flowReset() {
+  flowState = { interests: new Set(), workStyle: null, priority: null };
+  document.getElementById('flowStep3').classList.add('hidden');
+  document.getElementById('flowStep2').classList.add('hidden');
+  document.getElementById('flowStep1').classList.remove('hidden');
+  document.querySelectorAll('.interest-card').forEach(c => c.classList.remove('selected'));
+  document.querySelectorAll('.flow-binary-card').forEach(c => c.classList.remove('selected'));
+  checkStep1Btn();
+  updateHeroPills(1);
+}
+
+function flowSkip() {
+  showView('explore');
+}
+
+function renderFlowResults() {
+  // Build category scores
+  const scores = {};
+  flowState.interests.forEach(cat => { scores[cat] = (scores[cat]||0) + 3; });
+  // Work style boosts
+  if (flowState.workStyle === 'solo')  { scores.computing=(scores.computing||0)+2; scores.stem=(scores.stem||0)+2; scores.arts_humanities=(scores.arts_humanities||0)+2; }
+  if (flowState.workStyle === 'team')  { scores.social_sciences=(scores.social_sciences||0)+2; scores.business=(scores.business||0)+2; scores.design=(scores.design||0)+2; scores.health=(scores.health||0)+2; }
+  // Priority boosts
+  if (flowState.priority === 'salary') { scores.computing=(scores.computing||0)+2; scores.business=(scores.business||0)+2; scores.engineering=(scores.engineering||0)+2; }
+  if (flowState.priority === 'impact') { scores.health=(scores.health||0)+2; scores.social_sciences=(scores.social_sciences||0)+2; scores.environment=(scores.environment||0)+2; scores.arts_humanities=(scores.arts_humanities||0)+1; }
+
+  const ranked = MAJORS.map(m => {
+    const cats = m.categories || [];
+    const total = cats.reduce((s,c) => s+(scores[c]||0), 0);
+    return { m, total };
+  }).filter(x=>x.total>0).sort((a,b)=>b.total-a.total).slice(0,5);
+
+  const interestLabels = { computing:'Computing', business:'Business', design:'Design', stem:'Science', health:'Health', social_sciences:'Law & Society', arts_humanities:'Humanities', environment:'Environment', engineering:'Engineering' };
+  const interestStr = [...flowState.interests].map(c=>interestLabels[c]||c).join(', ');
+  const styleStr = flowState.workStyle === 'solo' ? 'independent work' : 'collaborative work';
+  const priorityStr = flowState.priority === 'salary' ? 'earning potential' : 'making an impact';
+
+  const hl = document.getElementById('flowResultHeadline');
+  const sub = document.getElementById('flowResultSub');
+  if (hl) hl.textContent = ranked.length ? `Your top ${ranked.length} UW majors` : 'Keep exploring';
+  if (sub) sub.textContent = `Based on your interest in ${interestStr}, preference for ${styleStr}, and focus on ${priorityStr}.`;
+
+  const container = document.getElementById('flowResultCards');
+  if (!container) return;
+  if (!ranked.length) { container.innerHTML = `<p style="color:var(--ink-muted)">No strong matches found — try picking more interests!</p>`; return; }
+
+  container.innerHTML = ranked.map(({m, total}, i) => {
+    const cats = m.categories||[];
+    const accent = m.accent||'#4B2E83';
+    const icon = m.icon||(cats[0]?catEmoji(cats[0]):'🎓');
+    const reasons = cats.filter(c=>flowState.interests.has(c)).map(c=>interestLabels[c]||c);
+    const reasonStr = reasons.length ? `Matches your interest in ${reasons.join(' & ')}` : `Great fit for your profile`;
+    const salary = m.salaryRange||'';
+    const [,cls] = admitBadge(m.admissionType||'');
+    return `<div class="flow-result-card ${i===0?'rank1':''}" >
+      <div class="flow-result-icon" style="background:${accent}18">${icon}</div>
+      <div class="flow-result-info">
+        ${i===0?`<span class="flow-rank-badge">★ Best match</span> `:''}
+        <div class="flow-result-name">${esc(m.name)}</div>
+        <div class="flow-result-reason">${esc(reasonStr)}</div>
+        <div class="flow-result-meta">${esc(m.college||'')}${salary?' · '+esc(salary):''}</div>
+      </div>
+      <div class="flow-result-actions">
+        <span class="flow-result-learn" onclick="openDetail('${esc(m.id)}')">Learn more →</span>
+        <span class="flow-result-save" onclick="toggleBookmark('${esc(m.id)}');this.textContent=getBookmarks().includes('${esc(m.id)}')?'✓ Saved':'💛 Save'">💛 Save</span>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+/* ============================================================
    COMMUNITY
    ============================================================ */
 const COMMUNITY = [
@@ -10206,8 +10479,6 @@ function quizReset() {
    INIT
    ============================================================ */
 function initApp(freshLogin) {
-  document.getElementById('statMajors').textContent = MAJORS.length;
-  document.getElementById('statRSOs').textContent   = RSOS.length;
   initSalarySlider();
   renderHome();
   renderExplore();
