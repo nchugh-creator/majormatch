@@ -198,6 +198,71 @@
     .float-label { font-size: 11px; color: rgba(255,255,255,.65); text-transform: uppercase; letter-spacing: .8px; }
     .float-value { font-size: 18px; font-weight: 500; letter-spacing: -.4px; }
 
+    /* ── Community view ── */
+    #communityView { display: flex; min-height: calc(100vh - var(--nav-h)); background: var(--bg); }
+    .community-sidebar {
+      width: 220px; flex-shrink: 0; background: var(--bg-surface); border-right: 1px solid var(--border);
+      padding: 24px 16px; position: sticky; top: var(--nav-h); height: calc(100vh - var(--nav-h)); overflow-y: auto;
+    }
+    .community-main { flex: 1; min-width: 0; padding: 32px 32px 80px; }
+    .community-header { margin-bottom: 28px; }
+    .community-title { font-size: 26px; font-weight: 300; letter-spacing: -.5px; color: var(--ink); }
+    .community-sub { font-size: 14px; color: var(--ink-muted); margin-top: 4px; font-weight: 300; }
+    .community-grid {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 16px;
+    }
+    .community-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+      padding: 20px; display: flex; flex-direction: column; gap: 12px;
+      transition: box-shadow .25s, transform .25s;
+    }
+    .community-card:hover { box-shadow: 0 6px 24px rgba(0,0,0,.09); transform: translateY(-2px); }
+    .comm-card-top { display: flex; align-items: flex-start; gap: 14px; }
+    .comm-avatar {
+      width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center;
+      justify-content: center; font-size: 18px; font-weight: 700; flex-shrink: 0;
+      color: #fff; letter-spacing: -.5px;
+    }
+    .comm-name { font-size: 15px; font-weight: 600; color: var(--ink); line-height: 1.2; }
+    .comm-role { font-size: 12px; color: var(--ink-muted); margin-top: 2px; }
+    .comm-major-tag {
+      display: inline-block; font-size: 11px; font-weight: 600; padding: 3px 9px;
+      border-radius: 20px; background: var(--purple-faint); color: var(--purple); margin-top: 4px;
+    }
+    .comm-quote {
+      font-size: 13px; color: var(--ink-muted); line-height: 1.55; font-style: italic;
+      border-left: 3px solid var(--purple-faint); padding-left: 10px;
+    }
+    .comm-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+    .comm-tag {
+      font-size: 11px; padding: 3px 8px; border-radius: 20px; background: var(--bg-surface2);
+      color: var(--ink-muted); border: 1px solid var(--border);
+    }
+    .comm-footer { display: flex; align-items: center; justify-content: space-between; margin-top: 4px; }
+    .comm-email-btn {
+      font-size: 12px; font-weight: 600; color: var(--purple); cursor: pointer;
+      padding: 6px 12px; border-radius: 6px; border: 1.5px solid var(--purple-faint);
+      background: transparent; transition: background .15s;
+    }
+    .comm-email-btn:hover { background: var(--purple-faint); }
+    .comm-type-pill {
+      font-size: 10px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase;
+      padding: 3px 8px; border-radius: 20px;
+    }
+    .pill-professor { background: #FEF3C7; color: #92400E; }
+    .pill-senior    { background: #DCFCE7; color: #166534; }
+    .pill-alumni    { background: #EDE9FE; color: #5B21B6; }
+    .comm-filter-btn {
+      display: block; width: 100%; text-align: left; padding: 6px 4px;
+      font-size: 14px; font-weight: 300; color: var(--ink-muted);
+      background: none; border: none; cursor: pointer; border-radius: 4px;
+      transition: color .12s;
+    }
+    .comm-filter-btn:hover { color: var(--ink); }
+    .comm-filter-btn.active { color: var(--purple); font-weight: 500; }
+    .comm-section-label { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--ink-light); margin: 18px 0 8px; }
+    .comm-empty { text-align: center; color: var(--ink-muted); padding: 60px 20px; font-size: 15px; }
+
     /* ── Quiz view ── */
     #quizView { display: flex; min-height: calc(100vh - var(--nav-h)); background: var(--bg); }
     .quiz-main {
@@ -918,7 +983,8 @@
       <button class="nav-tab"        data-view="myMajors" onclick="showView('myMajors')">My Majors</button>
       <button class="nav-tab"        data-view="explore"  onclick="showView('explore')">Explore</button>
       <button class="nav-tab"        data-view="rsos"     onclick="showView('explore');setExploreTab('rsos')">Clubs &amp; RSOs</button>
-      <button class="nav-tab"        data-view="quiz"     onclick="showView('quiz')" style="color:var(--gold)">✦ Quiz</button>
+      <button class="nav-tab"        data-view="quiz"       onclick="showView('quiz')" style="color:var(--gold)">✦ Quiz</button>
+      <button class="nav-tab"        data-view="community"  onclick="showView('community')">Community</button>
     </div>
     <div class="nav-spacer"></div>
     <div class="nav-user">
@@ -1051,6 +1117,35 @@
           </div>
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- COMMUNITY VIEW -->
+  <div id="communityView" class="hidden">
+    <div class="community-sidebar">
+      <div class="comm-section-label">Show</div>
+      <button class="comm-filter-btn active" data-cfilter="type" data-cval="all"       onclick="setCommunityFilter('type','all',this)">Everyone</button>
+      <button class="comm-filter-btn"        data-cfilter="type" data-cval="professor" onclick="setCommunityFilter('type','professor',this)">👩‍🏫 Professors</button>
+      <button class="comm-filter-btn"        data-cfilter="type" data-cval="senior"    onclick="setCommunityFilter('type','senior',this)">🎓 Seniors</button>
+      <button class="comm-filter-btn"        data-cfilter="type" data-cval="alumni"    onclick="setCommunityFilter('type','alumni',this)">💼 Alumni</button>
+      <div class="comm-section-label">Field</div>
+      <button class="comm-filter-btn active" data-cfilter="cat" data-cval="all"             onclick="setCommunityFilter('cat','all',this)">All Fields</button>
+      <button class="comm-filter-btn"        data-cfilter="cat" data-cval="computing"        onclick="setCommunityFilter('cat','computing',this)">💻 Computing</button>
+      <button class="comm-filter-btn"        data-cfilter="cat" data-cval="business"         onclick="setCommunityFilter('cat','business',this)">📊 Business</button>
+      <button class="comm-filter-btn"        data-cfilter="cat" data-cval="design"           onclick="setCommunityFilter('cat','design',this)">🎨 Design</button>
+      <button class="comm-filter-btn"        data-cfilter="cat" data-cval="stem"             onclick="setCommunityFilter('cat','stem',this)">🔬 STEM</button>
+      <button class="comm-filter-btn"        data-cfilter="cat" data-cval="social_sciences"  onclick="setCommunityFilter('cat','social_sciences',this)">🌍 Social Sciences</button>
+      <button class="comm-filter-btn"        data-cfilter="cat" data-cval="health"           onclick="setCommunityFilter('cat','health',this)">🩺 Health</button>
+      <button class="comm-filter-btn"        data-cfilter="cat" data-cval="engineering"      onclick="setCommunityFilter('cat','engineering',this)">⚙️ Engineering</button>
+      <button class="comm-filter-btn"        data-cfilter="cat" data-cval="arts_humanities"  onclick="setCommunityFilter('cat','arts_humanities',this)">📚 Arts &amp; Humanities</button>
+      <button class="comm-filter-btn"        data-cfilter="cat" data-cval="environment"      onclick="setCommunityFilter('cat','environment',this)">🌿 Environment</button>
+    </div>
+    <div class="community-main">
+      <div class="community-header">
+        <div class="community-title">Community</div>
+        <div class="community-sub">Hear from professors and students across every UW major — real advice, real paths.</div>
+      </div>
+      <div class="community-grid" id="communityGrid"></div>
     </div>
   </div>
 
@@ -8359,7 +8454,7 @@ document.getElementById('loginNetid').addEventListener('keydown', e=>{ if(e.key=
 /* ============================================================
    VIEW ROUTER
    ============================================================ */
-const VIEWS = ['filterPickerView','homeView','exploreView','detailView','myMajorsView','quizView'];
+const VIEWS = ['filterPickerView','homeView','exploreView','detailView','myMajorsView','quizView','communityView'];
 function showView(name) {
   state.prevView = state.view;
   state.view = name;
@@ -8373,7 +8468,8 @@ function showView(name) {
   if (viewName==='home')     renderHome();
   if (viewName==='explore')  { renderExplore(); renderSalaryHistogram(); }
   if (viewName==='myMajors') renderMyMajors();
-  if (viewName==='quiz')     renderQuiz();
+  if (viewName==='quiz')      renderQuiz();
+  if (viewName==='community') renderCommunity();
 }
 
 /* ============================================================
@@ -9805,6 +9901,143 @@ function closeMinorDetail() {
   const el = document.getElementById('minorDetailOverlay');
   if (el) el.remove();
   document.body.style.overflow = '';
+}
+
+/* ============================================================
+   COMMUNITY
+   ============================================================ */
+const COMMUNITY = [
+  // ── PROFESSORS ──
+  { type:'professor', name:'Dr. Shwetak Patel', initials:'SP', color:'#4B2E83', major:'Computer Science & Engineering', majorId:'cs', cat:'computing',
+    role:'Professor, Allen School — Energy & Health Systems', tags:['Ubiquitous Computing','Health Tech','Sensors'],
+    quote:'CSE students who do undergrad research leave with industry-ready skills and a network that opens doors. Email any professor Week 1 — we actually want to hear from you.',
+    email:'shwetak@cs.uw.edu', officeHours:'Tues 2–4pm, CSE 658' },
+  { type:'professor', name:'Dr. Amy Ko', initials:'AK', color:'#1D4ED8', major:'Informatics', majorId:'informatics', cat:'computing',
+    role:'Professor, iSchool — Programming Education', tags:['HCI','Education','Accessibility'],
+    quote:'INFO students consistently surprise me. The best ones aren\'t necessarily the most technical — they\'re the ones who ask "why does this matter for people?"',
+    email:'ajko@uw.edu', officeHours:'Mon 1–3pm, Mary Gates 330' },
+  { type:'professor', name:'Dr. Katharina Reinecke', initials:'KR', color:'#0891B2', major:'HCDE', majorId:'hcde', cat:'design',
+    role:'Associate Professor — Cross-Cultural UX Research', tags:['UX Research','Accessibility','Global Design'],
+    quote:'HCDE is unusual — you\'ll get into industry earlier than most engineering majors, and with a richer toolkit. The research methods you learn here transfer everywhere.',
+    email:'reinecke@uw.edu', officeHours:'Wed 10–12pm, Sieg 219' },
+  { type:'professor', name:'Dr. Tamma Carleton', initials:'TC', color:'#059669', major:'Economics', majorId:'economics', cat:'social_sciences',
+    role:'Assistant Professor — Climate Economics', tags:['Climate Policy','Data Science','Policy Analysis'],
+    quote:'Economics at UW is quantitative in the best way. If you can think in models and care about real-world problems, this major takes you anywhere — consulting, policy, tech.',
+    email:'tcarleton@uw.edu', officeHours:'Thurs 3–5pm, Savery 305' },
+  { type:'professor', name:'Dr. Peter Kahn', initials:'PK', color:'#7C3AED', major:'Psychology', majorId:'psych', cat:'social_sciences',
+    role:'Professor — Developmental & Environmental Psychology', tags:['Child Development','Ethics & Tech','Nature'],
+    quote:'Psychology teaches you how to design research that actually answers questions. That skill — building evidence — is what separates strong candidates in every career path.',
+    email:'pkahn@uw.edu', officeHours:'Mon 11am–1pm, Guthrie 216' },
+  { type:'professor', name:'Dr. Gunnar Öquist', initials:'GO', color:'#16A34A', major:'Environmental Studies', majorId:'env_studies', cat:'environment',
+    role:'Professor — Ecosystem Science & Policy', tags:['Carbon Systems','Field Research','Climate Law'],
+    quote:'Our students don\'t just study the environment — they go into the field, run experiments, testify at hearings. The world needs that combination of science and advocacy.',
+    email:'goquist@uw.edu', officeHours:'Fri 9–11am, Raitt Hall 208' },
+  { type:'professor', name:'Dr. Yoshi Kohno', initials:'YK', color:'#DC2626', major:'Computer Science & Engineering', majorId:'cs', cat:'computing',
+    role:'Professor, Allen School — Security & Privacy', tags:['Cybersecurity','Privacy','Systems'],
+    quote:'Security is one of the fastest-growing areas in tech. CSE students who focus here are recruited aggressively. The key is building things and breaking them — hands-on.',
+    email:'yoshi@cs.uw.edu', officeHours:'Tues 3–5pm, CSE 632' },
+  { type:'professor', name:'Dr. Ione Fine', initials:'IF', color:'#DB2777', major:'Neuroscience', majorId:'neuro', cat:'stem',
+    role:'Professor — Visual Neuroscience & Perception', tags:['Sensory Systems','Visual Cortex','fMRI'],
+    quote:'Neuroscience at UW is world-class. My biggest piece of advice: get into a research lab before sophomore year. The committee looks at who\'s already doing the work.',
+    email:'ionefine@uw.edu', officeHours:'Wed 1–3pm, Kincaid 219' },
+
+  // ── SENIORS ──
+  { type:'senior', name:'Marcus T.', initials:'MT', color:'#C4973A', major:'Computer Science & Engineering', majorId:'cs', cat:'computing',
+    role:'Senior, CSE — Specialization: Systems', tags:['SWE Intern @ Microsoft','Competitive Programming','AI Club'],
+    quote:'The hardest thing about CSE is getting in, not staying in. Once you\'re admitted, be intentional — take 417 and 452, find a research lab or internship by sophomore summer.',
+    email:null, officeHours:null },
+  { type:'senior', name:'Priya N.', initials:'PN', color:'#4B2E83', major:'Informatics', majorId:'informatics', cat:'computing',
+    role:'Senior, INFO — Focus: HCI', tags:['UX Research Intern @ Meta','WINFO','DXARTS minor'],
+    quote:'INFO felt slow at first — lots of group projects. But by junior year I had a portfolio that got me three interviews while CS friends were still doing LeetCode. Play the long game.',
+    email:null, officeHours:null },
+  { type:'senior', name:'Jordan K.', initials:'JK', color:'#059669', major:'HCDE', majorId:'hcde', cat:'design',
+    role:'Senior, HCDE — UX Track', tags:['Design Intern @ Amazon','Figma','Accessibility Research'],
+    quote:'Don\'t underestimate HCDE. I\'ve had Amazon and Google recruiters reach out based on my portfolio alone. The program forces you to ship real work, not just theory.',
+    email:null, officeHours:null },
+  { type:'senior', name:'Aisha M.', initials:'AM', color:'#D97706', major:'Business Administration', majorId:'business', cat:'business',
+    role:'Senior, Foster — Finance & Marketing double', tags:['JPMorgan Intern','Finance Club','Case Competition finalist'],
+    quote:'Foster\'s alumni network is genuinely strong in Seattle. I got my JPMorgan interview through a Foster alum cold email. Use that network aggressively — they want to help.',
+    email:null, officeHours:null },
+  { type:'senior', name:'Lena R.', initials:'LR', color:'#7C3AED', major:'Psychology', majorId:'psych', cat:'social_sciences',
+    role:'Senior, PSYCH — Cognitive Neuroscience track', tags:['Lab RA — Memory & Cognition','Pre-PhD track','Stats tutor'],
+    quote:'Psych without research experience is just a degree. Psych with three years in a lab is a PhD application. Start emailing professors Week 1 of freshman year. Seriously.',
+    email:null, officeHours:null },
+  { type:'senior', name:'Daniel Y.', initials:'DY', color:'#0891B2', major:'Economics', majorId:'economics', cat:'social_sciences',
+    role:'Senior, ECON — Data Economics track', tags:['Amazon Economics Intern','Stata & Python','Honors Thesis'],
+    quote:'The econ major at UW is underrated. Amazon has a whole team of economists and they recruit heavily from here. Learn coding on top of econ and you\'ll stand out everywhere.',
+    email:null, officeHours:null },
+  { type:'senior', name:'Sofia L.', initials:'SL', color:'#16A34A', major:'Biology', majorId:'biology', cat:'stem',
+    role:'Senior, BIO — Pre-med track', tags:['Fred Hutch Research','MCAT prep','Global Health minor'],
+    quote:'Pre-med at UW is competitive and the curve is brutal. Find your people early — study groups saved me in BIOL 200. And get into a research lab: med schools care a lot.',
+    email:null, officeHours:null },
+  { type:'senior', name:'Ravi S.', initials:'RS', color:'#DC2626', major:'Electrical & Computer Engineering', majorId:'ece', cat:'engineering',
+    role:'Senior, ECE — Embedded Systems', tags:['Apple Hardware Intern','IEEE','Robotics Club'],
+    quote:'ECE has the steepest curve at UW. EE 215 and 233 will test you. But every recruiter knows it — when you say ECE, doors open. Stick through the hard quarters.',
+    email:null, officeHours:null },
+  { type:'senior', name:'Zoe P.', initials:'ZP', color:'#DB2777', major:'Communication', majorId:'communication', cat:'social_sciences',
+    role:'Senior, COM — Media & Technology focus', tags:['Journalism Intern @ Seattle Times','KXRW Radio','COM Peer Advisor'],
+    quote:'COM gets underestimated because it\'s not STEM. But the research methods and storytelling skills transfer to tech, nonprofit, policy — anywhere you need to communicate ideas.',
+    email:null, officeHours:null },
+
+  // ── ALUMNI ──
+  { type:'alumni', name:'Kenji W.', initials:'KW', color:'#1D4ED8', major:'Computer Science & Engineering', majorId:'cs', cat:'computing',
+    role:'SWE at Google — Graduated 2022', tags:['Distributed Systems','Career Mentor','CSE 473 TA alum'],
+    quote:'The gap between CSE at UW and industry is real but closeable. Do at least one internship before senior year, build one project you\'re proud of, and practice LC consistently.',
+    email:null, officeHours:null },
+  { type:'alumni', name:'Nadia A.', initials:'NA', color:'#059669', major:'Informatics', majorId:'informatics', cat:'computing',
+    role:'Product Manager at Stripe — Graduated 2023', tags:['HCI Focus','INFO 360 loved','Now hiring interns'],
+    quote:'INFO prepared me for PM better than any CS-only path could have. The blend of technical fluency and human empathy is exactly what product teams need.',
+    email:null, officeHours:null },
+  { type:'alumni', name:'Carlos M.', initials:'CM', color:'#7C3AED', major:'Neuroscience', majorId:'neuro', cat:'stem',
+    role:'PhD Student, Stanford Neuroscience — Graduated 2023', tags:['UW Brain Lab alum','NSF Fellowship','Systems Neuro'],
+    quote:'UW Neuro is hard to get into for a reason — the department only wants students ready to do serious science. Start in a lab early and bring data to your application.',
+    email:null, officeHours:null },
+];
+
+let communityFilters = { type: 'all', cat: 'all' };
+
+function setCommunityFilter(key, val, btn) {
+  communityFilters[key] = val;
+  document.querySelectorAll(`.comm-filter-btn[data-cfilter="${key}"]`).forEach(b=>b.classList.toggle('active',b===btn));
+  renderCommunityGrid();
+}
+
+function renderCommunity() {
+  renderCommunityGrid();
+}
+
+function renderCommunityGrid() {
+  const grid = document.getElementById('communityGrid');
+  if (!grid) return;
+  const filtered = COMMUNITY.filter(p => {
+    if (communityFilters.type !== 'all' && p.type !== communityFilters.type) return false;
+    if (communityFilters.cat  !== 'all' && p.cat  !== communityFilters.cat)  return false;
+    return true;
+  });
+  if (!filtered.length) { grid.innerHTML = `<div class="comm-empty">No community members match this filter.</div>`; return; }
+  grid.innerHTML = filtered.map(p => {
+    const pillCls = p.type === 'professor' ? 'pill-professor' : p.type === 'senior' ? 'pill-senior' : 'pill-alumni';
+    const pillLbl = p.type === 'professor' ? 'Professor' : p.type === 'senior' ? 'Senior' : 'Alumni';
+    const tagsHtml = p.tags.map(t=>`<span class="comm-tag">${esc(t)}</span>`).join('');
+    const actionBtn = p.email
+      ? `<button class="comm-email-btn" onclick="window.location='mailto:${p.email}'">✉ Email</button>`
+      : `<button class="comm-email-btn" onclick="showView('explore')">View major →</button>`;
+    const ohHtml = p.officeHours ? `<span style="font-size:11px;color:var(--ink-light)">🕐 ${esc(p.officeHours)}</span>` : '';
+    return `<div class="community-card">
+      <div class="comm-card-top">
+        <div class="comm-avatar" style="background:${p.color}">${esc(p.initials)}</div>
+        <div style="flex:1;min-width:0">
+          <div class="comm-name">${esc(p.name)}</div>
+          <div class="comm-role">${esc(p.role)}</div>
+          <span class="comm-major-tag">${esc(p.major)}</span>
+        </div>
+        <span class="comm-type-pill ${pillCls}">${pillLbl}</span>
+      </div>
+      <div class="comm-quote">"${esc(p.quote)}"</div>
+      <div class="comm-tags">${tagsHtml}</div>
+      <div class="comm-footer">${actionBtn}${ohHtml}</div>
+    </div>`;
+  }).join('');
 }
 
 /* ============================================================
