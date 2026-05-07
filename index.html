@@ -83,8 +83,9 @@
       background: var(--purple); display: flex; align-items: center;
       padding: 0 28px; z-index: 500; box-shadow: 0 2px 12px rgba(0,0,0,.15);
     }
-    .nav-logo { font-family: 'DM Sans', sans-serif; font-size: 18px; font-weight: 700; letter-spacing: -0.4px; color: #fff; margin-right: 36px; flex-shrink: 0; }
+    .nav-logo { display: flex; align-items: center; gap: 10px; font-family: 'DM Sans', sans-serif; font-size: 18px; font-weight: 700; letter-spacing: -0.4px; color: #fff; margin-right: 36px; flex-shrink: 0; cursor: pointer; }
     .nav-logo span { color: var(--gold-light); }
+    .nav-logo-icon { width: 34px; height: 34px; flex-shrink: 0; }
     .nav-tabs { display: flex; align-items: stretch; height: var(--nav-h); }
     .nav-tab {
       padding: 0 16px; font-size: 14px; font-weight: 400; color: rgba(255,255,255,.65);
@@ -1069,7 +1070,28 @@
 
   <!-- TOP NAV -->
   <nav id="topNav">
-    <div class="nav-logo">Major<span>Match</span></div>
+    <div class="nav-logo" onclick="showView('home')">
+      <!-- Playing-card stack logo -->
+      <svg class="nav-logo-icon" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+        <!-- Back card (right, rotated CW) -->
+        <rect x="24" y="18" width="52" height="68" rx="9" ry="9"
+              fill="white" stroke="white" stroke-width="2" opacity="0.55"
+              transform="rotate(18 50 52)"/>
+        <!-- Middle card -->
+        <rect x="24" y="18" width="52" height="68" rx="9" ry="9"
+              fill="white" stroke="white" stroke-width="2" opacity="0.75"
+              transform="rotate(8 50 52)"/>
+        <!-- Front card -->
+        <rect x="24" y="18" width="52" height="68" rx="9" ry="9"
+              fill="white" stroke="white" stroke-width="1.5"/>
+        <!-- Purple M -->
+        <text x="50" y="63" text-anchor="middle"
+              font-family="'DM Sans', Arial Black, sans-serif"
+              font-weight="900" font-size="38" fill="#4B2E83"
+              letter-spacing="-2">M!</text>
+      </svg>
+      Major<span>Match</span>
+    </div>
     <div class="nav-tabs">
       <button class="nav-tab active" data-view="home"      onclick="showView('home')">Home</button>
       <button class="nav-tab"        data-view="explore"   onclick="showView('explore')">Explore</button>
