@@ -17,5 +17,10 @@ app.get('*', (_req, res) => {
   res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
-const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log(`MajorMatch server running on port ${PORT}`));
+// Export for Vercel serverless; also listen locally
+if (process.env.NODE_ENV !== 'production') {
+  const PORT = process.env.PORT || 3000;
+  app.listen(PORT, () => console.log(`MajorMatch server running on port ${PORT}`));
+}
+
+module.exports = app;
