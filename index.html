@@ -77,6 +77,24 @@
     .login-btn:hover { background: var(--purple-mid); }
     .login-note { font-size: 11px; color: var(--ink-light); text-align: center; margin-top: 16px; }
     .login-error { font-size: 12px; color: var(--cap-text); margin-bottom: 10px; display: none; }
+    /* Auth tabs */
+    .auth-tabs { display: flex; border-bottom: 2px solid var(--border); margin-bottom: 22px; }
+    .auth-tab { flex: 1; padding: 10px; font-size: 14px; font-weight: 600; color: var(--ink-light); cursor: pointer; text-align: center; border-bottom: 2px solid transparent; margin-bottom: -2px; transition: color .15s, border-color .15s; }
+    .auth-tab.active { color: var(--purple); border-bottom-color: var(--purple); }
+    .auth-panel { display: none; }
+    .auth-panel.active { display: block; }
+    .auth-field { margin-bottom: 14px; }
+    .auth-field label { display: block; font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--ink-light); margin-bottom: 5px; }
+    .auth-input { width: 100%; padding: 11px 14px; border: 1.5px solid var(--border); border-radius: 7px; font-family: inherit; font-size: 15px; background: var(--bg); color: var(--ink); outline: none; transition: border-color .15s; box-sizing: border-box; }
+    .auth-input:focus { border-color: var(--purple-mid); }
+    .auth-btn { width: 100%; padding: 13px; background: var(--purple); color: #fff; border-radius: 7px; font-size: 15px; font-weight: 600; transition: background .15s; letter-spacing: -0.2px; margin-top: 4px; }
+    .auth-btn:hover { background: var(--purple-mid); }
+    .auth-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .auth-msg { font-size: 12.5px; padding: 9px 12px; border-radius: 6px; margin-bottom: 12px; display: none; }
+    .auth-msg.error { background: #fef2f2; color: #dc2626; display: block; }
+    .auth-msg.success { background: #f0fdf4; color: #16a34a; display: block; }
+    .auth-skip { font-size: 12px; color: var(--ink-light); text-align: center; margin-top: 14px; cursor: pointer; }
+    .auth-skip a { color: var(--purple-mid); text-decoration: underline; cursor: pointer; }
 
     /* ===== TOP NAV ===== */
     #topNav {
@@ -1055,14 +1073,57 @@
 <!-- ===== LOGIN OVERLAY ===== -->
 <div id="loginOverlay">
   <div class="login-box">
-    <div class="login-logo">Major<span>Match</span></div>
+    <div class="login-logo" style="justify-content:center;display:flex;margin-bottom:4px;">
+      <svg viewBox="0 0 120 50" width="140" xmlns="http://www.w3.org/2000/svg">
+        <rect x="4" y="4" width="34" height="44" rx="6" fill="#4B2E83" opacity=".45" transform="rotate(10 21 26)"/>
+        <rect x="4" y="4" width="34" height="44" rx="6" fill="#4B2E83" opacity=".65" transform="rotate(4 21 26)"/>
+        <rect x="4" y="4" width="34" height="44" rx="6" fill="#4B2E83"/>
+        <text x="21" y="33" text-anchor="middle" font-family="DM Sans,Arial Black,sans-serif" font-weight="900" font-size="22" fill="white">M!</text>
+        <text x="60" y="36" font-family="DM Sans,Arial,sans-serif" font-weight="700" font-size="26" fill="#4B2E83">Major</text>
+        <text x="103" y="36" font-family="DM Sans,Arial,sans-serif" font-weight="700" font-size="26" fill="#b8860b">Match</text>
+      </svg>
+    </div>
     <p class="login-sub">UW Seattle Major &amp; Campus Life Explorer</p>
-    <div class="login-label">UW NetID</div>
-    <input type="text" id="loginNetid" class="login-input" placeholder="e.g. husky23" autocomplete="off" autocapitalize="none">
-    <p class="login-hint">Enter any NetID to continue (prototype — no auth required)</p>
-    <p class="login-error" id="loginError">Please enter your NetID to continue.</p>
-    <button class="login-btn" onclick="doLogin()">Sign In with UW NetID</button>
-    <p class="login-note">To bookmark and save majors, a NetID is required.</p>
+
+    <!-- Tabs -->
+    <div class="auth-tabs">
+      <div class="auth-tab active" id="tabLogin" onclick="switchAuthTab('login')">Sign In</div>
+      <div class="auth-tab" id="tabSignup" onclick="switchAuthTab('signup')">Create Account</div>
+    </div>
+
+    <div class="auth-msg" id="authMsg"></div>
+
+    <!-- Sign In panel -->
+    <div class="auth-panel active" id="panelLogin">
+      <div class="auth-field">
+        <label>Email</label>
+        <input type="email" id="loginEmail" class="auth-input" placeholder="you@uw.edu" autocomplete="email">
+      </div>
+      <div class="auth-field">
+        <label>Password</label>
+        <input type="password" id="loginPassword" class="auth-input" placeholder="••••••••" autocomplete="current-password">
+      </div>
+      <button class="auth-btn" id="loginBtn" onclick="doLogin()">Sign In</button>
+    </div>
+
+    <!-- Sign Up panel -->
+    <div class="auth-panel" id="panelSignup">
+      <div class="auth-field">
+        <label>Name (optional)</label>
+        <input type="text" id="signupName" class="auth-input" placeholder="Your name" autocomplete="name">
+      </div>
+      <div class="auth-field">
+        <label>Email</label>
+        <input type="email" id="signupEmail" class="auth-input" placeholder="you@uw.edu" autocomplete="email">
+      </div>
+      <div class="auth-field">
+        <label>Password</label>
+        <input type="password" id="signupPassword" class="auth-input" placeholder="Min. 8 characters" autocomplete="new-password">
+      </div>
+      <button class="auth-btn" id="signupBtn" onclick="doSignup()">Create Account</button>
+    </div>
+
+    <p class="auth-skip">Just browsing? <a onclick="skipAuth()">Continue without account →</a></p>
   </div>
 </div>
 
@@ -8592,28 +8653,141 @@ function toggleBookmark(id) {
   if (b.includes(id)) b = b.filter(x=>x!==id);
   else b.push(id);
   saveBookmarks(b);
+  // Sync to server if logged in
+  if (isLoggedIn()) {
+    fetch(`${API}/api/user/bookmarks/${encodeURIComponent(id)}`, {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + getAuthToken() }
+    }).catch(() => {});
+  }
 }
 
 /* ============================================================
    AUTH
    ============================================================ */
-function doLogin() {
-  const netid = document.getElementById('loginNetid').value.trim();
-  const err   = document.getElementById('loginError');
-  if (!netid) { err.style.display='block'; return; }
-  err.style.display='none';
-  localStorage.setItem('mm_user', netid);
+const API = ''; // relative URLs — works on any host
+
+function switchAuthTab(tab) {
+  document.getElementById('tabLogin').classList.toggle('active', tab==='login');
+  document.getElementById('tabSignup').classList.toggle('active', tab==='signup');
+  document.getElementById('panelLogin').classList.toggle('active', tab==='login');
+  document.getElementById('panelSignup').classList.toggle('active', tab==='signup');
+  document.getElementById('authMsg').className = 'auth-msg';
+}
+
+function showAuthMsg(msg, type='error') {
+  const el = document.getElementById('authMsg');
+  el.textContent = msg;
+  el.className = 'auth-msg ' + type;
+}
+
+async function doLogin() {
+  const email    = document.getElementById('loginEmail').value.trim();
+  const password = document.getElementById('loginPassword').value;
+  if (!email || !password) return showAuthMsg('Please enter your email and password.');
+  const btn = document.getElementById('loginBtn');
+  btn.disabled = true; btn.textContent = 'Signing in…';
+  try {
+    const res  = await fetch(`${API}/api/auth/login`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({email, password}) });
+    const data = await res.json();
+    if (!res.ok) { showAuthMsg(data.error || 'Login failed.'); return; }
+    onAuthSuccess(data.token, data.user, true);
+  } catch(e) { showAuthMsg('Network error — please try again.'); }
+  finally    { btn.disabled = false; btn.textContent = 'Sign In'; }
+}
+
+async function doSignup() {
+  const name     = document.getElementById('signupName').value.trim();
+  const email    = document.getElementById('signupEmail').value.trim();
+  const password = document.getElementById('signupPassword').value;
+  if (!email || !password) return showAuthMsg('Please fill in all required fields.');
+  if (password.length < 8) return showAuthMsg('Password must be at least 8 characters.');
+  const btn = document.getElementById('signupBtn');
+  btn.disabled = true; btn.textContent = 'Creating account…';
+  try {
+    const res  = await fetch(`${API}/api/auth/signup`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({name, email, password}) });
+    const data = await res.json();
+    if (!res.ok) { showAuthMsg(data.error || 'Signup failed.'); return; }
+    onAuthSuccess(data.token, data.user, true);
+  } catch(e) { showAuthMsg('Network error — please try again.'); }
+  finally    { btn.disabled = false; btn.textContent = 'Create Account'; }
+}
+
+function skipAuth() {
+  localStorage.setItem('mm_guest', '1');
+  mountApp({id:null, name:'Guest', email:''}, false);
+}
+
+function onAuthSuccess(token, user, freshLogin) {
+  localStorage.setItem('mm_token', token);
+  localStorage.setItem('mm_user', user.name || user.email.split('@')[0]);
+  // Merge any locally saved bookmarks up to the server
+  const localBm = getBookmarks();
+  if (localBm.length) {
+    fetch(`${API}/api/user/bookmarks`, { method:'PUT', headers:{'Content-Type':'application/json','Authorization':'Bearer '+token}, body: JSON.stringify({bookmarks: localBm}) }).catch(()=>{});
+  }
+  mountApp(user, freshLogin);
+}
+
+function mountApp(user, freshLogin) {
   document.getElementById('loginOverlay').classList.add('hidden');
   document.getElementById('appShell').classList.remove('hidden');
-  document.getElementById('navNetid').textContent = netid;
-  document.getElementById('navAvatar').textContent = netid[0].toUpperCase();
-  initApp(true); // true = fresh login, show picker
+  const displayName = user.name || (user.email ? user.email.split('@')[0] : 'Guest');
+  document.getElementById('navNetid').textContent  = displayName;
+  document.getElementById('navAvatar').textContent = displayName[0].toUpperCase();
+  initApp(freshLogin);
 }
+
+async function loadBookmarksFromServer() {
+  const token = localStorage.getItem('mm_token');
+  if (!token) return;
+  try {
+    const res  = await fetch(`${API}/api/user/bookmarks`, { headers:{'Authorization':'Bearer '+token} });
+    const data = await res.json();
+    if (res.ok && Array.isArray(data.bookmarks)) saveBookmarks(data.bookmarks);
+  } catch(e) {}
+}
+
+function getAuthToken() { return localStorage.getItem('mm_token'); }
+function isLoggedIn()   { return !!getAuthToken() && !localStorage.getItem('mm_guest'); }
+
 function doLogout() {
+  localStorage.removeItem('mm_token');
   localStorage.removeItem('mm_user');
+  localStorage.removeItem('mm_guest');
   location.reload();
 }
-document.getElementById('loginNetid').addEventListener('keydown', e=>{ if(e.key==='Enter') doLogin(); });
+
+// Auto-login: validate existing JWT on page load
+(async function() {
+  const token = localStorage.getItem('mm_token');
+  if (token) {
+    try {
+      const res = await fetch(`${API}/api/auth/me`, { headers:{'Authorization':'Bearer '+token} });
+      if (res.ok) {
+        const data = await res.json();
+        await loadBookmarksFromServer();
+        mountApp(data.user, false);
+        return;
+      }
+    } catch(e) {}
+    // Token invalid — clear it and show overlay
+    localStorage.removeItem('mm_token');
+    localStorage.removeItem('mm_user');
+  }
+  if (localStorage.getItem('mm_guest')) {
+    mountApp({id:null, name:'Guest', email:''}, false);
+    return;
+  }
+  // Show login overlay
+})();
+
+// Enter key support
+document.addEventListener('keydown', e => {
+  if (e.key !== 'Enter') return;
+  if (document.getElementById('panelLogin').classList.contains('active')) doLogin();
+  else doSignup();
+});
 
 /* ============================================================
    VIEW ROUTER
