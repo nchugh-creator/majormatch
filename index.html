@@ -8720,14 +8720,32 @@ function skipAuth() {
   mountApp({id:null, name:'Guest', email:''}, false);
 }
 
-function onAuthSuccess(token, user, freshLogin) {
+async function onAuthSuccess(token, user, freshLogin) {
   localStorage.setItem('mm_token', token);
   localStorage.setItem('mm_user', user.name || user.email.split('@')[0]);
-  // Merge any locally saved bookmarks up to the server
+
+  // 1. Fetch bookmarks already saved on the server
+  let serverBm = [];
+  try {
+    const res = await fetch(`${API}/api/user/bookmarks`, { headers:{'Authorization':'Bearer '+token} });
+    const data = await res.json();
+    if (res.ok && Array.isArray(data.bookmarks)) serverBm = data.bookmarks;
+  } catch(e) {}
+
+  // 2. Merge with anything saved locally on this device (union, no duplicates)
   const localBm = getBookmarks();
-  if (localBm.length) {
-    fetch(`${API}/api/user/bookmarks`, { method:'PUT', headers:{'Content-Type':'application/json','Authorization':'Bearer '+token}, body: JSON.stringify({bookmarks: localBm}) }).catch(()=>{});
+  const merged  = [...new Set([...serverBm, ...localBm])];
+  saveBookmarks(merged);
+
+  // 3. If local had extras not on server, push the merged list back up
+  if (localBm.some(id => !serverBm.includes(id))) {
+    fetch(`${API}/api/user/bookmarks`, {
+      method: 'PUT',
+      headers: {'Content-Type':'application/json', 'Authorization':'Bearer '+token},
+      body: JSON.stringify({bookmarks: merged})
+    }).catch(()=>{});
   }
+
   mountApp(user, freshLogin);
 }
 
