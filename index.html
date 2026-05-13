@@ -744,50 +744,127 @@
     .empty-state p { font-size: 14px; color: var(--ink-on-dark-muted); line-height: 1.6; }
     .empty-state-btn { display: inline-block; margin-top: 18px; padding: 12px 24px; background: var(--purple); color: #fff; border-radius: 7px; font-size: 14px; font-weight: 600; cursor: pointer; border: none; }
 
-    /* ===== FILTER PICKER (post-login onboarding) ===== */
+    /* ===== QUIZ ASSESSMENT (post-login onboarding) ===== */
     #filterPickerView {
-      min-height: calc(100vh - var(--nav-h));
+      min-height: 100vh;
       display: flex; flex-direction: column; align-items: center;
-      justify-content: flex-start; padding: 56px 24px 80px;
-      background: linear-gradient(160deg, #F0EBF8 0%, var(--bg) 50%);
+      justify-content: flex-start; padding: 0;
+      background: var(--purple);
     }
-    .picker-inner { width: 100%; max-width: 640px; }
-    .picker-greeting {
-      font-size: clamp(28px, 4vw, 40px); font-weight: 300; letter-spacing: -0.8px;
-      color: var(--purple); margin-bottom: 8px; line-height: 1.15;
+    /* Progress bar at top */
+    .quiz-progress-bar {
+      width: 100%; height: 4px; background: rgba(255,255,255,0.15);
+      position: sticky; top: 0; z-index: 10;
     }
-    .picker-sub { font-size: 15px; color: var(--ink-muted); margin-bottom: 44px; line-height: 1.55; }
-    .picker-section-label {
-      font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
-      color: var(--ink-light); margin-bottom: 12px;
+    .quiz-progress-fill {
+      height: 100%; background: var(--gold); border-radius: 0 2px 2px 0;
+      transition: width 0.4s cubic-bezier(.4,0,.2,1);
     }
-    .picker-chips { display: flex; flex-wrap: wrap; gap: 9px; margin-bottom: 32px; }
-    .picker-chip {
-      padding: 9px 18px; border-radius: 6px; font-size: 14px; font-weight: 400;
-      border: 1.5px solid var(--border); background: var(--bg-card); color: var(--ink-muted);
-      cursor: pointer; transition: all .15s; user-select: none;
+    /* Outer shell */
+    .quiz-shell {
+      width: 100%; max-width: 560px;
+      padding: 36px 24px 80px;
+      display: flex; flex-direction: column;
     }
-    .picker-chip:hover { border-color: var(--purple-light); color: var(--purple); }
-    .picker-chip.selected { border-color: var(--purple); background: var(--purple); color: #fff; }
-    .picker-chip .chip-icon { margin-right: 5px; }
-    .picker-chip:disabled { opacity: 0.30; cursor: not-allowed; border-style: dashed; pointer-events: none; }
-    .picker-start-btn {
-      width: 100%; padding: 16px; background: var(--purple); color: #fff;
-      border-radius: 7px; font-size: 16px; font-weight: 600; cursor: pointer;
-      border: none; transition: background .15s; margin-top: 6px;
-      display: flex; align-items: center; justify-content: center; gap: 10px; letter-spacing: -0.2px;
+    /* Step counter + back */
+    .quiz-topbar {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 36px;
     }
-    .picker-start-btn:hover { background: var(--purple-mid); }
-    .picker-start-btn:disabled { background: var(--border-mid); color: var(--ink-light); cursor: not-allowed; }
-    .picker-skip {
-      text-align: center; margin-top: 16px; font-size: 13px; color: var(--ink-light);
-      cursor: pointer; text-decoration: underline; text-underline-offset: 3px;
+    .quiz-step-label {
+      font-size: 12px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase;
+      color: rgba(255,255,255,0.45);
     }
-    .picker-skip:hover { color: var(--ink); }
-    .picker-count-hint {
-      font-size: 12px; color: var(--purple-mid); margin-top: -20px; margin-bottom: 24px;
-      font-weight: 500; min-height: 18px;
+    .quiz-back-btn {
+      font-size: 13px; color: rgba(255,255,255,0.5); cursor: pointer; padding: 4px 0;
+      background: none; border: none; transition: color .15s;
+      display: flex; align-items: center; gap: 5px;
     }
+    .quiz-back-btn:hover { color: #fff; }
+    .quiz-back-btn.invisible { visibility: hidden; pointer-events: none; }
+    /* Question */
+    .quiz-question {
+      font-size: clamp(22px, 5vw, 30px); font-weight: 400; color: #fff;
+      line-height: 1.25; margin-bottom: 10px; letter-spacing: -0.4px;
+      font-family: 'Instrument Serif', Georgia, serif;
+    }
+    .quiz-hint {
+      font-size: 13.5px; color: rgba(255,255,255,0.55); margin-bottom: 32px; line-height: 1.5;
+    }
+    /* Option cards — multi or single */
+    .quiz-options {
+      display: grid; gap: 10px;
+    }
+    .quiz-options.grid-2 { grid-template-columns: 1fr 1fr; }
+    .quiz-options.grid-1 { grid-template-columns: 1fr; }
+    .quiz-opt {
+      background: rgba(255,255,255,0.07); border: 1.5px solid rgba(255,255,255,0.12);
+      border-radius: 12px; padding: 16px 20px; cursor: pointer;
+      display: flex; align-items: center; gap: 14px;
+      transition: all .15s; color: #fff; text-align: left; user-select: none;
+    }
+    .quiz-opt:hover { background: rgba(255,255,255,0.13); border-color: rgba(255,255,255,0.3); }
+    .quiz-opt.selected {
+      background: rgba(196,151,58,0.18); border-color: var(--gold);
+      box-shadow: 0 0 0 1px var(--gold);
+    }
+    .quiz-opt-emoji { font-size: 26px; flex-shrink: 0; line-height: 1; }
+    .quiz-opt-text { flex: 1; }
+    .quiz-opt-title { font-size: 15px; font-weight: 600; line-height: 1.3; }
+    .quiz-opt-sub   { font-size: 12.5px; color: rgba(255,255,255,0.55); margin-top: 2px; line-height: 1.4; }
+    .quiz-opt-check {
+      width: 20px; height: 20px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,0.25);
+      flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+      transition: all .15s; font-size: 11px;
+    }
+    .quiz-opt.selected .quiz-opt-check { background: var(--gold); border-color: var(--gold); color: #fff; }
+    /* Next button */
+    .quiz-next-wrap { margin-top: 28px; }
+    .quiz-next-btn {
+      width: 100%; padding: 15px; background: var(--gold); color: #1A1814;
+      border-radius: 9px; font-size: 15px; font-weight: 700; cursor: pointer;
+      border: none; transition: opacity .15s, background .15s; letter-spacing: -0.2px;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .quiz-next-btn:hover { background: #d4a84a; }
+    .quiz-next-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+    .quiz-skip-link {
+      text-align: center; margin-top: 14px; font-size: 13px;
+      color: rgba(255,255,255,0.35); cursor: pointer;
+      transition: color .15s;
+    }
+    .quiz-skip-link:hover { color: rgba(255,255,255,0.7); }
+    /* Result slide */
+    .quiz-result-slide {
+      text-align: center; padding-top: 20px;
+    }
+    .quiz-result-icon { font-size: 64px; margin-bottom: 20px; }
+    .quiz-result-title {
+      font-size: clamp(22px, 5vw, 28px); font-weight: 400; color: #fff;
+      font-family: 'Instrument Serif', Georgia, serif; margin-bottom: 10px;
+    }
+    .quiz-result-sub { font-size: 14px; color: rgba(255,255,255,0.6); margin-bottom: 36px; line-height: 1.6; max-width: 400px; margin-left: auto; margin-right: auto; }
+    .quiz-result-chips { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-bottom: 32px; }
+    .quiz-result-chip {
+      background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2);
+      color: #fff; border-radius: 30px; padding: 6px 16px; font-size: 13px;
+    }
+    .quiz-launch-btn {
+      width: 100%; max-width: 360px; padding: 16px; background: var(--gold); color: #1A1814;
+      border-radius: 9px; font-size: 16px; font-weight: 700; cursor: pointer;
+      border: none; transition: background .15s; letter-spacing: -0.2px; margin: 0 auto; display: block;
+    }
+    .quiz-launch-btn:hover { background: #d4a84a; }
+    .quiz-browse-link {
+      text-align: center; margin-top: 14px; font-size: 13px;
+      color: rgba(255,255,255,0.35); cursor: pointer; transition: color .15s;
+    }
+    .quiz-browse-link:hover { color: rgba(255,255,255,0.7); }
+    /* Slide animation */
+    .quiz-slide { animation: quizSlideIn .3s cubic-bezier(.4,0,.2,1) both; }
+    @keyframes quizSlideIn { from { opacity:0; transform: translateX(28px); } to { opacity:1; transform: translateX(0); } }
+    .quiz-slide-back { animation: quizSlideBack .3s cubic-bezier(.4,0,.2,1) both; }
+    @keyframes quizSlideBack { from { opacity:0; transform: translateX(-28px); } to { opacity:1; transform: translateX(0); } }
 
 
     /* ===== VIEW TRANSITIONS ===== */
@@ -1203,57 +1280,13 @@
     </div>
   </div>
 
-  <!-- FILTER PICKER VIEW (shown right after login) -->
+  <!-- QUIZ / ASSESSMENT VIEW (shown right after login) -->
   <div id="filterPickerView" class="hidden">
-    <div class="picker-inner">
-      <h1 class="picker-greeting" id="pickerGreeting">Hi there 👋<br>What are you into?</h1>
-      <p class="picker-sub">Pick your interests and we'll line up majors for you to swipe through.</p>
-
-      <div class="picker-section-label">Field / Interest — pick all that apply</div>
-      <div class="picker-chips" id="pickerCatChips">
-        <button class="picker-chip" data-cat="computing">      <span class="chip-icon">💻</span>Computing</button>
-        <button class="picker-chip" data-cat="engineering">    <span class="chip-icon">⚙️</span>Engineering</button>
-        <button class="picker-chip" data-cat="stem">           <span class="chip-icon">🔬</span>STEM / Science</button>
-        <button class="picker-chip" data-cat="social_sciences"><span class="chip-icon">🌍</span>Social Sciences</button>
-        <button class="picker-chip" data-cat="business">       <span class="chip-icon">📈</span>Business</button>
-        <button class="picker-chip" data-cat="arts_humanities"><span class="chip-icon">🎨</span>Arts &amp; Humanities</button>
-        <button class="picker-chip" data-cat="design">         <span class="chip-icon">✏️</span>Design</button>
-        <button class="picker-chip" data-cat="health">         <span class="chip-icon">🏥</span>Health</button>
-        <button class="picker-chip" data-cat="environment">    <span class="chip-icon">🌿</span>Environment</button>
-      </div>
-
-      <div class="picker-section-label">School — optional</div>
-      <div class="picker-chips" id="pickerCollegeChips">
-        <button class="picker-chip" data-college="engineering">  Paul G. Allen &amp; Engineering</button>
-        <button class="picker-chip" data-college="arts_sciences">Arts &amp; Sciences</button>
-        <button class="picker-chip" data-college="foster">       Foster Business</button>
-        <button class="picker-chip" data-college="ischool">      iSchool</button>
-        <button class="picker-chip" data-college="built_env">    Built Environments</button>
-        <button class="picker-chip" data-college="college_env">  Environment</button>
-        <button class="picker-chip" data-college="nursing">      Nursing</button>
-        <button class="picker-chip" data-college="public_health">Public Health</button>
-        <button class="picker-chip" data-college="social_work">Social Work</button>
-        <button class="picker-chip" data-college="education">Education</button>
-      </div>
-
-      <div class="picker-section-label">Career Path — optional</div>
-      <div class="picker-chips" id="pickerCareerChips">
-        <button class="picker-chip" data-careerbucket="tech">    💻 Tech &amp; Software</button>
-        <button class="picker-chip" data-careerbucket="data">    📊 Data &amp; AI</button>
-        <button class="picker-chip" data-careerbucket="design">  🎨 Design &amp; UX</button>
-        <button class="picker-chip" data-careerbucket="business">📈 Business</button>
-        <button class="picker-chip" data-careerbucket="health">  🏥 Healthcare</button>
-        <button class="picker-chip" data-careerbucket="policy">  ⚖️ Policy &amp; Law</button>
-        <button class="picker-chip" data-careerbucket="research">🔬 Research &amp; Science</button>
-        <button class="picker-chip" data-careerbucket="creative">✏️ Arts &amp; Media</button>
-      </div>
-
-      <div class="picker-count-hint" id="pickerCountHint"></div>
-
-      <button class="picker-start-btn" id="pickerStartBtn" onclick="startSwipeFromPicker()">
-        <span>Start Swiping</span><span>→</span>
-      </button>
-      <p class="picker-skip" onclick="showView('home')">Skip — just browse on my own</p>
+    <div class="quiz-progress-bar">
+      <div class="quiz-progress-fill" id="quizProgressFill" style="width:0%"></div>
+    </div>
+    <div class="quiz-shell" id="quizShell">
+      <!-- Steps injected by JS -->
     </div>
   </div>
 
@@ -7878,6 +7911,448 @@ const RSOS = [
     openToAll: true,
     events: ['Volunteer fair (quarterly)', 'Community service days', 'Nonprofit networking events', 'Service-learning reflection workshops'],
   },
+
+  /* ── BUSINESS & FINANCE ── */
+  {
+    id: 'uwfc',
+    name: 'UW Finance Club',
+    description: "Connects students interested in investment banking, equity research, and corporate finance with alumni and professionals. Hosts case competitions, company treks, and an annual stock pitch competition.",
+    huskylink: 'https://huskylink.washington.edu/organization/uwfinanceclub',
+    instagram: 'uwfinanceclub',
+    linkedMajors: ['business', 'foster_finance', 'economics', 'acms'],
+    openToAll: true,
+    events: ['Annual Stock Pitch Competition', 'Wall Street Trek (NYC spring break trip)', 'Coffee chats with Goldman, JP Morgan, and Microsoft Finance', 'Technical interview prep workshops'],
+  },
+  {
+    id: 'uwsa',
+    name: 'UW Ski & Snowboard Association (UWSA)',
+    description: "One of UW's largest recreational clubs — organizes discounted lift tickets, bus trips to Snoqualmie, Stevens Pass, and Whistler, and an annual spring break ski trip.",
+    huskylink: 'https://huskylink.washington.edu/organization/uwsa',
+    instagram: 'uwskisnowboard',
+    linkedMajors: [],
+    openToAll: true,
+    events: ['Weekly bus trips to Snoqualmie Pass (winter)', 'Annual spring break ski trip (Whistler or Utah)', 'End-of-year banquet and awards', 'Gear swap and discount lift ticket sales'],
+  },
+  {
+    id: 'uwmc',
+    name: 'UW Marketing Club',
+    description: "Hub for aspiring marketers — brand strategy workshops, case competitions, guest speakers from Amazon, Starbucks, and REI, and a mentorship program connecting students with Seattle marketers.",
+    huskylink: 'https://huskylink.washington.edu/organization/uwmarketingclub',
+    instagram: 'uwmarketingclub',
+    linkedMajors: ['business', 'communications', 'informatics', 'hcde'],
+    openToAll: true,
+    events: ['Husky Marketing Challenge (annual case competition)', 'Speaker series with Amazon, Starbucks, and REI marketers', 'Resume and portfolio reviews', 'Networking mixers with Seattle marketing professionals'],
+  },
+  {
+    id: 'invest_club',
+    name: 'UW Investment Club',
+    description: "Student-run investment fund managing a real portfolio — members pitch equities, debate macroeconomic trends, and learn fundamental analysis. One of the few student clubs that manages actual capital.",
+    huskylink: 'https://huskylink.washington.edu/organization/uwinvestmentclub',
+    instagram: 'uwinvestmentclub',
+    linkedMajors: ['foster_finance', 'economics', 'acms', 'mathematics'],
+    openToAll: false,
+    events: ['Weekly portfolio meetings and stock pitches', 'Semester-end performance review', 'Alumni investor panels', 'Recruitment info sessions (fall and spring)'],
+  },
+  {
+    id: 'enactus',
+    name: 'Enactus UW',
+    description: "Social entrepreneurship club creating projects that empower communities — competing nationally in Enactus USA competitions with business-driven solutions to real-world problems.",
+    huskylink: 'https://huskylink.washington.edu/organization/enactusuw',
+    instagram: 'enactusuw',
+    linkedMajors: ['business', 'foster_entrepreneurship', 'public-service-policy', 'social-welfare'],
+    openToAll: true,
+    events: ['National Enactus USA Competition (spring)', 'Project pitches and community impact showcases', 'Partner organization site visits', 'Leadership development workshops'],
+  },
+
+  /* ── PRE-LAW & POLICY ── */
+  {
+    id: 'uwpls',
+    name: 'Pre-Law Society',
+    description: "Prepares undergrads for law school through LSAT prep workshops, mock law school classes, and panels with UW Law students and Seattle attorneys. Covers all areas of law — corporate, public interest, international, and criminal.",
+    huskylink: 'https://huskylink.washington.edu/organization/uwprelawsociety',
+    instagram: 'uwprelawsociety',
+    linkedMajors: ['political-science', 'philosophy', 'sociology', 'economics', 'english'],
+    openToAll: true,
+    events: ['LSAT prep workshops (fall and winter)', 'Mock law school class with UW Law professors', 'Law school application panels', 'Attorney and UW Law student Q&A nights'],
+  },
+  {
+    id: 'uwppa',
+    name: 'UW Public Policy Association',
+    description: "Forum for students passionate about public policy — hosts policy debates, hosts government officials and think-tank scholars, and sends delegations to the UW-hosted Northwest Model UN conference.",
+    huskylink: 'https://huskylink.washington.edu/organization/uwppa',
+    instagram: 'uwpolicyassoc',
+    linkedMajors: ['political-science', 'public-service-policy', 'economics', 'law-societies-justice'],
+    openToAll: true,
+    events: ['Annual policy debate tournament', 'Speaker series with WA state legislators and policy researchers', 'Policy brief writing workshops', 'Annual UW policy summit'],
+  },
+
+  /* ── HEALTH & PRE-MED ── */
+  {
+    id: 'amsa_uw',
+    name: 'American Medical Student Association (AMSA) — UW Chapter',
+    description: "National pre-med organization with a strong UW chapter — advocacy for healthcare equity, MCAT prep resources, clinical volunteering coordination, and an annual Health Professions Fair.",
+    huskylink: 'https://huskylink.washington.edu/organization/amsa',
+    instagram: 'uw_amsa',
+    linkedMajors: ['biochemistry', 'biology', 'neuroscience', 'public-health', 'psychology'],
+    openToAll: true,
+    events: ['Annual Health Professions Fair (fall)', 'MCAT study groups and prep workshops', 'Clinical and research volunteer placement help', 'Physician and med student panel nights'],
+  },
+  {
+    id: 'snma_uw',
+    name: 'Student National Medical Association (SNMA) — UW Chapter',
+    description: "Supporting underrepresented pre-health students — community, mentorship, and resources for navigating pre-med as a student of color, with connections to UW School of Medicine.",
+    huskylink: 'https://huskylink.washington.edu/organization/snmauw',
+    instagram: 'snmauw',
+    linkedMajors: ['biochemistry', 'biology', 'neuroscience', 'public-health'],
+    openToAll: true,
+    events: ['Monthly pre-health community dinners', 'MCAT and application mentorship matching', 'Hospital shadowing and clinical volunteering coordination', 'Annual health equity symposium'],
+  },
+  {
+    id: 'psa_uw',
+    name: 'Pre-PA Society',
+    description: "Focused on the Physician Assistant path — shadowing coordination, PA school info sessions, GRE prep, and a tight community of pre-PA students navigating clinical hours and applications.",
+    huskylink: 'https://huskylink.washington.edu/organization/prepasociety',
+    instagram: 'uwprepasociety',
+    linkedMajors: ['biology', 'biochemistry', 'public-health', 'neuroscience'],
+    openToAll: true,
+    events: ['PA school application panels and Q&As', 'Clinical shadowing coordination with local clinics', 'GRE prep sessions', 'Pre-PA peer mentorship program'],
+  },
+  {
+    id: 'global_med',
+    name: 'Global Medicine Club',
+    description: "For students interested in global health and medicine — global health case discussions, guest speakers from Doctors Without Borders and WHO, and opportunities to learn about international health systems.",
+    huskylink: 'https://huskylink.washington.edu/organization/globalmedicineclub',
+    instagram: 'uwglobalmedicine',
+    linkedMajors: ['public-health', 'global-health', 'biology', 'anthropology'],
+    openToAll: true,
+    events: ['Global health case discussions (biweekly)', 'Speaker series: Doctors Without Borders, PATH, WHO affiliates', 'Global health policy debates', 'Medical Spanish and language for healthcare workshops'],
+  },
+
+  /* ── ENGINEERING ── */
+  {
+    id: 'fsae',
+    name: 'Husky Motorsports (FSAE)',
+    description: "UW's Formula SAE team — designs, builds, and races a formula-style car every year at national competitions. One of the most hands-on engineering experiences at UW across mechanical, electrical, and software systems.",
+    huskylink: 'https://huskylink.washington.edu/organization/huskymotorsports',
+    instagram: 'huskymotorsports',
+    linkedMajors: ['mechanical-engineering', 'electrical-engineering', 'cs', 'materials-science'],
+    openToAll: true,
+    events: ['Annual FSAE Michigan and FSAE Lincoln competitions', 'Subteam open houses (fall recruiting)', 'Design review presentations', 'Shop days — hands-on fabrication and assembly'],
+  },
+  {
+    id: 'solar_uw',
+    name: 'UW Solar',
+    description: "Designs and races solar-powered vehicles in cross-country competitions — from the American Solar Challenge to the Formula Sun Grand Prix. Covers electrical, mechanical, and software engineering.",
+    huskylink: 'https://huskylink.washington.edu/organization/uwsolar',
+    instagram: 'uwsolarcar',
+    linkedMajors: ['electrical-engineering', 'mechanical-engineering', 'materials-science', 'cs'],
+    openToAll: true,
+    events: ['American Solar Challenge cross-country race (biennial)', 'Formula Sun Grand Prix track race (annual)', 'Fall recruiting open house', 'Battery and electronics design workshops'],
+  },
+  {
+    id: 'uw_robotics',
+    name: 'UW Robotics',
+    description: "Student-run robotics club competing in IGVC (Intelligent Ground Vehicle Competition) and RoboSub — teams work on perception, path planning, mechanical design, and embedded systems.",
+    huskylink: 'https://huskylink.washington.edu/organization/uwrobotics',
+    instagram: 'uwrobotics',
+    linkedMajors: ['cs', 'electrical-engineering', 'mechanical-engineering', 'acms'],
+    openToAll: true,
+    events: ['IGVC and RoboSub competitions (summer)', 'Weekly subteam meetings (software, mechanical, electrical)', 'Fall general interest meeting and recruiting', 'Project demos open house (spring)'],
+  },
+  {
+    id: 'structures_uw',
+    name: 'Structural Engineering Student Association (SESA)',
+    description: "Community for civil and structural engineering students — hosts Concrete Canoe and Steel Bridge competitions, site tours of major Seattle construction projects, and career nights with Skanska, KPFF, and HDR.",
+    huskylink: 'https://huskylink.washington.edu/organization/sesa',
+    instagram: 'uw_sesa',
+    linkedMajors: ['civil-environmental-engineering', 'mechanical-engineering'],
+    openToAll: true,
+    events: ['Annual Concrete Canoe and Steel Bridge competitions', 'Construction site tours (Seattle projects)', 'Career night with Skanska, KPFF, and HDR', 'Structural engineering design workshops'],
+  },
+  {
+    id: 'uw_acm',
+    name: 'UW ACM (Association for Computing Machinery)',
+    description: "UW's chapter of the world's largest computing society — hosts competitive programming practice, coding contests (ICPC), and algorithm workshops, plus a supportive study community for CS students.",
+    huskylink: 'https://huskylink.washington.edu/organization/uwacm',
+    instagram: 'uwacm',
+    linkedMajors: ['cs', 'acms', 'mathematics', 'electrical-engineering'],
+    openToAll: true,
+    events: ['ICPC (International Collegiate Programming Contest) team practices', 'Weekly algorithm and data structure workshops', 'Competitive programming contests', 'Tech interview prep sessions'],
+  },
+
+  /* ── ARTS & MEDIA ── */
+  {
+    id: 'uw_improv',
+    name: 'UW Experimental College Improv',
+    description: "UW's student-run improv comedy troupe — regular shows, open workshops for beginners, and a welcoming community for anyone who wants to try performance comedy regardless of experience.",
+    huskylink: 'https://huskylink.washington.edu/organization/uwimprov',
+    instagram: 'uwimprov',
+    linkedMajors: ['drama', 'communication', 'english', 'psychology'],
+    openToAll: true,
+    events: ['Weekly improv workshops (open to beginners)', 'Quarterly showcase performances', 'Jam sessions and drop-in practice nights', 'Annual improv festival'],
+  },
+  {
+    id: 'uw_film',
+    name: 'UW Film Club',
+    description: "For film lovers and aspiring filmmakers — weekly screenings of world cinema, short film productions, script workshops, and a student film festival at the end of each year.",
+    huskylink: 'https://huskylink.washington.edu/organization/uwfilmclub',
+    instagram: 'uwfilmclub',
+    linkedMajors: ['cinema-media-studies', 'art', 'communication', 'english'],
+    openToAll: true,
+    events: ['Weekly film screenings and discussions', 'Short film production projects', 'Screenwriting workshops', 'Annual UW Student Film Festival (spring)'],
+  },
+  {
+    id: 'uw_jazz',
+    name: 'UW Jazz Club',
+    description: "Informal jazz community outside the School of Music — weekly jam sessions, listening parties, and opportunities to play with musicians from any major and skill level.",
+    huskylink: 'https://huskylink.washington.edu/organization/uwjazzclub',
+    instagram: 'uwjazz',
+    linkedMajors: ['music', 'art'],
+    openToAll: true,
+    events: ['Weekly jazz jams (open to all skill levels)', 'Listening parties for jazz records', 'Live performances at Seattle jazz venues', 'Workshops with local jazz musicians'],
+  },
+  {
+    id: 'hd_uw',
+    name: 'Husky Dance (Hip-Hop)',
+    description: "UW's competitive hip-hop dance crew — performs at UW events, travels to intercollegiate competitions, and welcomes dancers of all levels through open auditions each fall.",
+    huskylink: 'https://huskylink.washington.edu/organization/huskydance',
+    instagram: 'huskydanceuw',
+    linkedMajors: [],
+    openToAll: false,
+    events: ['Fall and spring auditions', 'Intercollegiate hip-hop competitions', 'Annual dance showcase (spring quarter)', 'Charity and campus performance bookings'],
+  },
+  {
+    id: 'uw_photo',
+    name: 'UW Photography Club',
+    description: "Community for photographers of all levels — weekly photo walks around Seattle, critique sessions, photo exhibitions, and collaborative projects with campus publications.",
+    huskylink: 'https://huskylink.washington.edu/organization/uwphotographyclub',
+    instagram: 'uwphotoclub',
+    linkedMajors: ['art', 'communication', 'hcde', 'cinema-media-studies'],
+    openToAll: true,
+    events: ['Weekly photo walks (Seattle neighborhoods, UW campus)', 'Monthly photo critiques and portfolio reviews', 'End-of-year photography exhibition', 'Darkroom and Lightroom editing workshops'],
+  },
+
+  /* ── CULTURAL & IDENTITY ── */
+  {
+    id: 'ksa_uw',
+    name: 'Korean Student Association (KSA)',
+    description: "One of UW's largest cultural organizations — celebrates Korean culture through cultural nights, K-pop dance performances, food events, community service, and social events connecting Korean and Korean-American students.",
+    huskylink: 'https://huskylink.washington.edu/organization/ksa',
+    instagram: 'uw.ksa',
+    linkedMajors: [],
+    openToAll: true,
+    events: ['Annual Korean Cultural Night (spring)', 'K-pop dance cover performances', 'Chuseok and Lunar New Year celebrations', 'Community service days in Seattle'],
+  },
+  {
+    id: 'csa_uw',
+    name: 'Chinese Student Association (CSA)',
+    description: "Cultural and community organization for Chinese and Chinese-American students — hosts one of UW's biggest annual cultural shows, Lunar New Year celebrations, community dinners, and friendship events.",
+    huskylink: 'https://huskylink.washington.edu/organization/csa',
+    instagram: 'uw_csa',
+    linkedMajors: [],
+    openToAll: true,
+    events: ['Annual Spring Cultural Show (one of UW\'s largest student productions)', 'Lunar New Year celebration dinner', 'Mid-Autumn Festival mooncake event', 'Study breaks and community socials'],
+  },
+  {
+    id: 'dsa_uw',
+    name: 'Desi Student Association (DSA)',
+    description: "Celebrating South Asian cultures at UW — Bollywood nights, Diwali celebrations, cultural showcases, and a close-knit community for students of South Asian heritage and anyone who loves the culture.",
+    huskylink: 'https://huskylink.washington.edu/organization/dsa',
+    instagram: 'uw.dsa',
+    linkedMajors: [],
+    openToAll: true,
+    events: ['Annual Diwali night', 'Holi celebration on the Quad', 'Bollywood and classical dance performances', 'South Asian food events and socials'],
+  },
+  {
+    id: 'msa_uw',
+    name: 'Muslim Student Association (MSA)',
+    description: "Spiritual, social, and service-oriented community for Muslim students at UW — Jummah prayers, Ramadan iftars, educational events on Islamic history and culture, and interfaith dialogue.",
+    huskylink: 'https://huskylink.washington.edu/organization/msa',
+    instagram: 'uw.msa',
+    linkedMajors: [],
+    openToAll: true,
+    events: ['Weekly Jummah (Friday prayers) on campus', 'Ramadan community iftars', 'Islamic Awareness Week (spring)', 'Interfaith dialogue panels'],
+  },
+  {
+    id: 'bsa_uw',
+    name: 'Black Student Union (BSU)',
+    description: "Advocacy, community, and empowerment for Black students at UW since 1968 — hosts cultural events, connects students to resources and scholarships, and advocates for equity in UW policies and curriculum.",
+    huskylink: 'https://huskylink.washington.edu/organization/bsu',
+    instagram: 'uw_bsu',
+    linkedMajors: [],
+    openToAll: true,
+    events: ['Black History Month programming (February)', 'Annual Umoja (community celebration)', 'Scholarship and resource fair for Black students', 'Advocacy and town hall events'],
+  },
+  {
+    id: 'mecha_uw',
+    name: 'MEChA de UW (Movimiento Estudiantil Chicano de Aztlán)',
+    description: "Political, cultural, and community organization for Chicano/Latino students — advocacy for higher education access, cultural celebrations, peer support, and connections to Seattle's Latino community.",
+    huskylink: 'https://huskylink.washington.edu/organization/mechadeuw',
+    instagram: 'mechadeuw',
+    linkedMajors: [],
+    openToAll: true,
+    events: ['Cesar Chavez Week events (spring)', 'Día de los Muertos celebration', 'High school outreach and college access mentoring', 'Community dinners and cultural socials'],
+  },
+  {
+    id: 'fasa_uw',
+    name: 'Filipino American Student Association (FASA)',
+    description: "Celebrating Filipino culture and community at UW — one of the oldest cultural organizations on campus, hosting a flagship Cultural Night, community service, and advocacy work.",
+    huskylink: 'https://huskylink.washington.edu/organization/fasa',
+    instagram: 'fasauw',
+    linkedMajors: [],
+    openToAll: true,
+    events: ['Annual FASA Cultural Night (spring)', 'Filipino Heritage Month programming (October)', 'Community service and outreach in Seattle', 'Socials, food events, and retreats'],
+  },
+  {
+    id: 'spectrum_uw',
+    name: 'Spectrum (LGBTQ+ Organization)',
+    description: "One of UW's largest LGBTQ+ organizations — social events, advocacy, peer support, and community for queer, trans, and allied students across all majors and backgrounds.",
+    huskylink: 'https://huskylink.washington.edu/organization/spectrum',
+    instagram: 'uw_spectrum',
+    linkedMajors: [],
+    openToAll: true,
+    events: ['Pride Week events (spring quarter)', 'Monthly social mixers and game nights', 'Advocacy workshops and town halls', 'Safe space facilitation training'],
+  },
+
+  /* ── ENVIRONMENT & SUSTAINABILITY ── */
+  {
+    id: 'uwec',
+    name: 'UW Environmental Club',
+    description: "Grassroots environmental activism and education at UW — climate advocacy campaigns, sustainability initiatives on campus, volunteer restoration projects in the Pacific Northwest, and connections to Seattle environmental nonprofits.",
+    huskylink: 'https://huskylink.washington.edu/organization/uwenvironmentalclub',
+    instagram: 'uwenvironmental',
+    linkedMajors: ['environmental-studies', 'civil-environmental-engineering', 'biology', 'geography'],
+    openToAll: true,
+    events: ['Earth Day campus events (April)', 'Volunteer habitat restoration days (UW Natural Area, Thornton Creek)', 'Climate advocacy campaigns and letter-writing', 'Panel discussions with environmental scientists and activists'],
+  },
+  {
+    id: 'uw_sail',
+    name: 'UW Sailing Club',
+    description: "Learn to sail on Lake Washington and compete in collegiate regattas — beginner lessons through experienced racing, with access to UW's fleet of dinghies and keelboats at the UW Waterfront Activities Center.",
+    huskylink: 'https://huskylink.washington.edu/organization/uwsailingclub',
+    instagram: 'uwsailingclub',
+    linkedMajors: [],
+    openToAll: true,
+    events: ['Learn-to-sail clinics (spring and fall)', 'Collegiate regattas on Lake Washington', 'Overnight sailing trips on Puget Sound', 'Annual Crew vs. Sail charity regatta'],
+  },
+  {
+    id: 'uw_hike',
+    name: 'Mountaineers UW Chapter',
+    description: "UW chapter of The Mountaineers — day hikes, backpacking trips, rock climbing, and scrambles in the Cascades and Olympics, led by trained student leaders for all experience levels.",
+    huskylink: 'https://huskylink.washington.edu/organization/mountaineersuw',
+    instagram: 'mountaineersuw',
+    linkedMajors: [],
+    openToAll: true,
+    events: ['Weekly day hikes in the Cascades', 'Backpacking trips (spring, summer, fall)', 'Rock climbing clinics at Vertical World or Index', 'Annual Rainier scramble attempt'],
+  },
+
+  /* ── WELLNESS & RECREATION ── */
+  {
+    id: 'uw_yoga',
+    name: 'UW Yoga Club',
+    description: "Student-led yoga community — free and low-cost yoga classes for students of all levels, meditation sessions, and wellness workshops, primarily in the IMA and outdoor spaces around campus.",
+    huskylink: 'https://huskylink.washington.edu/organization/uwyogaclub',
+    instagram: 'uwyogaclub',
+    linkedMajors: [],
+    openToAll: true,
+    events: ['Weekly community yoga classes (IMA and outdoor)', 'Guided meditation sessions during finals', 'Annual International Day of Yoga event', 'Wellness workshops on mindfulness and stress management'],
+  },
+  {
+    id: 'uw_chess',
+    name: 'UW Chess Club',
+    description: "Casual to competitive chess at UW — weekly games for all skill levels, online tournaments, and a team that competes in collegiate chess championships.",
+    huskylink: 'https://huskylink.washington.edu/organization/uwchessclub',
+    instagram: 'uwchessclub',
+    linkedMajors: ['mathematics', 'cs', 'acms', 'philosophy'],
+    openToAll: true,
+    events: ['Weekly casual chess nights (all skill levels welcome)', 'Online blitz and bullet tournaments', 'Collegiate Chess League matches', 'Annual campus chess tournament'],
+  },
+
+  /* ── JOURNALISM & MEDIA ── */
+  {
+    id: 'the_daily_uw',
+    name: 'The Daily UW',
+    description: "UW's independent student newspaper since 1891 — covers campus news, Seattle politics, sports, arts, and opinion. Accepts contributors in writing, photography, video, design, and business with no experience required.",
+    huskylink: 'https://huskylink.washington.edu/organization/thedailyuw',
+    instagram: 'thedailyuw',
+    linkedMajors: ['communication', 'journalism', 'political-science', 'english'],
+    openToAll: true,
+    events: ['Fall and winter open recruitment for all departments', 'Annual journalism awards banquet', 'Reporting workshops and press trips', 'Editorial board applications (spring)'],
+  },
+  {
+    id: 'uw_tv',
+    name: 'UWTV (UW Student Television)',
+    description: "Student-run TV studio producing news broadcasts, talk shows, and video content — hands-on experience with professional camera equipment, editing software, and broadcast production for students interested in media.",
+    huskylink: 'https://huskylink.washington.edu/organization/uwtv',
+    instagram: 'uwtv_uw',
+    linkedMajors: ['communication', 'cinema-media-studies', 'hcde'],
+    openToAll: true,
+    events: ['Live broadcast productions (weekly)', 'Equipment and editing software training', 'Fall recruitment open house', 'Annual student awards and showcase'],
+  },
+  {
+    id: 'uw_debate',
+    name: 'UW Parliamentary Debate Society',
+    description: "Competitive parliamentary debate team traveling to tournaments at Stanford, Berkeley, Harvard, and UBC — trains in public speaking, argumentation, and on-the-spot reasoning regardless of prior experience.",
+    huskylink: 'https://huskylink.washington.edu/organization/uwparliamentarydebate',
+    instagram: 'uwdebatesociety',
+    linkedMajors: ['political-science', 'philosophy', 'communication', 'law-societies-justice', 'english'],
+    openToAll: true,
+    events: ['Weekly practice rounds and coaching sessions', 'Tournaments at Stanford, Berkeley, Harvard, and UBC', 'Public speaking workshops open to non-members', 'Annual UW debate tournament (home tournament)'],
+  },
+
+  /* ── SCIENCE & RESEARCH ── */
+  {
+    id: 'uw_astro',
+    name: 'UW Astronomy Club',
+    description: "For anyone fascinated by the night sky — star parties with telescopes on campus, public observatory nights at Manastash Ridge, astrophotography workshops, and talks from UW astronomy faculty.",
+    huskylink: 'https://huskylink.washington.edu/organization/uwastronomy',
+    instagram: 'uwastroclub',
+    linkedMajors: ['astronomy', 'physics', 'mathematics', 'acms'],
+    openToAll: true,
+    events: ['Monthly star parties on campus (clear nights)', 'Public observatory nights at Manastash Ridge', 'Astrophotography workshops', 'Faculty research talks and Q&As'],
+  },
+  {
+    id: 'uw_chem',
+    name: 'UW Chemistry Club',
+    description: "Community and professional development for chemistry students — demo nights open to the public, research symposia, connections to graduate school and industry internships, and social events for chem majors.",
+    huskylink: 'https://huskylink.washington.edu/organization/uwchemistryclub',
+    instagram: 'uwchemclub',
+    linkedMajors: ['chemistry', 'biochemistry', 'biology', 'materials-science'],
+    openToAll: true,
+    events: ['Public chemistry demo nights', 'Graduate school panel and application workshops', 'Industry networking nights with Pfizer, Merck, and Seattle Genetics', 'Research symposium with undergraduate poster presentations'],
+  },
+  {
+    id: 'uw_psych_club',
+    name: 'UW Psychology Club',
+    description: "For psychology students and anyone curious about the mind — research lab open houses, grad school Q&As, speaker series with UW psychology faculty, and volunteer opportunities in community mental health.",
+    huskylink: 'https://huskylink.washington.edu/organization/uwpsychclub',
+    instagram: 'uwpsychclub',
+    linkedMajors: ['psychology', 'neuroscience', 'education-studies', 'social-welfare'],
+    openToAll: true,
+    events: ['Research lab open houses each quarter', 'Grad school application panels and GRE prep', 'Faculty research talks', 'Community mental health volunteer placement help'],
+  },
+
+  /* ── COMMUNITY SERVICE ── */
+  {
+    id: 'uw_rotaract',
+    name: 'Rotaract Club of UW',
+    description: "University-age chapter of Rotary International — service projects locally and internationally, professional development, and a global network of young leaders.",
+    huskylink: 'https://huskylink.washington.edu/organization/rotaractuw',
+    instagram: 'rotaractuw',
+    linkedMajors: ['public-service-policy', 'business', 'global-health', 'social-welfare'],
+    openToAll: true,
+    events: ['Weekly service project coordination meetings', 'Annual Rotaract district conference', 'International service project trips (spring break)', 'Networking events with Rotary professionals'],
+  },
+  {
+    id: 'uw_habitat',
+    name: 'Habitat for Humanity UW Campus Chapter',
+    description: "Builds affordable housing and advocates for housing equity — students volunteer on construction sites across King County every weekend, fundraise for the YouthBuild program, and run campus awareness campaigns.",
+    huskylink: 'https://huskylink.washington.edu/organization/habitatuw',
+    instagram: 'habitatuw',
+    linkedMajors: ['civil-environmental-engineering', 'architecture', 'public-service-policy', 'social-welfare'],
+    openToAll: true,
+    events: ['Weekly construction volunteer builds in King County', 'Annual Husky Build fundraiser', 'Advocacy and housing equity campaigns', 'Alternative spring break build trips'],
+  },
 ];
 
 
@@ -10011,154 +10486,244 @@ function swipeKeyHandler(e) {
 }
 
 /* ============================================================
-   FILTER PICKER
+   QUIZ / ASSESSMENT
    ============================================================ */
-const pickerState = {
-  cats:         [],    // selected category values (multi-select)
-  college:      'all',
-  careerBucket: 'all',
+
+/* Onboarding assessment — 4 steps */
+const ONBOARD_STEPS = [
+  {
+    id: 'interests',
+    question: 'What kind of problems do you love working on?',
+    hint: 'Pick everything that pulls you in — even a little. No wrong answers.',
+    multi: true,
+    layout: 'grid-2',
+    options: [
+      { emoji: '💻', title: 'Building digital things',    sub: 'Apps, software, the web',       value: 'computing'       },
+      { emoji: '⚙️', title: 'How systems work',           sub: 'Machines, structures, physics',  value: 'engineering'     },
+      { emoji: '🔬', title: 'Discovering new knowledge',  sub: 'Research, science, data',        value: 'stem'            },
+      { emoji: '🌍', title: 'People & society',           sub: 'Politics, culture, behavior',    value: 'social_sciences' },
+      { emoji: '📈', title: 'Business & entrepreneurship',sub: 'Strategy, markets, startups',    value: 'business'        },
+      { emoji: '🎨', title: 'Art, writing & expression',  sub: 'Storytelling, creativity',       value: 'arts_humanities' },
+      { emoji: '✏️', title: 'Design & user experience',   sub: 'Visual thinking, products',      value: 'design'          },
+      { emoji: '🩺', title: 'Health & medicine',          sub: 'Helping people feel well',       value: 'health'          },
+      { emoji: '🌿', title: 'The environment',            sub: 'Sustainability, nature',         value: 'environment'     },
+    ]
+  },
+  {
+    id: 'workstyle',
+    question: 'How do you do your best work?',
+    hint: 'Be honest — there\'s no "right" answer here.',
+    multi: false,
+    layout: 'grid-1',
+    options: [
+      { emoji: '🧘', title: 'Deep solo focus',            sub: 'I love getting into a flow on my own',      value: 'solo'  },
+      { emoji: '🤝', title: 'Collaborating with others',  sub: 'Ideas come alive when I\'m with a team',    value: 'team'  },
+      { emoji: '⚡', title: 'A mix of both',              sub: 'Depends on the task — I\'m flexible',       value: 'mixed' },
+    ]
+  },
+  {
+    id: 'values',
+    question: 'What matters most to you in a career?',
+    hint: 'Pick your top priority.',
+    multi: false,
+    layout: 'grid-2',
+    options: [
+      { emoji: '💰', title: 'High earnings',       sub: 'Financial security & reward',  value: 'earnings'  },
+      { emoji: '💡', title: 'Making an impact',    sub: 'Work that matters to others',  value: 'impact'    },
+      { emoji: '🎭', title: 'Creative freedom',    sub: 'Express and build freely',     value: 'creative'  },
+      { emoji: '🏛️', title: 'Stability',           sub: 'Reliable, established career', value: 'stability' },
+      { emoji: '🚀', title: 'Growth & leadership', sub: 'Moving up, leading teams',     value: 'growth'    },
+      { emoji: '⚖️', title: 'Work-life balance',   sub: 'Time for life outside work',   value: 'balance'   },
+    ]
+  },
+  {
+    id: 'career',
+    question: 'Where do you picture yourself working?',
+    hint: 'Pick the setting that excites you most.',
+    multi: false,
+    layout: 'grid-2',
+    options: [
+      { emoji: '💻', title: 'Tech company or startup',  sub: 'Engineer, developer, PM',          value: 'tech'     },
+      { emoji: '📊', title: 'Data & AI lab',            sub: 'Analyst, data scientist, ML eng',  value: 'data'     },
+      { emoji: '🎨', title: 'Design studio or agency',  sub: 'UX, brand, product designer',      value: 'design'   },
+      { emoji: '🏢', title: 'Business or consulting',   sub: 'Strategy, finance, ops',           value: 'business' },
+      { emoji: '🏥', title: 'Hospital or clinic',       sub: 'Healthcare, medicine, nursing',    value: 'health'   },
+      { emoji: '⚖️', title: 'Government or law',        sub: 'Policy, public service, law',      value: 'policy'   },
+      { emoji: '🔬', title: 'Research or academia',     sub: 'Lab, university, discovery',       value: 'research' },
+      { emoji: '🎭', title: 'Media or the arts',        sub: 'Film, journalism, music, writing', value: 'creative' },
+    ]
+  },
+];
+
+const onboardState = {
+  step: 0,
+  answers: {},
+  direction: 'forward',
 };
 
-function initPickerChips() {
-  pickerState.cats         = [];
-  pickerState.college      = 'all';
-  pickerState.careerBucket = 'all';
-
-  // Category chips — multi select
-  document.querySelectorAll('#pickerCatChips .picker-chip').forEach(btn => {
-    btn.classList.remove('selected');
-    btn.onclick = () => {
-      const val = btn.dataset.cat;
-      const isRemoving = pickerState.cats.includes(val);
-      if (isRemoving) {
-        pickerState.cats = pickerState.cats.filter(c => c !== val);
-        btn.classList.remove('selected');
-      } else {
-        pickerState.cats.push(val);
-        btn.classList.add('selected');
-      }
-      updatePickerCount();
-    };
-  });
-
-  // College chips — single select (toggle off if re-clicked)
-  document.querySelectorAll('#pickerCollegeChips .picker-chip').forEach(btn => {
-    btn.classList.remove('selected');
-    btn.onclick = () => {
-      const val = btn.dataset.college;
-      const isRemoving = pickerState.college === val;
-      if (isRemoving) {
-        pickerState.college = 'all';
-        btn.classList.remove('selected');
-      } else {
-        pickerState.college = val;
-        document.querySelectorAll('#pickerCollegeChips .picker-chip').forEach(b => b.classList.remove('selected'));
-        btn.classList.add('selected');
-      }
-      updatePickerCount();
-    };
-  });
-
-
-  // Career bucket chips — single select
-  document.querySelectorAll('#pickerCareerChips .picker-chip').forEach(btn => {
-    btn.classList.remove('selected');
-    btn.onclick = () => {
-      const val = btn.dataset.careerbucket;
-      const isRemoving = pickerState.careerBucket === val;
-      if (isRemoving) { pickerState.careerBucket = 'all'; btn.classList.remove('selected'); }
-      else { pickerState.careerBucket = val; document.querySelectorAll('#pickerCareerChips .picker-chip').forEach(b => b.classList.remove('selected')); btn.classList.add('selected'); }
-      updatePickerCount();
-    };
-  });
-
-  updatePickerCount();
+function initQuiz(userName) {
+  onboardState.step = 0;
+  onboardState.answers = {};
+  onboardState.direction = 'forward';
+  renderOnboardStep(userName);
 }
 
-function countPickerMatches(ps) {
-  // Count majors matching a given pickerState snapshot (or current pickerState if none passed)
-  const s = ps || pickerState;
-  return MAJORS.filter(m => {
-    if (s.college      !== 'all' && m.collegeGroup !== s.college)                      return false;
-    if (s.careerBucket !== 'all' && !getCareerBuckets(m).includes(s.careerBucket))    return false;
-    if (s.cats.length > 0 && !s.cats.some(c => (m.categories||[]).includes(c))) return false;
-    return true;
-  }).length;
+function renderOnboardStep(userName) {
+  const shell = document.getElementById('quizShell');
+  const fill  = document.getElementById('quizProgressFill');
+  const total = ONBOARD_STEPS.length;
+
+  if (onboardState.step >= total) {
+    fill.style.width = '100%';
+    shell.innerHTML = buildOnboardResult(userName);
+    shell.querySelector('.quiz-launch-btn').addEventListener('click', launchOnboardResults);
+    shell.querySelector('.quiz-browse-link').addEventListener('click', () => showView('home'));
+    shell.classList.remove('quiz-slide-back');
+    shell.classList.add('quiz-slide');
+    return;
+  }
+
+  const stepData = ONBOARD_STEPS[onboardState.step];
+  fill.style.width = Math.round((onboardState.step / total) * 100) + '%';
+
+  const isFirst = onboardState.step === 0;
+  const saved   = onboardState.answers[stepData.id];
+  const selectedSet = new Set(Array.isArray(saved) ? saved : (saved ? [saved] : []));
+
+  shell.innerHTML = `
+    <div class="quiz-topbar">
+      <span class="quiz-step-label">Question ${onboardState.step + 1} of ${total}</span>
+      <button class="quiz-back-btn ${isFirst ? 'invisible' : ''}" onclick="onboardGoBack()">← Back</button>
+    </div>
+    <div class="quiz-question">${userName && onboardState.step === 0 ? `Hey ${userName.split(' ')[0]} — ` : ''}${stepData.question}</div>
+    <div class="quiz-hint">${stepData.hint}</div>
+    <div class="quiz-options ${stepData.layout}" id="onboardOptions">
+      ${stepData.options.map(opt => `
+        <button class="quiz-opt${selectedSet.has(opt.value) ? ' selected' : ''}"
+                data-value="${opt.value}"
+                onclick="onboardSelectOpt(this, ${stepData.multi})">
+          <span class="quiz-opt-emoji">${opt.emoji}</span>
+          <span class="quiz-opt-text">
+            <div class="quiz-opt-title">${opt.title}</div>
+            <div class="quiz-opt-sub">${opt.sub}</div>
+          </span>
+          <span class="quiz-opt-check">${selectedSet.has(opt.value) ? '✓' : ''}</span>
+        </button>
+      `).join('')}
+    </div>
+    <div class="quiz-next-wrap">
+      <button class="quiz-next-btn" id="onboardNextBtn"
+              onclick="onboardGoNext()"
+              ${selectedSet.size === 0 ? 'disabled' : ''}>
+        ${onboardState.step === total - 1 ? 'See my matches →' : 'Next →'}
+      </button>
+      <div class="quiz-skip-link" onclick="onboardSkipStep()">Skip this question</div>
+    </div>
+  `;
+
+  const cls = onboardState.direction === 'back' ? 'quiz-slide-back' : 'quiz-slide';
+  shell.classList.remove('quiz-slide', 'quiz-slide-back');
+  void shell.offsetWidth;
+  shell.classList.add(cls);
 }
 
-function updatePickerCount() {
-  const count = countPickerMatches();
-  const hint = document.getElementById('pickerCountHint');
-  const btn  = document.getElementById('pickerStartBtn');
-  if (count < 1) {
-    hint.textContent = 'No majors meet your criteria.';
-    hint.style.color = 'var(--ink-muted)';
-    btn.disabled = true;
+function onboardSelectOpt(btn, multi) {
+  const opts = document.querySelectorAll('#onboardOptions .quiz-opt');
+  if (multi) {
+    btn.classList.toggle('selected');
+    btn.querySelector('.quiz-opt-check').textContent = btn.classList.contains('selected') ? '✓' : '';
   } else {
-    hint.textContent = `${count} major${count !== 1 ? 's' : ''} match your picks`;
-    hint.style.color = 'var(--purple-mid)';
-    btn.disabled = false;
+    opts.forEach(o => { o.classList.remove('selected'); o.querySelector('.quiz-opt-check').textContent = ''; });
+    btn.classList.add('selected');
+    btn.querySelector('.quiz-opt-check').textContent = '✓';
+    setTimeout(() => onboardGoNext(), 320);
   }
-  refreshPickerChipStates();
+  const anySelected = [...opts].some(o => o.classList.contains('selected'));
+  const nb = document.getElementById('onboardNextBtn');
+  if (nb) nb.disabled = !anySelected;
 }
 
-// Disable picker chips that would leave 0 results given current pickerState
-function refreshPickerChipStates() {
-  function simCount(key, val) {
-    const snap = { ...pickerState, cats: [...pickerState.cats] };
-    if (key === 'cat') {
-      if (!snap.cats.includes(val)) snap.cats.push(val);
-    } else {
-      snap[key] = val;
-    }
-    return countPickerMatches(snap);
-  }
-
-  document.querySelectorAll('#pickerCatChips .picker-chip').forEach(btn => {
-    if (btn.classList.contains('selected')) { btn.disabled = false; return; }
-    btn.disabled = simCount('cat', btn.dataset.cat) === 0;
-  });
-  document.querySelectorAll('#pickerCollegeChips .picker-chip').forEach(btn => {
-    if (btn.classList.contains('selected')) { btn.disabled = false; return; }
-    btn.disabled = simCount('college', btn.dataset.college) === 0;
-  });
-  document.querySelectorAll('#pickerCareerChips .picker-chip').forEach(btn => {
-    if (btn.classList.contains('selected')) { btn.disabled = false; return; }
-    btn.disabled = simCount('careerBucket', btn.dataset.careerbucket) === 0;
-  });
+function onboardGoNext() {
+  const stepData = ONBOARD_STEPS[onboardState.step];
+  const selected = [...document.querySelectorAll('#onboardOptions .quiz-opt.selected')].map(o => o.dataset.value);
+  if (selected.length === 0 && !stepData.multi) return;
+  onboardState.answers[stepData.id] = stepData.multi ? selected : (selected[0] || null);
+  onboardState.direction = 'forward';
+  onboardState.step++;
+  renderOnboardStep(localStorage.getItem('mm_user') || '');
 }
 
-function startSwipeFromPicker() {
-  // Apply picker selections to global state
-  state.college      = pickerState.college;
-  state.careerBucket = pickerState.careerBucket;
+function onboardSkipStep() {
+  const stepData = ONBOARD_STEPS[onboardState.step];
+  onboardState.answers[stepData.id] = stepData.multi ? [] : null;
+  onboardState.direction = 'forward';
+  onboardState.step++;
+  renderOnboardStep(localStorage.getItem('mm_user') || '');
+}
+
+function onboardGoBack() {
+  if (onboardState.step === 0) return;
+  onboardState.direction = 'back';
+  onboardState.step--;
+  renderOnboardStep(localStorage.getItem('mm_user') || '');
+}
+
+function buildOnboardResult(userName) {
+  const interests = onboardState.answers['interests'] || [];
+  const career    = onboardState.answers['career'];
+  const matching  = MAJORS.filter(m => {
+    if (interests.length > 0 && !interests.some(c => (m.categories||[]).includes(c))) return false;
+    if (career && career !== 'all' && !getCareerBuckets(m).includes(career)) return false;
+    return true;
+  });
+  const count = matching.length || MAJORS.length;
+
+  const interestLabels = {
+    computing:'💻 Computing', engineering:'⚙️ Engineering', stem:'🔬 Science',
+    social_sciences:'🌍 Social Sciences', business:'📈 Business',
+    arts_humanities:'🎨 Arts & Humanities', design:'✏️ Design',
+    health:'🩺 Health', environment:'🌿 Environment',
+  };
+  const chips = (interests).map(i => interestLabels[i] || i).filter(Boolean);
+
+  return `
+    <div class="quiz-result-slide quiz-slide">
+      <div class="quiz-result-icon">✨</div>
+      <div class="quiz-result-title">We found ${count} majors for you${userName ? ', ' + userName.split(' ')[0] : ''}!</div>
+      <div class="quiz-result-sub">Based on your answers, here's what looks like a great fit. You can always refine or explore more after.</div>
+      ${chips.length ? `<div class="quiz-result-chips">${chips.map(c => `<span class="quiz-result-chip">${c}</span>`).join('')}</div>` : ''}
+      <button class="quiz-launch-btn">Explore my matches →</button>
+      <div class="quiz-browse-link">Browse everything instead</div>
+    </div>
+  `;
+}
+
+function launchOnboardResults() {
+  const interests = onboardState.answers['interests'] || [];
+  const career    = onboardState.answers['career'] || null;
+
   state.query        = '';
+  state.college      = 'all';
+  state.careerBucket = career || 'all';
+  state.cat          = interests.length === 1 ? interests[0] : 'all';
 
-  // Build deck using all picker filters
-  state.cat = pickerState.cats.length === 1 ? pickerState.cats[0] : 'all';
   const deck = MAJORS.filter(m => {
-    if (state.college      !== 'all' && m.collegeGroup !== state.college)                   return false;
-    if (state.careerBucket !== 'all' && !getCareerBuckets(m).includes(state.careerBucket)) return false;
-    if (pickerState.cats.length > 0 && !pickerState.cats.some(c => (m.categories||[]).includes(c))) return false;
+    if (interests.length > 0 && !interests.some(c => (m.categories||[]).includes(c))) return false;
+    if (career && career !== 'all' && !getCareerBuckets(m).includes(career)) return false;
     return true;
   });
 
-  // Sync sidebar to match
   syncSidebarToState();
-
-  // Navigate to explore first (so back from swipe → explore, not picker)
   state.view = 'explore';
   VIEWS.forEach(v => document.getElementById(v).classList.add('hidden'));
   document.querySelector('footer').style.display = 'none';
-
-  // Load deck and launch
-  swipe.deck = deck;
+  swipe.deck = deck.length ? deck : [...MAJORS];
   swipe.idx  = 0;
   _launchSwipe();
-
-  // Reset picker greeting for next time
-  document.getElementById('pickerGreeting').innerHTML = `Hi there 👋<br>What are you into?`;
 }
+
+// Legacy shim
+function initPickerChips() { /* replaced by initQuiz() */ }
 
 
 /* ============================================================
@@ -10752,11 +11317,9 @@ function initApp(freshLogin) {
   renderHome();
   renderExplore();
   if (freshLogin) {
-    const netid = localStorage.getItem('mm_user') || '';
-    document.getElementById('pickerGreeting').innerHTML =
-      `Hi, <em style="color:var(--gold);font-style:normal">${esc(netid)}</em> 👋<br>What are you into?`;
-    initPickerChips();
+    const userName = localStorage.getItem('mm_user') || '';
     showView('filterPicker');
+    initQuiz(userName);
   } else {
     showView('home');
   }
