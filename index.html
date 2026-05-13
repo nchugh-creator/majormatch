@@ -8789,6 +8789,8 @@ function mountApp(user, freshLogin) {
   const displayName = user.name || (user.email ? user.email.split('@')[0] : 'Guest');
   document.getElementById('navNetid').textContent  = displayName;
   document.getElementById('navAvatar').textContent = displayName[0].toUpperCase();
+  // Anchor the app's history so back never exits to the browser's previous page
+  history.replaceState({ view: 'home' }, '', '#home');
   initApp(freshLogin);
 }
 
@@ -8872,8 +8874,13 @@ function showView(name, pushHistory = true) {
 
 // Browser back/forward button support
 window.addEventListener('popstate', e => {
-  const view = (e.state && e.state.view) || 'home';
-  showView(view, false);
+  if (!e.state) {
+    // Went back past the app's first entry — push home back and stay
+    history.pushState({ view: 'home' }, '', '#home');
+    showView('home', false);
+    return;
+  }
+  showView(e.state.view, false);
 });
 
 /* ============================================================
