@@ -8847,7 +8847,7 @@ document.addEventListener('keydown', e => {
    VIEW ROUTER
    ============================================================ */
 const VIEWS = ['filterPickerView','homeView','exploreView','detailView','myMajorsView','quizView','communityView'];
-function showView(name) {
+function showView(name, pushHistory = true) {
   state.prevView = state.view;
   state.view = name;
   const viewName = (name==='rsos') ? 'explore' : name;
@@ -8856,6 +8856,12 @@ function showView(name) {
   document.querySelector('footer').style.display = (viewName==='explore'||viewName==='detail'||viewName==='filterPicker'||viewName==='quiz') ? 'none' : '';
   // nav tab highlight (top + bottom)
   document.querySelectorAll('.nav-tab, .bnav-btn').forEach(t=>t.classList.toggle('active', t.dataset.view===name));
+  // push browser history so back/forward buttons work
+  if (pushHistory) {
+    const url = '#' + viewName;
+    if (window.location.hash !== url) history.pushState({ view: name }, '', url);
+  }
+  window.scrollTo(0, 0);
   // render
   if (viewName==='home')     renderHome();
   if (viewName==='explore')  { renderExplore(); renderSalaryHistogram(); }
@@ -8863,6 +8869,12 @@ function showView(name) {
   if (viewName==='quiz')      renderQuiz();
   if (viewName==='community') renderCommunity();
 }
+
+// Browser back/forward button support
+window.addEventListener('popstate', e => {
+  const view = (e.state && e.state.view) || 'home';
+  showView(view, false);
+});
 
 /* ============================================================
    HOME
