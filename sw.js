@@ -1,4 +1,4 @@
-const CACHE = 'majormatch-v4';
+const CACHE = 'majormatch-v5';
 const SHELL  = ['/', '/index.html', '/favicon.svg', '/manifest.json',
                  '/icons/icon-192.png', '/icons/icon-512.png'];
 

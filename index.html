@@ -10489,80 +10489,97 @@ function swipeKeyHandler(e) {
    QUIZ / ASSESSMENT
    ============================================================ */
 
-/* Onboarding assessment — 4 steps */
+/* ── IKIGAI-BASED ONBOARDING QUIZ ─────────────────────────────
+   4 questions, one per Ikigai circle, preceded by an intro card.
+   step === -1  → intro
+   step 0..3    → questions
+   step === 4   → result
+   ──────────────────────────────────────────────────────────── */
+
 const ONBOARD_STEPS = [
   {
-    id: 'interests',
-    question: 'What kind of problems do you love working on?',
-    hint: 'Pick everything that pulls you in — even a little. No wrong answers.',
+    id: 'love',
+    ikigai: { label: 'What you love', color: '#F4A7B9', emoji: '❤️' },
+    question: 'What genuinely lights you up?',
+    hint: 'These are your passions — pick everything that excites you, even a little.',
     multi: true,
     layout: 'grid-2',
     options: [
-      { emoji: '💻', title: 'Building digital things',    sub: 'Apps, software, the web',       value: 'computing'       },
-      { emoji: '⚙️', title: 'How systems work',           sub: 'Machines, structures, physics',  value: 'engineering'     },
-      { emoji: '🔬', title: 'Discovering new knowledge',  sub: 'Research, science, data',        value: 'stem'            },
-      { emoji: '🌍', title: 'People & society',           sub: 'Politics, culture, behavior',    value: 'social_sciences' },
-      { emoji: '📈', title: 'Business & entrepreneurship',sub: 'Strategy, markets, startups',    value: 'business'        },
-      { emoji: '🎨', title: 'Art, writing & expression',  sub: 'Storytelling, creativity',       value: 'arts_humanities' },
-      { emoji: '✏️', title: 'Design & user experience',   sub: 'Visual thinking, products',      value: 'design'          },
-      { emoji: '🩺', title: 'Health & medicine',          sub: 'Helping people feel well',       value: 'health'          },
-      { emoji: '🌿', title: 'The environment',            sub: 'Sustainability, nature',         value: 'environment'     },
+      { emoji: '💻', title: 'Building & coding',        sub: 'Apps, software, the web',         value: 'computing'       },
+      { emoji: '⚙️', title: 'Engineering & making',     sub: 'How things are built & designed',  value: 'engineering'     },
+      { emoji: '🔬', title: 'Science & discovery',      sub: 'Research, experiments, data',      value: 'stem'            },
+      { emoji: '🌍', title: 'People & society',         sub: 'Culture, politics, human behavior',value: 'social_sciences' },
+      { emoji: '📈', title: 'Business & startups',      sub: 'Strategy, markets, entrepreneurship', value: 'business'    },
+      { emoji: '🎨', title: 'Art, writing & stories',   sub: 'Creativity, expression, narrative',value: 'arts_humanities' },
+      { emoji: '✏️', title: 'Design & visual thinking', sub: 'Products, UX, branding',           value: 'design'          },
+      { emoji: '🩺', title: 'Health & medicine',        sub: 'Caring for people, the body, mind',value: 'health'          },
+      { emoji: '🌿', title: 'Nature & environment',     sub: 'Sustainability, ecology, climate', value: 'environment'     },
     ]
   },
   {
-    id: 'workstyle',
-    question: 'How do you do your best work?',
-    hint: 'Be honest — there\'s no "right" answer here.',
-    multi: false,
-    layout: 'grid-1',
+    id: 'good_at',
+    ikigai: { label: 'What you\'re good at', color: '#A8D8A8', emoji: '⭐' },
+    question: 'What do people say you\'re naturally great at?',
+    hint: 'Think about compliments you\'ve gotten or tasks that just click for you.',
+    multi: true,
+    layout: 'grid-2',
     options: [
-      { emoji: '🧘', title: 'Deep solo focus',            sub: 'I love getting into a flow on my own',      value: 'solo'  },
-      { emoji: '🤝', title: 'Collaborating with others',  sub: 'Ideas come alive when I\'m with a team',    value: 'team'  },
-      { emoji: '⚡', title: 'A mix of both',              sub: 'Depends on the task — I\'m flexible',       value: 'mixed' },
+      { emoji: '🧩', title: 'Problem-solving',     sub: 'Breaking down hard things logically',  value: 'stem'            },
+      { emoji: '🗣️', title: 'Communicating',       sub: 'Writing, speaking, persuading',        value: 'arts_humanities' },
+      { emoji: '🎨', title: 'Creative thinking',   sub: 'Designing, imagining, making',         value: 'design'          },
+      { emoji: '📐', title: 'Building systems',    sub: 'Code, engineering, architecture',       value: 'engineering'     },
+      { emoji: '📊', title: 'Analyzing data',      sub: 'Spotting patterns, making sense of numbers', value: 'computing' },
+      { emoji: '🤝', title: 'Leading & organizing',sub: 'Getting people aligned, managing projects', value: 'business'   },
+      { emoji: '💚', title: 'Helping others',      sub: 'Listening, supporting, nurturing',     value: 'health'          },
+      { emoji: '🌐', title: 'Big-picture thinking',sub: 'Systems, policy, how society works',   value: 'social_sciences' },
     ]
   },
   {
-    id: 'values',
-    question: 'What matters most to you in a career?',
-    hint: 'Pick your top priority.',
+    id: 'world_needs',
+    ikigai: { label: 'What the world needs', color: '#FFF3A3', emoji: '🌍' },
+    question: 'What problems do you want your work to help solve?',
+    hint: 'Think about the dent you want to make in the world.',
     multi: false,
     layout: 'grid-2',
     options: [
-      { emoji: '💰', title: 'High earnings',       sub: 'Financial security & reward',  value: 'earnings'  },
-      { emoji: '💡', title: 'Making an impact',    sub: 'Work that matters to others',  value: 'impact'    },
-      { emoji: '🎭', title: 'Creative freedom',    sub: 'Express and build freely',     value: 'creative'  },
-      { emoji: '🏛️', title: 'Stability',           sub: 'Reliable, established career', value: 'stability' },
-      { emoji: '🚀', title: 'Growth & leadership', sub: 'Moving up, leading teams',     value: 'growth'    },
-      { emoji: '⚖️', title: 'Work-life balance',   sub: 'Time for life outside work',   value: 'balance'   },
+      { emoji: '🧠', title: 'Smarter technology',    sub: 'AI, software, human-computer interaction', value: 'computing'       },
+      { emoji: '🏗️', title: 'Better infrastructure', sub: 'Buildings, cities, systems that work',     value: 'engineering'     },
+      { emoji: '💊', title: 'Healthier people',       sub: 'Medicine, mental health, public health',   value: 'health'          },
+      { emoji: '⚖️', title: 'A fairer society',      sub: 'Justice, equity, policy reform',            value: 'social_sciences' },
+      { emoji: '🌱', title: 'A livable planet',       sub: 'Climate, conservation, clean energy',      value: 'environment'     },
+      { emoji: '📚', title: 'More educated people',   sub: 'Learning, access, opportunity',            value: 'arts_humanities' },
+      { emoji: '💡', title: 'Economic opportunity',   sub: 'Jobs, innovation, thriving businesses',    value: 'business'        },
+      { emoji: '🎭', title: 'Richer human culture',   sub: 'Art, storytelling, community',             value: 'design'          },
     ]
   },
   {
-    id: 'career',
-    question: 'Where do you picture yourself working?',
-    hint: 'Pick the setting that excites you most.',
+    id: 'paid_for',
+    ikigai: { label: 'What you can be paid for', color: '#C5CAE9', emoji: '💰' },
+    question: 'What kind of work do you want to build a career in?',
+    hint: 'Where do you see yourself earning a living? Pick what excites you most.',
     multi: false,
     layout: 'grid-2',
     options: [
-      { emoji: '💻', title: 'Tech company or startup',  sub: 'Engineer, developer, PM',          value: 'tech'     },
-      { emoji: '📊', title: 'Data & AI lab',            sub: 'Analyst, data scientist, ML eng',  value: 'data'     },
-      { emoji: '🎨', title: 'Design studio or agency',  sub: 'UX, brand, product designer',      value: 'design'   },
-      { emoji: '🏢', title: 'Business or consulting',   sub: 'Strategy, finance, ops',           value: 'business' },
-      { emoji: '🏥', title: 'Hospital or clinic',       sub: 'Healthcare, medicine, nursing',    value: 'health'   },
-      { emoji: '⚖️', title: 'Government or law',        sub: 'Policy, public service, law',      value: 'policy'   },
-      { emoji: '🔬', title: 'Research or academia',     sub: 'Lab, university, discovery',       value: 'research' },
-      { emoji: '🎭', title: 'Media or the arts',        sub: 'Film, journalism, music, writing', value: 'creative' },
+      { emoji: '💻', title: 'Tech & software',       sub: 'Engineer, developer, PM, data scientist', value: 'tech'     },
+      { emoji: '📊', title: 'Data & AI',             sub: 'Analyst, ML engineer, researcher',        value: 'data'     },
+      { emoji: '🎨', title: 'Design & media',        sub: 'UX, brand, creative direction',           value: 'design'   },
+      { emoji: '🏢', title: 'Business & consulting', sub: 'Strategy, finance, operations',           value: 'business' },
+      { emoji: '🏥', title: 'Healthcare',            sub: 'Medicine, nursing, public health',        value: 'health'   },
+      { emoji: '⚖️', title: 'Law & government',      sub: 'Policy, public service, legal work',      value: 'policy'   },
+      { emoji: '🔬', title: 'Research & academia',   sub: 'Lab work, faculty, discovery',            value: 'research' },
+      { emoji: '🎭', title: 'Arts & journalism',     sub: 'Film, writing, music, media',             value: 'creative' },
     ]
   },
 ];
 
 const onboardState = {
-  step: 0,
+  step: -1,   // -1 = intro screen
   answers: {},
   direction: 'forward',
 };
 
 function initQuiz(userName) {
-  onboardState.step = 0;
+  onboardState.step = -1;
   onboardState.answers = {};
   onboardState.direction = 'forward';
   renderOnboardStep(userName);
@@ -10572,31 +10589,91 @@ function renderOnboardStep(userName) {
   const shell = document.getElementById('quizShell');
   const fill  = document.getElementById('quizProgressFill');
   const total = ONBOARD_STEPS.length;
+  const firstName = (userName || '').split(' ')[0];
 
-  if (onboardState.step >= total) {
-    fill.style.width = '100%';
-    shell.innerHTML = buildOnboardResult(userName);
-    shell.querySelector('.quiz-launch-btn').addEventListener('click', launchOnboardResults);
-    shell.querySelector('.quiz-browse-link').addEventListener('click', () => showView('home'));
-    shell.classList.remove('quiz-slide-back');
-    shell.classList.add('quiz-slide');
+  // ── Intro slide ──────────────────────────────────────────────
+  if (onboardState.step === -1) {
+    fill.style.width = '0%';
+    shell.innerHTML = `
+      <div class="quiz-topbar">
+        <span class="quiz-step-label">MajorMatch</span>
+        <span class="quiz-skip-link" style="margin:0" onclick="showView('home')">Skip →</span>
+      </div>
+      <div class="quiz-question" style="margin-bottom:8px">Find your <em style="font-style:italic;color:var(--gold)">Ikigai</em>${firstName ? ', ' + firstName : ''}</div>
+      <div class="quiz-hint" style="margin-bottom:28px">Ikigai is a Japanese concept — the sweet spot where what you <strong style="color:#F4A7B9">love</strong>, what you're <strong style="color:#A8D8A8">good at</strong>, what the <strong style="color:#FFF3A3">world needs</strong>, and what you can <strong style="color:#C5CAE9">be paid for</strong> all meet. That's where the best major lives.</div>
+
+      <!-- Mini Ikigai visual -->
+      <div style="display:flex;justify-content:center;margin-bottom:28px;">
+        <svg width="220" height="220" viewBox="0 0 220 220" style="overflow:visible">
+          <!-- Circles -->
+          <circle cx="110" cy="82"  r="64" fill="#F4A7B9" opacity="0.35"/>
+          <circle cx="80"  cy="138" r="64" fill="#A8D8A8" opacity="0.35"/>
+          <circle cx="140" cy="138" r="64" fill="#C5CAE9" opacity="0.35"/>
+          <circle cx="110" cy="130" r="48" fill="#FFF3A3" opacity="0.40"/>
+          <!-- Center label -->
+          <text x="110" y="122" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="13" fill="white">IKIGAI</text>
+          <!-- Outer labels -->
+          <text x="110" y="24"  text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.8)">What you love ❤️</text>
+          <text x="34"  y="170" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.8)">Good at ⭐</text>
+          <text x="186" y="170" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.8)">Paid for 💰</text>
+          <text x="110" y="210" text-anchor="middle" font-size="10" fill="rgba(255,255,255,0.8)">World needs 🌍</text>
+        </svg>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:28px">
+        <div style="background:rgba(244,167,185,0.15);border:1px solid rgba(244,167,185,0.3);border-radius:10px;padding:12px 14px">
+          <div style="font-size:13px;font-weight:700;color:#F4A7B9;margin-bottom:3px">❤️ What you love</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.55)">Your passions & interests</div>
+        </div>
+        <div style="background:rgba(168,216,168,0.15);border:1px solid rgba(168,216,168,0.3);border-radius:10px;padding:12px 14px">
+          <div style="font-size:13px;font-weight:700;color:#A8D8A8;margin-bottom:3px">⭐ What you're good at</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.55)">Your natural strengths</div>
+        </div>
+        <div style="background:rgba(255,243,163,0.15);border:1px solid rgba(255,243,163,0.3);border-radius:10px;padding:12px 14px">
+          <div style="font-size:13px;font-weight:700;color:#FFF3A3;margin-bottom:3px">🌍 What the world needs</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.55)">Your mission & purpose</div>
+        </div>
+        <div style="background:rgba(197,202,233,0.15);border:1px solid rgba(197,202,233,0.3);border-radius:10px;padding:12px 14px">
+          <div style="font-size:13px;font-weight:700;color:#C5CAE9;margin-bottom:3px">💰 What pays well</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.55)">Your vocation & livelihood</div>
+        </div>
+      </div>
+
+      <button class="quiz-next-btn" style="opacity:1" onclick="onboardIntroNext()">Find my Ikigai — 4 quick questions →</button>
+      <div class="quiz-skip-link" onclick="showView('home')">I'll explore on my own</div>
+    `;
+    const cls = onboardState.direction === 'back' ? 'quiz-slide-back' : 'quiz-slide';
+    shell.classList.remove('quiz-slide','quiz-slide-back'); void shell.offsetWidth; shell.classList.add(cls);
     return;
   }
 
-  const stepData = ONBOARD_STEPS[onboardState.step];
-  fill.style.width = Math.round((onboardState.step / total) * 100) + '%';
+  // ── Result slide ─────────────────────────────────────────────
+  if (onboardState.step >= total) {
+    fill.style.width = '100%';
+    shell.innerHTML = buildOnboardResult(firstName);
+    shell.querySelector('.quiz-launch-btn').addEventListener('click', launchOnboardResults);
+    shell.querySelector('.quiz-browse-link').addEventListener('click', () => showView('home'));
+    shell.classList.remove('quiz-slide-back'); shell.classList.add('quiz-slide');
+    return;
+  }
 
-  const isFirst = onboardState.step === 0;
-  const saved   = onboardState.answers[stepData.id];
+  // ── Question slides ───────────────────────────────────────────
+  const stepData = ONBOARD_STEPS[onboardState.step];
+  fill.style.width = Math.round(((onboardState.step + 1) / (total + 1)) * 100) + '%';
+  const saved = onboardState.answers[stepData.id];
   const selectedSet = new Set(Array.isArray(saved) ? saved : (saved ? [saved] : []));
 
   shell.innerHTML = `
     <div class="quiz-topbar">
-      <span class="quiz-step-label">Question ${onboardState.step + 1} of ${total}</span>
-      <button class="quiz-back-btn ${isFirst ? 'invisible' : ''}" onclick="onboardGoBack()">← Back</button>
+      <button class="quiz-back-btn" onclick="onboardGoBack()">← Back</button>
+      <span class="quiz-step-label">${onboardState.step + 1} of ${total}</span>
     </div>
-    <div class="quiz-question">${userName && onboardState.step === 0 ? `Hey ${userName.split(' ')[0]} — ` : ''}${stepData.question}</div>
-    <div class="quiz-hint">${stepData.hint}</div>
+    <!-- Ikigai zone badge -->
+    <div style="display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);border-radius:20px;padding:5px 13px;margin-bottom:16px;font-size:12px;font-weight:600;color:${stepData.ikigai.color}">
+      ${stepData.ikigai.emoji} ${stepData.ikigai.label}
+    </div>
+    <div class="quiz-question">${stepData.question}</div>
+    <div class="quiz-hint">${stepData.hint}${stepData.multi ? ' <span style="opacity:.5">(pick all that apply)</span>' : ''}</div>
     <div class="quiz-options ${stepData.layout}" id="onboardOptions">
       ${stepData.options.map(opt => `
         <button class="quiz-opt${selectedSet.has(opt.value) ? ' selected' : ''}"
@@ -10612,19 +10689,21 @@ function renderOnboardStep(userName) {
       `).join('')}
     </div>
     <div class="quiz-next-wrap">
-      <button class="quiz-next-btn" id="onboardNextBtn"
-              onclick="onboardGoNext()"
-              ${selectedSet.size === 0 ? 'disabled' : ''}>
-        ${onboardState.step === total - 1 ? 'See my matches →' : 'Next →'}
+      <button class="quiz-next-btn" id="onboardNextBtn" onclick="onboardGoNext()" ${selectedSet.size === 0 ? 'disabled' : ''}>
+        ${onboardState.step === total - 1 ? 'See my Ikigai →' : 'Next →'}
       </button>
       <div class="quiz-skip-link" onclick="onboardSkipStep()">Skip this question</div>
     </div>
   `;
 
   const cls = onboardState.direction === 'back' ? 'quiz-slide-back' : 'quiz-slide';
-  shell.classList.remove('quiz-slide', 'quiz-slide-back');
-  void shell.offsetWidth;
-  shell.classList.add(cls);
+  shell.classList.remove('quiz-slide','quiz-slide-back'); void shell.offsetWidth; shell.classList.add(cls);
+}
+
+function onboardIntroNext() {
+  onboardState.direction = 'forward';
+  onboardState.step = 0;
+  renderOnboardStep(localStorage.getItem('mm_user') || '');
 }
 
 function onboardSelectOpt(btn, multi) {
@@ -10636,7 +10715,7 @@ function onboardSelectOpt(btn, multi) {
     opts.forEach(o => { o.classList.remove('selected'); o.querySelector('.quiz-opt-check').textContent = ''; });
     btn.classList.add('selected');
     btn.querySelector('.quiz-opt-check').textContent = '✓';
-    setTimeout(() => onboardGoNext(), 320);
+    setTimeout(() => onboardGoNext(), 340);
   }
   const anySelected = [...opts].some(o => o.classList.contains('selected'));
   const nb = document.getElementById('onboardNextBtn');
@@ -10662,54 +10741,78 @@ function onboardSkipStep() {
 }
 
 function onboardGoBack() {
-  if (onboardState.step === 0) return;
   onboardState.direction = 'back';
   onboardState.step--;
   renderOnboardStep(localStorage.getItem('mm_user') || '');
 }
 
-function buildOnboardResult(userName) {
-  const interests = onboardState.answers['interests'] || [];
-  const career    = onboardState.answers['career'];
-  const matching  = MAJORS.filter(m => {
-    if (interests.length > 0 && !interests.some(c => (m.categories||[]).includes(c))) return false;
-    if (career && career !== 'all' && !getCareerBuckets(m).includes(career)) return false;
+function buildOnboardResult(firstName) {
+  // Resolve matching majors from love + paid_for answers
+  const love     = onboardState.answers['love']     || [];
+  const goodAt   = onboardState.answers['good_at']  || [];
+  const worldNeeds = onboardState.answers['world_needs'];
+  const paidFor  = onboardState.answers['paid_for'];
+
+  // Use love + goodAt for category matching; paidFor for career bucket
+  const cats = [...new Set([...love, ...goodAt])];
+  const matching = MAJORS.filter(m => {
+    if (cats.length > 0 && !cats.some(c => (m.categories||[]).includes(c))) return false;
+    if (paidFor && paidFor !== 'all' && !getCareerBuckets(m).includes(paidFor)) return false;
     return true;
   });
   const count = matching.length || MAJORS.length;
 
-  const interestLabels = {
-    computing:'💻 Computing', engineering:'⚙️ Engineering', stem:'🔬 Science',
-    social_sciences:'🌍 Social Sciences', business:'📈 Business',
-    arts_humanities:'🎨 Arts & Humanities', design:'✏️ Design',
-    health:'🩺 Health', environment:'🌿 Environment',
-  };
-  const chips = (interests).map(i => interestLabels[i] || i).filter(Boolean);
+  // Ikigai zone summary
+  const zoneRows = [
+    { color:'#F4A7B9', emoji:'❤️', label:'What you love',        val: love.length     ? love.slice(0,2).join(', ')   : '—' },
+    { color:'#A8D8A8', emoji:'⭐', label:'What you\'re good at', val: goodAt.length   ? goodAt.slice(0,2).join(', ')  : '—' },
+    { color:'#FFF3A3', emoji:'🌍', label:'World needs',          val: worldNeeds || '—' },
+    { color:'#C5CAE9', emoji:'💰', label:'You can be paid for',  val: paidFor    || '—' },
+  ];
 
   return `
     <div class="quiz-result-slide quiz-slide">
-      <div class="quiz-result-icon">✨</div>
-      <div class="quiz-result-title">We found ${count} majors for you${userName ? ', ' + userName.split(' ')[0] : ''}!</div>
-      <div class="quiz-result-sub">Based on your answers, here's what looks like a great fit. You can always refine or explore more after.</div>
-      ${chips.length ? `<div class="quiz-result-chips">${chips.map(c => `<span class="quiz-result-chip">${c}</span>`).join('')}</div>` : ''}
-      <button class="quiz-launch-btn">Explore my matches →</button>
-      <div class="quiz-browse-link">Browse everything instead</div>
+      <!-- Mini Ikigai filled diagram -->
+      <div style="display:flex;justify-content:center;margin-bottom:22px">
+        <svg width="160" height="160" viewBox="0 0 220 220">
+          <circle cx="110" cy="82"  r="64" fill="#F4A7B9" opacity="${love.length ? '0.5' : '0.15'}"/>
+          <circle cx="80"  cy="138" r="64" fill="#A8D8A8" opacity="${goodAt.length ? '0.5' : '0.15'}"/>
+          <circle cx="140" cy="138" r="64" fill="#C5CAE9" opacity="${paidFor ? '0.5' : '0.15'}"/>
+          <circle cx="110" cy="130" r="48" fill="#FFF3A3" opacity="${worldNeeds ? '0.5' : '0.15'}"/>
+          <text x="110" y="126" text-anchor="middle" font-family="Georgia,serif" font-weight="700" font-size="12" fill="white">IKIGAI</text>
+        </svg>
+      </div>
+      <div class="quiz-result-title">Your Ikigai points to ${count} majors${firstName ? ', ' + firstName : ''}!</div>
+      <div class="quiz-result-sub">Here's a snapshot of your four Ikigai zones — your matches are built from these.</div>
+      <!-- Zone summary -->
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:28px;text-align:left">
+        ${zoneRows.map(z => `
+          <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:10px;padding:10px 12px">
+            <div style="font-size:11px;font-weight:700;color:${z.color};margin-bottom:2px">${z.emoji} ${z.label}</div>
+            <div style="font-size:12px;color:rgba(255,255,255,0.6);text-transform:capitalize">${z.val}</div>
+          </div>
+        `).join('')}
+      </div>
+      <button class="quiz-launch-btn">Explore my ${count} matches →</button>
+      <div class="quiz-browse-link">Browse all majors instead</div>
     </div>
   `;
 }
 
 function launchOnboardResults() {
-  const interests = onboardState.answers['interests'] || [];
-  const career    = onboardState.answers['career'] || null;
+  const love    = onboardState.answers['love']    || [];
+  const goodAt  = onboardState.answers['good_at'] || [];
+  const paidFor = onboardState.answers['paid_for'] || null;
 
+  const cats = [...new Set([...love, ...goodAt])];
   state.query        = '';
   state.college      = 'all';
-  state.careerBucket = career || 'all';
-  state.cat          = interests.length === 1 ? interests[0] : 'all';
+  state.careerBucket = paidFor || 'all';
+  state.cat          = cats.length === 1 ? cats[0] : 'all';
 
   const deck = MAJORS.filter(m => {
-    if (interests.length > 0 && !interests.some(c => (m.categories||[]).includes(c))) return false;
-    if (career && career !== 'all' && !getCareerBuckets(m).includes(career)) return false;
+    if (cats.length > 0 && !cats.some(c => (m.categories||[]).includes(c))) return false;
+    if (paidFor && paidFor !== 'all' && !getCareerBuckets(m).includes(paidFor)) return false;
     return true;
   });
 
