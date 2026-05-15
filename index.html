@@ -10539,7 +10539,7 @@ const ONBOARD_STEPS = [
     ikigai: { label: 'What the world needs', color: '#FFF3A3', emoji: '🌍' },
     question: 'What problems do you want your work to help solve?',
     hint: 'Think about the dent you want to make in the world.',
-    multi: false,
+    multi: true,
     layout: 'grid-2',
     options: [
       { emoji: '🧠', title: 'Smarter technology',    sub: 'AI, software, human-computer interaction', value: 'computing'       },
@@ -10557,7 +10557,7 @@ const ONBOARD_STEPS = [
     ikigai: { label: 'What you can be paid for', color: '#C5CAE9', emoji: '💰' },
     question: 'What kind of work do you want to build a career in?',
     hint: 'Where do you see yourself earning a living? Pick what excites you most.',
-    multi: false,
+    multi: true,
     layout: 'grid-2',
     options: [
       { emoji: '💻', title: 'Tech & software',       sub: 'Engineer, developer, PM, data scientist', value: 'tech'     },
@@ -10748,26 +10748,25 @@ function onboardGoBack() {
 
 function buildOnboardResult(firstName) {
   // Resolve matching majors from love + paid_for answers
-  const love     = onboardState.answers['love']     || [];
-  const goodAt   = onboardState.answers['good_at']  || [];
-  const worldNeeds = onboardState.answers['world_needs'];
-  const paidFor  = onboardState.answers['paid_for'];
+  const love       = onboardState.answers['love']        || [];
+  const goodAt     = onboardState.answers['good_at']     || [];
+  const worldNeeds = onboardState.answers['world_needs'] || [];
+  const paidForRaw = onboardState.answers['paid_for'];
+  const paidFor    = Array.isArray(paidForRaw) ? paidForRaw : (paidForRaw ? [paidForRaw] : []);
 
-  // Use love + goodAt for category matching; paidFor for career bucket
   const cats = [...new Set([...love, ...goodAt])];
   const matching = MAJORS.filter(m => {
     if (cats.length > 0 && !cats.some(c => (m.categories||[]).includes(c))) return false;
-    if (paidFor && paidFor !== 'all' && !getCareerBuckets(m).includes(paidFor)) return false;
+    if (paidFor.length > 0 && !paidFor.some(p => getCareerBuckets(m).includes(p))) return false;
     return true;
   });
   const count = matching.length || MAJORS.length;
 
-  // Ikigai zone summary
   const zoneRows = [
-    { color:'#F4A7B9', emoji:'❤️', label:'What you love',        val: love.length     ? love.slice(0,2).join(', ')   : '—' },
-    { color:'#A8D8A8', emoji:'⭐', label:'What you\'re good at', val: goodAt.length   ? goodAt.slice(0,2).join(', ')  : '—' },
-    { color:'#FFF3A3', emoji:'🌍', label:'World needs',          val: worldNeeds || '—' },
-    { color:'#C5CAE9', emoji:'💰', label:'You can be paid for',  val: paidFor    || '—' },
+    { color:'#F4A7B9', emoji:'❤️', label:'What you love',        val: love.length       ? love.slice(0,2).join(', ')       : '—' },
+    { color:'#A8D8A8', emoji:'⭐', label:'What you\'re good at', val: goodAt.length     ? goodAt.slice(0,2).join(', ')     : '—' },
+    { color:'#FFF3A3', emoji:'🌍', label:'World needs',          val: worldNeeds.length ? worldNeeds.slice(0,2).join(', ') : '—' },
+    { color:'#C5CAE9', emoji:'💰', label:'You can be paid for',  val: paidFor.length    ? paidFor.slice(0,2).join(', ')    : '—' },
   ];
 
   return `
@@ -10800,19 +10799,20 @@ function buildOnboardResult(firstName) {
 }
 
 function launchOnboardResults() {
-  const love    = onboardState.answers['love']    || [];
-  const goodAt  = onboardState.answers['good_at'] || [];
-  const paidFor = onboardState.answers['paid_for'] || null;
+  const love      = onboardState.answers['love']        || [];
+  const goodAt    = onboardState.answers['good_at']     || [];
+  const paidForRaw = onboardState.answers['paid_for'];
+  const paidFor   = Array.isArray(paidForRaw) ? paidForRaw : (paidForRaw ? [paidForRaw] : []);
 
   const cats = [...new Set([...love, ...goodAt])];
   state.query        = '';
   state.college      = 'all';
-  state.careerBucket = paidFor || 'all';
+  state.careerBucket = paidFor.length === 1 ? paidFor[0] : 'all';
   state.cat          = cats.length === 1 ? cats[0] : 'all';
 
   const deck = MAJORS.filter(m => {
     if (cats.length > 0 && !cats.some(c => (m.categories||[]).includes(c))) return false;
-    if (paidFor && paidFor !== 'all' && !getCareerBuckets(m).includes(paidFor)) return false;
+    if (paidFor.length > 0 && !paidFor.some(p => getCareerBuckets(m).includes(p))) return false;
     return true;
   });
 
