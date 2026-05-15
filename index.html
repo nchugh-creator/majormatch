@@ -9226,7 +9226,9 @@ async function doSignup() {
 
 function skipAuth() {
   localStorage.setItem('mm_guest', '1');
-  mountApp({id:null, name:'Guest', email:''}, false);
+  // Show quiz on first guest visit; skip if they've already completed it
+  const freshGuest = !localStorage.getItem('mm_guest_quiz_done');
+  mountApp({id:null, name:'Guest', email:''}, freshGuest);
 }
 
 async function onAuthSuccess(token, user, freshLogin) {
@@ -9286,6 +9288,7 @@ function doLogout() {
   localStorage.removeItem('mm_token');
   localStorage.removeItem('mm_user');
   localStorage.removeItem('mm_guest');
+  localStorage.removeItem('mm_guest_quiz_done');
   location.reload();
 }
 
@@ -10900,6 +10903,9 @@ function buildOnboardResult(firstName) {
 }
 
 function launchOnboardResults() {
+  // Mark quiz as seen so guests aren't shown it again on next visit
+  if (localStorage.getItem('mm_guest')) localStorage.setItem('mm_guest_quiz_done', '1');
+
   const love      = onboardState.answers['love']        || [];
   const goodAt    = onboardState.answers['good_at']     || [];
   const paidForRaw = onboardState.answers['paid_for'];
