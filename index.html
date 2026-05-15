@@ -10514,6 +10514,7 @@ const ONBOARD_STEPS = [
       { emoji: '✏️', title: 'Design & visual thinking', sub: 'Products, UX, branding',           value: 'design'          },
       { emoji: '🩺', title: 'Health & medicine',        sub: 'Caring for people, the body, mind',value: 'health'          },
       { emoji: '🌿', title: 'Nature & environment',     sub: 'Sustainability, ecology, climate', value: 'environment'     },
+      { emoji: '➕', title: 'Other',                    sub: 'Type your own (4 words max)',      value: '_other_',  isOther: true },
     ]
   },
   {
@@ -10532,6 +10533,7 @@ const ONBOARD_STEPS = [
       { emoji: '🤝', title: 'Leading & organizing',sub: 'Getting people aligned, managing projects', value: 'business'   },
       { emoji: '💚', title: 'Helping others',      sub: 'Listening, supporting, nurturing',     value: 'health'          },
       { emoji: '🌐', title: 'Big-picture thinking',sub: 'Systems, policy, how society works',   value: 'social_sciences' },
+      { emoji: '➕', title: 'Other',               sub: 'Type your own (4 words max)',           value: '_other_', isOther: true },
     ]
   },
   {
@@ -10550,6 +10552,7 @@ const ONBOARD_STEPS = [
       { emoji: '📚', title: 'More educated people',   sub: 'Learning, access, opportunity',            value: 'arts_humanities' },
       { emoji: '💡', title: 'Economic opportunity',   sub: 'Jobs, innovation, thriving businesses',    value: 'business'        },
       { emoji: '🎭', title: 'Richer human culture',   sub: 'Art, storytelling, community',             value: 'design'          },
+      { emoji: '➕', title: 'Other',                  sub: 'Type your own (4 words max)',              value: '_other_', isOther: true },
     ]
   },
   {
@@ -10568,6 +10571,7 @@ const ONBOARD_STEPS = [
       { emoji: '⚖️', title: 'Law & government',      sub: 'Policy, public service, legal work',      value: 'policy'   },
       { emoji: '🔬', title: 'Research & academia',   sub: 'Lab work, faculty, discovery',            value: 'research' },
       { emoji: '🎭', title: 'Arts & journalism',     sub: 'Film, writing, music, media',             value: 'creative' },
+      { emoji: '➕', title: 'Other',                 sub: 'Type your own (4 words max)',             value: '_other_', isOther: true },
     ]
   },
 ];
@@ -10675,18 +10679,48 @@ function renderOnboardStep(userName) {
     <div class="quiz-question">${stepData.question}</div>
     <div class="quiz-hint">${stepData.hint}${stepData.multi ? ' <span style="opacity:.5">(pick all that apply)</span>' : ''}</div>
     <div class="quiz-options ${stepData.layout}" id="onboardOptions">
-      ${stepData.options.map(opt => `
-        <button class="quiz-opt${selectedSet.has(opt.value) ? ' selected' : ''}"
-                data-value="${opt.value}"
-                onclick="onboardSelectOpt(this, ${stepData.multi})">
-          <span class="quiz-opt-emoji">${opt.emoji}</span>
-          <span class="quiz-opt-text">
-            <div class="quiz-opt-title">${opt.title}</div>
-            <div class="quiz-opt-sub">${opt.sub}</div>
-          </span>
-          <span class="quiz-opt-check">${selectedSet.has(opt.value) ? '✓' : ''}</span>
-        </button>
-      `).join('')}
+      ${stepData.options.map(opt => {
+        if (opt.isOther) {
+          const savedOther = onboardState.answers['_other_' + stepData.id] || '';
+          const isOtherSel = selectedSet.has('_other_');
+          return `
+            <button class="quiz-opt${isOtherSel ? ' selected' : ''}"
+                    data-value="_other_"
+                    onclick="onboardToggleOther(this, '${stepData.id}', ${stepData.multi})"
+                    style="flex-direction:column;align-items:flex-start;gap:8px">
+              <div style="display:flex;align-items:center;gap:12px;width:100%">
+                <span class="quiz-opt-emoji">${opt.emoji}</span>
+                <span class="quiz-opt-text" style="flex:1">
+                  <div class="quiz-opt-title">${opt.title}</div>
+                  <div class="quiz-opt-sub">${opt.sub}</div>
+                </span>
+                <span class="quiz-opt-check">${isOtherSel ? '✓' : ''}</span>
+              </div>
+              <div id="other-input-wrap-${stepData.id}" style="width:100%;display:${isOtherSel ? 'flex' : 'none'};gap:8px;align-items:center" onclick="event.stopPropagation()">
+                <input id="other-input-${stepData.id}"
+                       type="text"
+                       value="${esc(savedOther)}"
+                       placeholder="e.g. teaching young kids"
+                       maxlength="40"
+                       style="flex:1;background:rgba(255,255,255,.1);border:1.5px solid rgba(255,255,255,.3);border-radius:7px;padding:8px 11px;font-size:13px;color:#fff;font-family:inherit;outline:none"
+                       oninput="onboardOtherInput(this,'${stepData.id}')"
+                       onkeydown="event.stopPropagation()" />
+                <span id="other-word-count-${stepData.id}" style="font-size:11px;color:rgba(255,255,255,.4);white-space:nowrap">0/4</span>
+              </div>
+            </button>`;
+        }
+        return `
+          <button class="quiz-opt${selectedSet.has(opt.value) ? ' selected' : ''}"
+                  data-value="${opt.value}"
+                  onclick="onboardSelectOpt(this, ${stepData.multi})">
+            <span class="quiz-opt-emoji">${opt.emoji}</span>
+            <span class="quiz-opt-text">
+              <div class="quiz-opt-title">${opt.title}</div>
+              <div class="quiz-opt-sub">${opt.sub}</div>
+            </span>
+            <span class="quiz-opt-check">${selectedSet.has(opt.value) ? '✓' : ''}</span>
+          </button>`;
+      }).join('')}
     </div>
     <div class="quiz-next-wrap">
       <button class="quiz-next-btn" id="onboardNextBtn" onclick="onboardGoNext()" ${selectedSet.size === 0 ? 'disabled' : ''}>
@@ -10722,11 +10756,78 @@ function onboardSelectOpt(btn, multi) {
   if (nb) nb.disabled = !anySelected;
 }
 
+function onboardToggleOther(btn, stepId, multi) {
+  const opts = document.querySelectorAll('#onboardOptions .quiz-opt');
+  const wrap = document.getElementById('other-input-wrap-' + stepId);
+  const input = document.getElementById('other-input-' + stepId);
+
+  if (!multi) {
+    // single-select: deselect all others first
+    opts.forEach(o => { o.classList.remove('selected'); o.querySelector('.quiz-opt-check').textContent = ''; });
+  }
+
+  const wasSelected = btn.classList.contains('selected');
+  if (wasSelected) {
+    // deselect & hide input
+    btn.classList.remove('selected');
+    btn.querySelector('.quiz-opt-check').textContent = '';
+    if (wrap) wrap.style.display = 'none';
+    delete onboardState.answers['_other_' + stepId];
+  } else {
+    // select & show input
+    btn.classList.add('selected');
+    btn.querySelector('.quiz-opt-check').textContent = '✓';
+    if (wrap) wrap.style.display = 'flex';
+    if (input) { input.focus(); }
+    // restore saved word count display if any
+    const saved = onboardState.answers['_other_' + stepId] || '';
+    onboardOtherInput(input, stepId);
+  }
+
+  const anySelected = [...opts].some(o => o.classList.contains('selected'));
+  const nb = document.getElementById('onboardNextBtn');
+  if (nb) nb.disabled = !anySelected;
+}
+
+function onboardOtherInput(input, stepId) {
+  if (!input) return;
+  const raw = input.value;
+  // Enforce 4-word max: count words, trim if exceeded
+  const words = raw.trim().split(/\s+/).filter(w => w.length > 0);
+  const counter = document.getElementById('other-word-count-' + stepId);
+
+  if (words.length > 4) {
+    // clip to 4 words
+    input.value = words.slice(0, 4).join(' ');
+  }
+
+  const finalWords = input.value.trim().split(/\s+/).filter(w => w.length > 0);
+  if (counter) {
+    counter.textContent = finalWords.length + '/4';
+    counter.style.color = finalWords.length >= 4 ? 'var(--gold)' : 'rgba(255,255,255,.4)';
+  }
+
+  // Save to state
+  onboardState.answers['_other_' + stepId] = input.value.trim();
+
+  // Enable Next if there's at least 1 word
+  const anySelected = [...document.querySelectorAll('#onboardOptions .quiz-opt')].some(o => o.classList.contains('selected'));
+  const nb = document.getElementById('onboardNextBtn');
+  if (nb) nb.disabled = !anySelected;
+}
+
 function onboardGoNext() {
   const stepData = ONBOARD_STEPS[onboardState.step];
   const selected = [...document.querySelectorAll('#onboardOptions .quiz-opt.selected')].map(o => o.dataset.value);
   if (selected.length === 0 && !stepData.multi) return;
-  onboardState.answers[stepData.id] = stepData.multi ? selected : (selected[0] || null);
+
+  // Replace '_other_' placeholder with the actual typed text (or remove if empty)
+  const otherText = (onboardState.answers['_other_' + stepData.id] || '').trim();
+  const finalSelected = selected
+    .filter(v => v !== '_other_')
+    .concat(otherText ? [otherText] : []);
+
+  onboardState.answers[stepData.id] = stepData.multi ? finalSelected : (finalSelected[0] || null);
   onboardState.direction = 'forward';
   onboardState.step++;
   renderOnboardStep(localStorage.getItem('mm_user') || '');
