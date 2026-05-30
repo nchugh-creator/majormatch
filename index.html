@@ -181,28 +181,37 @@
     .hero-step-arrow { color: rgba(255,255,255,.3); font-size: 13px; }
 
     /* Guided flow */
-    .flow-wrap { max-width: 760px; margin: 0 auto; padding: 52px 28px 60px; }
+    .flow-wrap { max-width: 640px; margin: 0 auto; padding: 52px 28px 60px; }
     .flow-step { animation: fadeSlideIn .35s ease; }
     @keyframes fadeSlideIn { from { opacity:0; transform: translateY(18px); } to { opacity:1; transform: none; } }
-    .flow-step-header { margin-bottom: 32px; }
+    .flow-step-header { margin-bottom: 32px; text-align: center; }
     .flow-step-num { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1.5px; color: var(--purple-mid); margin-bottom: 10px; }
     .flow-step-q { font-size: clamp(22px, 3vw, 32px); font-weight: 300; letter-spacing: -.5px; color: var(--ink); margin-bottom: 8px; }
     .flow-step-q em { font-style: normal; color: var(--purple); font-weight: 500; }
     .flow-step-hint { font-size: 14px; color: var(--ink-muted); font-weight: 300; }
 
-    /* Interest grid */
-    .interest-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; margin-bottom: 36px; }
-    .interest-card {
-      background: var(--bg-card); border: 2px solid var(--border); border-radius: 12px;
-      padding: 22px 14px 18px; text-align: center; cursor: pointer;
-      transition: border-color .18s, background .18s, transform .18s, box-shadow .18s;
-    }
-    .interest-card:hover { border-color: var(--purple-light); transform: translateY(-2px); box-shadow: 0 4px 16px rgba(0,0,0,.07); }
-    .interest-card.selected { border-color: var(--purple); background: var(--purple-faint); box-shadow: 0 0 0 1px var(--purple); }
-    .interest-emoji { font-size: 32px; margin-bottom: 10px; }
-    .interest-label { font-size: 13px; font-weight: 500; color: var(--ink); line-height: 1.3; }
+    /* This or That progress bar */
+    .tot-progress { display: flex; gap: 6px; justify-content: center; margin-bottom: 36px; }
+    .tot-dot { width: 28px; height: 5px; border-radius: 3px; background: var(--border-mid); transition: background .3s; }
+    .tot-dot.done { background: var(--gold); }
+    .tot-dot.active { background: var(--purple); }
 
-    /* Binary choice */
+    /* This or That cards */
+    .tot-pair { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+    .tot-card {
+      background: var(--bg-card); border: 2.5px solid var(--border); border-radius: 16px;
+      padding: 32px 20px 28px; text-align: center; cursor: pointer;
+      transition: border-color .2s, background .2s, transform .2s, box-shadow .2s;
+      user-select: none;
+    }
+    .tot-card:hover { border-color: var(--purple-light); transform: translateY(-3px); box-shadow: 0 6px 24px rgba(0,0,0,.09); }
+    .tot-card.selected { border-color: var(--purple); background: var(--purple-faint); box-shadow: 0 0 0 2px var(--purple); transform: translateY(-3px); }
+    .tot-emoji { font-size: 44px; margin-bottom: 14px; }
+    .tot-label { font-size: 16px; font-weight: 600; color: var(--ink); line-height: 1.3; margin-bottom: 6px; }
+    .tot-sub { font-size: 12px; color: var(--ink-muted); line-height: 1.5; }
+    .tot-or { text-align: center; font-size: 12px; font-weight: 700; letter-spacing: 1px; color: var(--ink-light); text-transform: uppercase; margin: 8px 0 20px; }
+
+    /* Binary choice (kept for backward compat) */
     .flow-q-block {}
     .flow-q-label { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: .8px; color: var(--ink-light); margin-bottom: 12px; }
     .flow-binary-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -1290,13 +1299,15 @@
     <div class="home-hero">
       <div class="hero-eyebrow">UW Seattle — Major Explorer</div>
       <h1 class="home-hero-title">Not sure what to major in?<br><em>You're in the right place.</em></h1>
-      <p class="home-hero-sub">Answer 3 quick questions and we'll show you the majors that actually fit you — no spreadsheets required.</p>
+      <p class="home-hero-sub">Answer 4 quick "This or That" questions and we'll show you the majors that actually fit you — no spreadsheets required.</p>
       <div class="hero-step-pills">
-        <div class="hero-step-pill active" id="hpill1">① Interests</div>
+        <div class="hero-step-pill active" id="hpill1">① Q1</div>
         <div class="hero-step-arrow">→</div>
-        <div class="hero-step-pill" id="hpill2">② Work style</div>
+        <div class="hero-step-pill" id="hpill2">② Q2</div>
         <div class="hero-step-arrow">→</div>
-        <div class="hero-step-pill" id="hpill3">③ Your matches</div>
+        <div class="hero-step-pill" id="hpill3">③ Q3</div>
+        <div class="hero-step-arrow">→</div>
+        <div class="hero-step-pill" id="hpill4">④ Your matches</div>
       </div>
       <!-- Stat strip -->
       <div class="hero-stat-strip">
@@ -1307,91 +1318,47 @@
       </div>
     </div>
 
-    <!-- Guided flow -->
+    <!-- Guided flow: This or That -->
     <div class="flow-wrap">
+      <div id="totFlow">
 
-      <!-- STEP 1: Interests -->
-      <div class="flow-step" id="flowStep1">
-        <div class="flow-step-header">
-          <div class="flow-step-num">Step 1 of 3</div>
-          <h2 class="flow-step-q">What sounds like <em>you</em>?</h2>
-          <p class="flow-step-hint">Tap everything that pulls you in — even a little. No wrong answers.</p>
+        <!-- Progress dots -->
+        <div class="tot-progress" id="totProgress">
+          <div class="tot-dot active" id="tdot0"></div>
+          <div class="tot-dot" id="tdot1"></div>
+          <div class="tot-dot" id="tdot2"></div>
+          <div class="tot-dot" id="tdot3"></div>
         </div>
-        <div class="interest-grid" id="interestGrid">
-          <div class="interest-card" data-cat="computing"       onclick="toggleInterest(this)"><div class="interest-emoji">💻</div><div class="interest-label">Computing &amp; Tech</div></div>
-          <div class="interest-card" data-cat="business"        onclick="toggleInterest(this)"><div class="interest-emoji">📊</div><div class="interest-label">Business &amp; Finance</div></div>
-          <div class="interest-card" data-cat="design"          onclick="toggleInterest(this)"><div class="interest-emoji">🎨</div><div class="interest-label">Design &amp; UX</div></div>
-          <div class="interest-card" data-cat="stem"            onclick="toggleInterest(this)"><div class="interest-emoji">🔬</div><div class="interest-label">Science &amp; Research</div></div>
-          <div class="interest-card" data-cat="health"          onclick="toggleInterest(this)"><div class="interest-emoji">🩺</div><div class="interest-label">Health &amp; Medicine</div></div>
-          <div class="interest-card" data-cat="social_sciences" onclick="toggleInterest(this)"><div class="interest-emoji">⚖️</div><div class="interest-label">Law &amp; Society</div></div>
-          <div class="interest-card" data-cat="arts_humanities" onclick="toggleInterest(this)"><div class="interest-emoji">📚</div><div class="interest-label">Writing &amp; Humanities</div></div>
-          <div class="interest-card" data-cat="environment"     onclick="toggleInterest(this)"><div class="interest-emoji">🌿</div><div class="interest-label">Environment</div></div>
-          <div class="interest-card" data-cat="engineering"     onclick="toggleInterest(this)"><div class="interest-emoji">⚙️</div><div class="interest-label">Engineering</div></div>
+
+        <!-- Question header -->
+        <div class="flow-step-header" id="totHeader">
+          <div class="flow-step-num" id="totStepNum">Question 1 of 4</div>
+          <h2 class="flow-step-q" id="totQuestion"></h2>
         </div>
+
+        <!-- Card pair -->
+        <div class="tot-pair" id="totPair"></div>
+
+        <div class="tot-or">or</div>
+
+        <!-- Footer -->
         <div class="flow-footer">
-          <button class="flow-btn" id="step1Btn" onclick="flowGoStep2()" disabled>See next step →</button>
-          <span class="flow-skip" onclick="flowSkip()">I'm not sure yet — just browse →</span>
-        </div>
-      </div>
-
-      <!-- STEP 2: Work style -->
-      <div class="flow-step hidden" id="flowStep2">
-        <div class="flow-step-header">
-          <div class="flow-step-num">Step 2 of 3</div>
-          <h2 class="flow-step-q">Two quick questions</h2>
-          <p class="flow-step-hint">No right or wrong — just what feels most like you right now.</p>
+          <span class="flow-skip" onclick="flowSkip()">Skip — just browse →</span>
         </div>
 
-        <div class="flow-q-block">
-          <div class="flow-q-label">How do you like to work?</div>
-          <div class="flow-binary-row">
-            <div class="flow-binary-card" data-ws="solo" onclick="selectBinary('workStyle',this)">
-              <div class="flow-binary-emoji">🧘</div>
-              <div class="flow-binary-title">Independently</div>
-              <div class="flow-binary-sub">Deep focus, solo projects, my own pace</div>
-            </div>
-            <div class="flow-binary-card" data-ws="team" onclick="selectBinary('workStyle',this)">
-              <div class="flow-binary-emoji">🤝</div>
-              <div class="flow-binary-title">With people</div>
-              <div class="flow-binary-sub">Collaboration, teams, talking through ideas</div>
-            </div>
-          </div>
-        </div>
+      </div><!-- /totFlow -->
 
-        <div class="flow-q-block" style="margin-top:28px">
-          <div class="flow-q-label">What matters more to you right now?</div>
-          <div class="flow-binary-row">
-            <div class="flow-binary-card" data-priority="salary" onclick="selectBinary('priority',this)">
-              <div class="flow-binary-emoji">💸</div>
-              <div class="flow-binary-title">High earning potential</div>
-              <div class="flow-binary-sub">I want strong starting salary &amp; job security</div>
-            </div>
-            <div class="flow-binary-card" data-priority="impact" onclick="selectBinary('priority',this)">
-              <div class="flow-binary-emoji">🌍</div>
-              <div class="flow-binary-title">Making an impact</div>
-              <div class="flow-binary-sub">I want my work to matter beyond a paycheck</div>
-            </div>
-          </div>
-        </div>
-
-        <div class="flow-footer" style="margin-top:36px">
-          <button class="flow-btn-secondary" onclick="flowGoStep1()">← Back</button>
-          <button class="flow-btn" id="step2Btn" onclick="flowGoStep3()" disabled>Show my matches →</button>
-          <span class="flow-skip" onclick="flowSkip()">Skip — just browse</span>
-        </div>
-      </div>
-
-      <!-- STEP 3: Results -->
-      <div class="flow-step hidden" id="flowStep3">
+      <!-- Results -->
+      <div class="flow-step hidden" id="totResults">
         <div class="flow-step-header">
           <div class="flow-step-num" style="color:#059669">✓ Done! Here are your matches</div>
           <h2 class="flow-step-q" id="flowResultHeadline">Your top majors at UW</h2>
-          <p class="flow-step-hint" id="flowResultSub">Based on your interests and work style.</p>
+          <p class="flow-step-hint" id="flowResultSub"></p>
         </div>
         <div id="flowResultCards" class="flow-result-cards"></div>
         <div class="flow-result-footer">
           <button class="home-explore-btn" onclick="showView('explore')" style="margin-right:12px">Browse all 50+ majors →</button>
-          <span class="flow-skip" onclick="flowReset()">Start over</span>
+          <span class="flow-skip" onclick="totReset()">Start over</span>
         </div>
       </div>
 
@@ -10953,87 +10920,105 @@ function closeMinorDetail() {
 /* ============================================================
    GUIDED HOME FLOW
    ============================================================ */
-let flowState = { interests: new Set(), workStyle: null, priority: null };
+// ── This or That quiz ──────────────────────────────────────────────
+const TOT_QUESTIONS = [
+  {
+    q: 'People or data?',
+    a: { emoji:'🤝', label:'Working with people', sub:'Helping, collaborating, making a human difference', boosts:['social_sciences','health','design'] },
+    b: { emoji:'📊', label:'Numbers & systems', sub:'Analyzing, coding, solving structured problems', boosts:['computing','engineering','stem'] },
+  },
+  {
+    q: 'Big ideas or building things?',
+    a: { emoji:'💡', label:'Theory & research', sub:'Understanding how the world works, exploring ideas', boosts:['arts_humanities','social_sciences','stem'] },
+    b: { emoji:'🔧', label:'Making & creating', sub:'Designing, engineering, shipping real products', boosts:['design','engineering','computing'] },
+  },
+  {
+    q: 'High salary or high impact?',
+    a: { emoji:'💸', label:'Earning potential', sub:'Strong starting salary and job security', boosts:['computing','business','engineering'] },
+    b: { emoji:'🌍', label:'Changing the world', sub:'Work that matters beyond a paycheck', boosts:['health','environment','social_sciences'] },
+  },
+  {
+    q: 'Startup or stability?',
+    a: { emoji:'🚀', label:'Entrepreneurial vibe', sub:'Move fast, take risks, build something new', boosts:['business','design','computing'] },
+    b: { emoji:'🏛️', label:'Steady & structured', sub:'Clear career path, institutions, long-term impact', boosts:['health','social_sciences','environment'] },
+  },
+];
 
-function renderHome() {
-  updateHeroPills(flowState.interests.size > 0 ? (flowState.workStyle ? 3 : 2) : 1);
-  // restore any saved picks
-  document.querySelectorAll('.interest-card').forEach(c => {
-    c.classList.toggle('selected', flowState.interests.has(c.dataset.cat));
-  });
-  checkStep1Btn();
-}
+let totState = { step: 0, scores: {} };
 
-function toggleInterest(el) {
-  const cat = el.dataset.cat;
-  el.classList.toggle('selected');
-  if (el.classList.contains('selected')) flowState.interests.add(cat);
-  else flowState.interests.delete(cat);
-  checkStep1Btn();
-}
-
-function checkStep1Btn() {
-  const btn = document.getElementById('step1Btn');
-  if (btn) btn.disabled = flowState.interests.size === 0;
-}
-
-function selectBinary(key, el) {
-  const group = el.closest('.flow-binary-row').querySelectorAll('.flow-binary-card');
-  group.forEach(c => c.classList.remove('selected'));
-  el.classList.add('selected');
-  flowState[key] = el.dataset[key === 'workStyle' ? 'ws' : 'priority'];
-  checkStep2Btn();
-}
-
-function checkStep2Btn() {
-  const btn = document.getElementById('step2Btn');
-  if (btn) btn.disabled = !(flowState.workStyle && flowState.priority);
-}
-
-function flowGoStep2() {
-  document.getElementById('flowStep1').classList.add('hidden');
-  document.getElementById('flowStep2').classList.remove('hidden');
-  updateHeroPills(2);
-  // restore previous selections
-  if (flowState.workStyle) {
-    document.querySelectorAll('[data-ws]').forEach(c => c.classList.toggle('selected', c.dataset.ws === flowState.workStyle));
-  }
-  if (flowState.priority) {
-    document.querySelectorAll('[data-priority]').forEach(c => c.classList.toggle('selected', c.dataset.priority === flowState.priority));
-  }
-  checkStep2Btn();
-}
-
-function flowGoStep1() {
-  document.getElementById('flowStep2').classList.add('hidden');
-  document.getElementById('flowStep1').classList.remove('hidden');
+function totInit() {
+  totState = { step: 0, scores: {} };
+  totRenderQuestion();
+  document.getElementById('totFlow').classList.remove('hidden');
+  document.getElementById('totResults').classList.add('hidden');
   updateHeroPills(1);
 }
 
-function flowGoStep3() {
-  document.getElementById('flowStep2').classList.add('hidden');
-  document.getElementById('flowStep3').classList.remove('hidden');
-  updateHeroPills(3);
+function totRenderQuestion() {
+  const q = TOT_QUESTIONS[totState.step];
+  document.getElementById('totStepNum').textContent = `Question ${totState.step + 1} of ${TOT_QUESTIONS.length}`;
+  document.getElementById('totQuestion').textContent = q.q;
+
+  // Dots
+  TOT_QUESTIONS.forEach((_, i) => {
+    const dot = document.getElementById('tdot' + i);
+    if (!dot) return;
+    dot.className = 'tot-dot' + (i < totState.step ? ' done' : i === totState.step ? ' active' : '');
+  });
+
+  // Cards
+  const pair = document.getElementById('totPair');
+  pair.innerHTML = ['a','b'].map(side => {
+    const opt = q[side];
+    return `<div class="tot-card" onclick="totPick('${side}')">
+      <div class="tot-emoji">${opt.emoji}</div>
+      <div class="tot-label">${opt.label}</div>
+      <div class="tot-sub">${opt.sub}</div>
+    </div>`;
+  }).join('');
+}
+
+function totPick(side) {
+  const q = TOT_QUESTIONS[totState.step];
+  // highlight briefly
+  const cards = document.querySelectorAll('.tot-card');
+  cards.forEach((c, i) => c.classList.toggle('selected', (i === 0 && side === 'a') || (i === 1 && side === 'b')));
+  // add boosts
+  q[side].boosts.forEach(cat => { totState.scores[cat] = (totState.scores[cat]||0) + 2; });
+
+  updateHeroPills(totState.step + 1);
+
+  setTimeout(() => {
+    totState.step++;
+    if (totState.step >= TOT_QUESTIONS.length) {
+      totShowResults();
+    } else {
+      totRenderQuestion();
+    }
+  }, 320);
+}
+
+function totShowResults() {
+  document.getElementById('totFlow').classList.add('hidden');
+  document.getElementById('totResults').classList.remove('hidden');
+  updateHeroPills(TOT_QUESTIONS.length + 1);
   renderFlowResults();
 }
 
+function totReset() {
+  totInit();
+}
+
+function renderHome() {
+  totInit();
+}
+
 function updateHeroPills(step) {
-  [1,2,3].forEach(i => {
+  [1,2,3,4].forEach(i => {
     const p = document.getElementById('hpill'+i);
     if (!p) return;
     p.className = 'hero-step-pill' + (i < step ? ' done' : i === step ? ' active' : '');
   });
-}
-
-function flowReset() {
-  flowState = { interests: new Set(), workStyle: null, priority: null };
-  document.getElementById('flowStep3').classList.add('hidden');
-  document.getElementById('flowStep2').classList.add('hidden');
-  document.getElementById('flowStep1').classList.remove('hidden');
-  document.querySelectorAll('.interest-card').forEach(c => c.classList.remove('selected'));
-  document.querySelectorAll('.flow-binary-card').forEach(c => c.classList.remove('selected'));
-  checkStep1Btn();
-  updateHeroPills(1);
 }
 
 function flowSkip() {
@@ -11041,15 +11026,7 @@ function flowSkip() {
 }
 
 function renderFlowResults() {
-  // Build category scores
-  const scores = {};
-  flowState.interests.forEach(cat => { scores[cat] = (scores[cat]||0) + 3; });
-  // Work style boosts
-  if (flowState.workStyle === 'solo')  { scores.computing=(scores.computing||0)+2; scores.stem=(scores.stem||0)+2; scores.arts_humanities=(scores.arts_humanities||0)+2; }
-  if (flowState.workStyle === 'team')  { scores.social_sciences=(scores.social_sciences||0)+2; scores.business=(scores.business||0)+2; scores.design=(scores.design||0)+2; scores.health=(scores.health||0)+2; }
-  // Priority boosts
-  if (flowState.priority === 'salary') { scores.computing=(scores.computing||0)+2; scores.business=(scores.business||0)+2; scores.engineering=(scores.engineering||0)+2; }
-  if (flowState.priority === 'impact') { scores.health=(scores.health||0)+2; scores.social_sciences=(scores.social_sciences||0)+2; scores.environment=(scores.environment||0)+2; scores.arts_humanities=(scores.arts_humanities||0)+1; }
+  const scores = totState.scores;
 
   const ranked = MAJORS.map(m => {
     const cats = m.categories || [];
@@ -11057,28 +11034,24 @@ function renderFlowResults() {
     return { m, total };
   }).filter(x=>x.total>0).sort((a,b)=>b.total-a.total).slice(0,5);
 
-  const interestLabels = { computing:'Computing', business:'Business', design:'Design', stem:'Science', health:'Health', social_sciences:'Law & Society', arts_humanities:'Humanities', environment:'Environment', engineering:'Engineering' };
-  const interestStr = [...flowState.interests].map(c=>interestLabels[c]||c).join(', ');
-  const styleStr = flowState.workStyle === 'solo' ? 'independent work' : 'collaborative work';
-  const priorityStr = flowState.priority === 'salary' ? 'earning potential' : 'making an impact';
+  const catLabels = { computing:'Computing & Tech', business:'Business', design:'Design & UX', stem:'Science & Research', health:'Health & Medicine', social_sciences:'Society & Law', arts_humanities:'Humanities', environment:'Environment', engineering:'Engineering' };
 
   const hl = document.getElementById('flowResultHeadline');
   const sub = document.getElementById('flowResultSub');
   if (hl) hl.textContent = ranked.length ? `Your top ${ranked.length} UW majors` : 'Keep exploring';
-  if (sub) sub.textContent = `Based on your interest in ${interestStr}, preference for ${styleStr}, and focus on ${priorityStr}.`;
+  if (sub) sub.textContent = ranked.length ? 'Based on your This or That answers — tap any card to learn more.' : '';
 
   const container = document.getElementById('flowResultCards');
   if (!container) return;
-  if (!ranked.length) { container.innerHTML = `<p style="color:var(--ink-muted)">No strong matches found — try picking more interests!</p>`; return; }
+  if (!ranked.length) { container.innerHTML = `<p style="color:var(--ink-muted)">No strong matches — try again!</p>`; return; }
 
-  container.innerHTML = ranked.map(({m, total}, i) => {
+  container.innerHTML = ranked.map(({m}, i) => {
     const cats = m.categories||[];
     const accent = m.accent||'#4B2E83';
     const icon = m.icon||(cats[0]?catEmoji(cats[0]):'🎓');
-    const reasons = cats.filter(c=>flowState.interests.has(c)).map(c=>interestLabels[c]||c);
-    const reasonStr = reasons.length ? `Matches your interest in ${reasons.join(' & ')}` : `Great fit for your profile`;
+    const topCat = cats.find(c => scores[c]) || cats[0];
+    const reasonStr = topCat ? `Strong match for ${catLabels[topCat]||topCat}` : 'Great fit for your profile';
     const salary = m.salaryRange||'';
-    const [,cls] = admitBadge(m.admissionType||'');
     return `<div class="flow-result-card ${i===0?'rank1':''}" onclick="openDetail('${esc(m.id)}')">
       <div class="flow-result-icon" style="background:${accent}18">${icon}</div>
       <div class="flow-result-info">
