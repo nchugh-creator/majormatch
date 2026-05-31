@@ -345,7 +345,7 @@
     .hero-stat-lbl { font-size: 9px; color: rgba(255,255,255,.55); text-transform: uppercase; letter-spacing: .8px; margin-top: 2px; }
 
     /* ── Community view ── */
-    #communityView { display: flex; min-height: calc(100vh - var(--nav-h)); background: var(--bg); }
+    /* communityView removed */
     .community-sidebar {
       width: 220px; flex-shrink: 0; background: var(--bg-surface); border-right: 1px solid var(--border);
       padding: 24px 16px; position: sticky; top: var(--nav-h); height: calc(100vh - var(--nav-h)); overflow-y: auto;
@@ -9172,12 +9172,12 @@ document.addEventListener('keydown', e => {
 /* ============================================================
    VIEW ROUTER
    ============================================================ */
-const VIEWS = ['filterPickerView','homeView','exploreView','detailView','myMajorsView','quizView','communityView'];
+const VIEWS = ['filterPickerView','homeView','exploreView','detailView','myMajorsView','quizView'];
 function showView(name, pushHistory = true) {
   state.prevView = state.view;
   state.view = name;
   const viewName = (name==='rsos') ? 'explore' : name;
-  VIEWS.forEach(v => document.getElementById(v).classList.toggle('hidden', v !== viewName+'View'));
+  VIEWS.forEach(v => { const el = document.getElementById(v); if (el) el.classList.toggle('hidden', v !== viewName+'View'); });
   // footer visibility
   document.querySelector('footer').style.display = (viewName==='explore'||viewName==='detail'||viewName==='filterPicker'||viewName==='quiz') ? 'none' : '';
   // nav tab highlight (top + bottom)
